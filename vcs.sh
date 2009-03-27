@@ -125,9 +125,15 @@ function initrepo() {
 
     cd $root
     
+    if [[ -d .git ]]; then
+        return 0
+    fi
+
     git init
-    git branch $master
-    git branch $prod
+    branch $master
+    branch $prod
+
+    return 0
 }
 # Usage: add <file0> [<file1> ... <fileN>]
 #
