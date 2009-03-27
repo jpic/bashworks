@@ -8,6 +8,7 @@ if [[ $prod -eq "" ]]; then prod="prod"; fi
 if [[ $version -eq "" ]]; then version="0"; fi
 if [[ $rc -eq "" ]]; then rc="0"; fi
 if [[ $doc -eq "" ]]; then doc="DOCUMENTATION"; fi
+if [[ $bug -eq "" ]]; then bug="BUGS"; fi
 if [[ $objectives -eq "" ]]; then objectives=".todo.now"; fi
 if [[ $state -eq "" ]]; then state="alpha"; fi
 if [[ $feature -eq "" ]]; then feature="planning"; fi
@@ -246,7 +247,14 @@ function readme() {
 function writeme() {
     $EDITOR $readme
 }
-
+# Read installation and maintenance investigation
+function readbug() {
+    cat $bug | $PAGER
+}
+# Write installation and maintenance investigation
+function writebug() {
+    $EDITOR $bug
+}
 # Read installation and maintenance investigation
 function readdoc() {
     cat $doc | $PAGER
@@ -383,6 +391,13 @@ function save() {
         sed -i -e "s@root=.*@root=\"$root\"@" $config
     else
         echo "root=\"$root\"" >> $config
+    fi
+
+    grep -q '^bug="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
+        sed -i -e "s@bug=.*@bug=\"$bug\"@" $config
+    else
+        echo "bug=\"$bug\"" >> $config
     fi
 }
 
