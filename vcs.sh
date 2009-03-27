@@ -182,6 +182,15 @@ function commit() {
 function status() {
     git status
 }
+
+# Usage: ignore <path|glob>
+function ignore() {
+    echo "$@" >> $ignore
+}
+
+function ecommit() {
+    git commit $@
+}
 # }}}
 ## {{{ checking out, default branchings
 # Usage: master
