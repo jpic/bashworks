@@ -279,13 +279,13 @@ function save() {
     fi
 
     if grep -q "config=.\*" $config; then
-        sed -i -e "s/config=.*/config=\"$config\"/" $config
+        sed -i -e "s@config=.*@config=\"$config\"@" $config
     else
         echo "config=\"$config\"" >> $config
     fi
     
     if grep -q "backupdir=.\*" $config; then
-        sed -i -e "s/backupdir=.*/backupdir=\"$backupdir\"/" $config
+        sed -i -e "s@backupdir=.*@backupdir=\"$backupdir\"@" $config
     else
         echo "backupdir=\"$backupdir\"" >> $config
     fi
@@ -297,7 +297,7 @@ function save() {
     fi
     
     if grep -q "ignore=.\*" $config; then
-        sed -i -e "s/ignore=.*/ignore=\"$ignore\"/" $config
+        sed -i -e "s@ignore=.*@ignore=\"$ignore\"@" $config
     else
         echo "ignore=\"$ignore\"" >> $config
     fi
@@ -321,19 +321,19 @@ function save() {
     fi
 
     if grep -q "doc=.\*" $config; then
-        sed -i -e "s/doc=.*/doc=\"$doc\"/" $config
+        sed -i -e "s@doc=.*@doc=\"$doc\"@" $config
     else
         echo "doc=\"$doc\"" >> $config
     fi
 
     if grep -q "objectives=.\*" $config; then
-        sed -i -e "s/objectives=.*/objectives=\"$objectives\"/" $config
+        sed -i -e "s@objectives=.*@objectives=\"$objectives\"@" $config
     else
         echo "objectives=\"$objectives\"" >> $config
     fi
 
     if grep -q "readme=.\*" $config; then
-        sed -i -e "s/readme=.*/readme=\"$readme\"/" $config
+        sed -i -e "s@readme=.*@readme=\"$readme\"@" $config
     else
         echo "readme=\"$readme\"" >> $config
     fi
@@ -351,7 +351,7 @@ function save() {
     fi
     
     if grep -q "logfile=.\*" $config; then
-        sed -i -e "s/logfile=.*/logfile=\"$logfile\"/" $config
+        sed -i -e "s@logfile=.*@logfile=\"$logfile\"@" $config
     else
         echo "logfile=\"$logfile\"" >> $config
     fi
