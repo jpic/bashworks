@@ -401,12 +401,22 @@ function starthacking() {
         root=`pwd`
     fi
 
+    if [[ -d $root ]]; then
+        echo "Found $root";
+    else
+        echo "Create $root";
+        mkdir -p $root
+    fi
+
     cd $root
 
-    if [[ $2 ]]; then
+    if [[ $2 && -f $2 ]]; then
         load $2
-    else
+    elif [[ -f $config ]]; then
         load $config
+    else
+        initrepo
+        save
     fi
 }
 
