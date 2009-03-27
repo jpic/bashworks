@@ -1,89 +1,165 @@
 #!/bin/bash
 DEFAULT_CONFIG=".vcs.config.sh"
 
-config=$DEFAULT_CONFIG
-ignore=".gitignore"
-master="master"
-version="0.0"
-rc="0"
-state="alpha"
-feature="planning"
-fool="fooling_around"
-readme="README"
-root=""
-
-# Usage: env_update
+if [[ $config -eq "" ]]; then config="$DEFAULT_CONFIG"; fi
+if [[ $ignore -eq "" ]]; then ignore=".gitignore"; fi
+if [[ $master -eq "" ]]; then master="master"; fi
+if [[ $prod -eq "" ]]; then prod="prod"; fi
+if [[ $version -eq "" ]]; then version="0"; fi
+if [[ $rc -eq "" ]]; then rc="0"; fi
+if [[ $doc -eq "" ]]; then doc="DOCUMENTATION"; fi
+if [[ $objectives -eq "" ]]; then objectives=".todo.now"; fi
+if [[ $state -eq "" ]]; then state="alpha"; fi
+if [[ $feature -eq "" ]]; then feature="planning"; fi
+if [[ $tag -eq "" ]]; then tag=""; fi
+if [[ $readme -eq "" ]]; then readme="README"; fi
+if [[ $backupdir -eq "" ]]; then backupdir="${HOME}/var/backups"; fi
+if [[ $root -eq "" ]]; then root=""; fi
+if [[ $logfile -eq "" ]]; then logfile=".logfile"; fi
+# {{{ tag functions
+# Usage: tag_update [<version number> [<state=$state> [<rc=$rc>] ] ]
 #
-# Updates branch names variables depending on what you declared doing
-function env_update() {
+# Sets $version, $state and $rc if supplied, and sets $tag by itself.
+function tag_update() {
+    if [[ $1 ]]; then version=$1; fi
+    if [[ $2 ]]; then state=$2; fi
+    if [[ $3 ]]; then rc=$3; fi
+
     if [[ $state ]]; then
-        branch="${version}_${state}${rc}"
+        tag="${version}_${state}${rc}"
     else
-        branch="${version}_${rc}"
+        tag="${version}_${rc}"
     fi;
-    
-    feature_branch="${branch}_${feature}"
+}
+# Usage: tag [<commit> [<tag name>]]
+#
+# Sets $tag if supplied.
+# Tags <commit> or the last commit.
+function tag() {
+    local snapshot=""
+    if [[ $1 ]]; then snapshot=$1; fi
+    if [[ $2 ]]; then tag=$2; fi
+    git commit $tag $snapshot
 }
 
-# Usage: branch_checkout_wrapper <branch_name>
+# Usage: tag_rc [<rc>]
+# 
+# Sets $rc if supplied.
+# Runs tag_update, then runs tag, then increment_rc
+function tag_rc() {
+    if [[ $1 ]]; then rc=$1; fi
+    tag_update
+    git tag $tag
+    increment_rc
+}
+
+# Usage: tag_state [<state>]
+# 
+# Sets $state if supplied.
+# Runs tag_update, then runs tag, then increments $state
+function tag_state() {
+    if [[ $1 ]]; then state=$1; fi
+    tag_update
+    git tag $tag
+    increment_state
+}
+
+function tag_version()
+{
+    if [[ $1 ]]; then version=$version; fi
+    tag_update
+    git tag $tag
+    increment_version
+}
+# }}}
+# {{{ version, state, rc incrementers
+function increment_version() {
+    let version=$version+1
+    echo $version
+}
+
+function increment_rc() {
+    let rc=$rc+1
+    echo $rc
+}
+
+function increment_state() {
+    case "$state" in
+        alpha)
+            state="beta"
+            ;;
+        beta)
+            state=""
+            ;;
+        *)
+            state="alpha"
+            ;;
+    esac
+    echo $state
+}
+# }}}
+#{{{ shell vfunctions
+# Usage: vcd
+#
+# Changes directory to $root
+function vcd() {
+    cd $root
+}
+
+# Usage: diff [<path0> [...<pathN>]]
+#
+# Wraps around your VCS diff command
+function vdiff() {
+    git diff $@
+}
+#}}}
+# {{{ vcs wrappers
+# Usage: initrepo [<path>]
+#
+# Overwrites $root with <path>, if specified.
+# Sets it up for versionning.
+function initrepo() {
+    if [[ $1 ]]; then
+        root=$1
+    fi
+
+    cd $root
+    
+    git init
+    git branch $master
+    git branch $prod
+}
+# Usage: add <file0> [<file1> ... <fileN>]
+#
+# Adds the given files to the next commit
+function add() {
+    git add $@
+}
+# Usage: branch <branch_name>
 #
 # Checks out <branch_name>, creates it if it does not exist
-function branch_checkout_wrapper() {
-    if `branch_exists ${1}` == "true"; then
+function branch() {
+    branch_exists $1
+    
+    if [[ $? -eq 0 ]]; then
         git checkout $1
     else
         git checkout -b $1
     fi
 }
 
+# Usage: branch_exists <branch name>
+#
+# Returns 0 if <branch name> exists, -1 otherwise.
 function branch_exists() {
     if git branch | grep -q "${1}"; then
-        echo "true"
+        return 0
     else
-        echo "false"
+        return -1
     fi
 }
-
-# Usage: master_checkout
-#
-# Runs env_update and checks out $master
-function master_checkout() {
-    env_update
-    branch_checkout_wrapper $master
-}
-
-# Usage: branch_checkout
-#
-# Runs master_checkout and checks out $branch
-function branch_checkout() {
-    master_checkout
-    branch_checkout_wrapper $branch
-}
-
-# Usage: feature_checkout
-#
-# Runs branch_checkout and checks out $feature_branch
-function feature_checkout() {
-    branch_checkout
-    branch_checkout_wrapper $feature_branch
-}
-
-# Usage: fool_checkout
-#
-# Runs feature_checkout and checks out $fool
-# 
-# The $fool branch commits will be squashed by passfool()
-# The $fool branch is ideal to try a way to get $feature done
-function fool_checkout() {
-    feature_checkout
-    branch_checkout_wrapper $fool
-}
-
-# Usage: add <file0> [<file1> ... <fileN>]
-#
-# Adds the given files to the next commit
-function add() {
-    git add $@
+function addi() {
+    git add -i $@
 }
 
 # Usage: commit <message>
@@ -91,86 +167,90 @@ function add() {
 # Commits the changes with <message>
 function commit() {
     env_update
-    git commit -m "$@"
+    echo $@ > $logfile
+    git commit -F $logfile
 }
 
-# Usage: feature_merge [<message>]
+# Usage: status
 #
-# Runs branch_checkout and merges $feature_branch to $branch with <message>
-# 
-# This command is intended to be run once the current feature addition or
-# changes are acceptable.
-function feature_merge() {
-    branch_checkout
-    if [[ $@ ]]; then
-        git merge -m "$@" $feature_branch
-    else
-        git merge $feature_branch
+# Wraps around vcs status command
+function status() {
+    git status
+}
+# }}}
+## {{{ checking out, default branchings
+# Usage: master
+#
+# Attempts to checkout master.
+#
+# Intended to come back from a branch (like prod).
+function master() {
+    branch $master
+}
+function prod() {
+    branch $prod
+}
+function stash() {
+    git stash
+}
+#}}}
+# {{{ merging
+function commit_to_prod() {
+    prod
+    git merge --squash $master
+    master
+}
+
+function hist_to_prod() {
+    prod
+    git merge $master
+    master
+}
+
+function unstash() {
+    echo "Unstash your debug stuff? y<CR>"
+    read confirm
+    
+    if [[ $confirm -eq 'y' ]]; then
+        echo "Yes sir!"
+        git stash apply
     fi
 }
-
-# Usage: branch_merge [<message>]
-#
-# Runs master_checkout and merges $branch_master to $master with <message>
-# 
-# This command is intended to be run once the current branch addition or
-# changes are acceptable.
-function branch_merge() {
-    master_checkout
-    if [[ $@ ]]; then
-        git merge -m "$@" $branch
-    else
-        git merge $branch
-    fi
-}
-
-# Usage: foolagain
-#
-# Runs feature_checkout, deletes branch $fool and re-creates it
-#
-# Intended to use when the last fooling around coding session cannot be
-# acceptable to merge to $feature_branch
-function foolagain() {
-    feature_checkout
-    if `branch_exists ${1}` == "true"; then
-        git branch -D $fool
-    fi
-    branch_checkout_wrapper $fool
-}
-
-# Usage: passfool [<message>]
-#
-# Runs feature_checkout, merges $fool *squashing* $fool's commit log,
-# with <message>
-#
-# If no message is specified, it adds $readme to the commit and
-# specifies a default commit message, telling to check $readme
-function passfool() {
-    feature_checkout
-    git merge --squash $fool
-
-    if [[ $@ ]]; then
-        git commit -m "$@"
-    else
-        add $readme
-        git commit -m "Implemented $feature as described in $readme"
-    fi
-}
-
+# }}}
+# {{{ documenting
 # Usage: readme
 #
-# Pipes $readme contents into $PAGER
+# Read critical investigation results
+# Pipes $readme contents into $PAGER.
 function readme() {
     cat $readme | $PAGER
 }
-
 # Usage: writeme
 #
+# Write critical investigation results
 # Loads $readme with your favorite editor
 function writeme() {
     $EDITOR $readme
 }
 
+# Read installation and maintenance investigation
+function readdoc() {
+    cat $doc | $PAGER
+}
+# Write installation and maintenance investigation
+function writedoc() {
+    $EDITOR $doc
+}
+# Read current session objective
+function readobj() {
+    cat $objectives | $PAGER
+}
+# Write current session objective
+function writeobj() {
+    $EDITOR $objectives
+}
+# }}}
+#{{{ shell internal configuration database
 # Usage: save [<config file=$config>]
 #
 # Can overwrite $config
@@ -186,30 +266,96 @@ function save() {
     root=`pwd`
 
     if [[ -f $config ]]; then
-        sed -i -e "s/config=.*/config=\"$config\"/" $config
-        sed -i -e "s/ignore=.*/ignore=\"$ignore\"/" $config
-        sed -i -e "s/master=.*/master=\"$master\"/" $config
-        sed -i -e "s/version=.*/version=\"$version\"/" $config
-        sed -i -e "s/rc=.*/rc=\"$rc\"/" $config
-        sed -i -e "s/state=.*/state=\"$state\"/" $config
-        sed -i -e "s/feature=.*/feature=\"$feature\"/" $config
-        sed -i -e "s/fool=.*/fool=\"$fool\"/" $config
-        sed -i -e "s/readme=.*/readme=\"$readme\"/" $config
-        sed -i -e "s/root=.*/root=\"$root\"/" $config
+        echo "updating $config"
     else
+        echo "creating $config"
         echo "#!/bin/bash" > $config
         echo "" >> $config
+    fi
+
+    if grep -q "config=.\*" $config; then
+        sed -i -e "s/config=.*/config=\"$config\"/" $config
+    else
         echo "config=\"$config\"" >> $config
-        echo "ignore=\"$ignore\"" >> $config
-        echo "master=\"$master\"" >> $config
-        echo "version=\"$version\"" >> $config
+    fi
+    
+    if grep -q "backupdir=.\*" $config; then
+        sed -i -e "s/backupdir=.*/backupdir=\"$backupdir\"/" $config
+    else
+        echo "backupdir=\"$backupdir\"" >> $config
+    fi
+    
+    if grep -q "rc=.\*" $config; then
+        sed -i -e "s/rc=.*/rc=\"$rc\"/" $config
+    else
         echo "rc=\"$rc\"" >> $config
-        echo "state=\"$state\"" >> $config
-        echo "feature=\"$feature\"" >> $config
-        echo "fool=\"$fool\"" >> $config
+    fi
+    
+    if grep -q "ignore=.\*" $config; then
+        sed -i -e "s/ignore=.*/ignore=\"$ignore\"/" $config
+    else
+        echo "ignore=\"$ignore\"" >> $config
+    fi
+
+    if grep -q "master=.\*" $config; then
+        sed -i -e "s/master=.*/master=\"$master\"/" $config
+    else
+        echo "master=\"$master\"" >> $config
+    fi
+
+    if grep -q "prod=.\*" $config; then
+        sed -i -e "s/prod=.*/prod=\"$prod\"/" $config
+    else
+        echo "prod=\"$prod\"" >> $config
+    fi
+
+    if grep -q "version=.\*" $config; then
+        sed -i -e "s/version=.*/version=\"$version\"/" $config
+    else
+        echo "version=\"$version\"" >> $config
+    fi
+
+    if grep -q "doc=.\*" $config; then
+        sed -i -e "s/doc=.*/doc=\"$doc\"/" $config
+    else
+        echo "doc=\"$doc\"" >> $config
+    fi
+
+    if grep -q "objectives=.\*" $config; then
+        sed -i -e "s/objectives=.*/objectives=\"$objectives\"/" $config
+    else
+        echo "objectives=\"$objectives\"" >> $config
+    fi
+
+    if grep -q "readme=.\*" $config; then
+        sed -i -e "s/readme=.*/readme=\"$readme\"/" $config
+    else
         echo "readme=\"$readme\"" >> $config
+    fi
+
+    if grep -q "tag=.\*" $config; then
+        sed -i -e "s/tag=.*/tag=\"$tag\"/" $config
+    else
+        echo "tag=\"$tag\"" >> $config
+    fi
+
+    if grep -q "state=.\*" $config; then
+        sed -i -e "s/state=.*/state=\"$state\"/" $config
+    else
+        echo "state=\"$state\"" >> $config
+    fi
+    
+    if grep -q "logfile=.\*" $config; then
+        sed -i -e "s/logfile=.*/logfile=\"$logfile\"/" $config
+    else
+        echo "logfile=\"$logfile\"" >> $config
+    fi
+
+    if grep -q "root=.\*" $config; then
+        sed -i -e "s@root=.*@root=\"$root\"@" $config
+    else
         echo "root=\"$root\"" >> $config
-    fi;
+    fi
 }
 
 # Usage: load [<config file>]
@@ -238,6 +384,7 @@ function load() {
         PS1="(dev) $PS1"
     fi
 }
+# }}}
 
 # Usage: starthacking [<path=`pwd`> [<config>]]
 #
@@ -266,11 +413,46 @@ function helpintro() {
     echo "Hack somewhere"
     echo ""
     echo "0) starthacking /foo/bar: starthacking /foo/bar"
+    echo "1) document: writedoc"
+    echo "2) write critical stuff:              writeme"
+    echo "3) write current objective:           writeobj"
+    echo "4) add changes to index:              add fileFoo fileBar [...]"
+    echo "          interactively:              addi"
+    echo "5) commit with message:               commit Fixed bug foo"
 
     # Print navigation by default
     if [[ $1 != 1 ]]; then
         echo ""
+        echo "Read this help at any time:           helpintro"
+        echo "Read about commiting at any time:     helpcommit"
+        echo ""
     fi
 }
 
-helpintro
+function helpcommit() {
+    echo "Help about commiting"
+    echo ""
+    echo "You have two branches by default:"
+    echo "- master: where you dev"
+    echo "- prod: where you try to only push clean stuff"
+    echo "You can switch from one to another with functions: master or prod"
+    echo ""
+    echo "Backup and reset working copy: stash"
+    echo "Restore backed up stuff: unstash"
+    echo ""
+    echo "Merge master to prod"
+    echo "  with full history:                  hist_to_prod"
+    echo "  with last commit message:           commit_to_prod"
+
+    # Print navigation by default
+    if [[ $1 != 1 ]]; then
+        echo ""
+        echo "Read this help at any time:           helpcommit"
+        echo "Read previous intro help at any time: helpintro"
+        echo ""
+    fi
+}
+
+helpintro 0
+helpcommit 0
+
