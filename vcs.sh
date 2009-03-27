@@ -166,7 +166,6 @@ function addi() {
 #
 # Commits the changes with <message>
 function commit() {
-    env_update
     echo $@ > $logfile
     git commit -F $logfile
 }
