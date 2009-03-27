@@ -287,85 +287,99 @@ function save() {
         echo "" >> $config
     fi
 
-    if grep -q "config=.\*" $config; then
+    grep -q '^config="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@config=.*@config=\"$config\"@" $config
     else
         echo "config=\"$config\"" >> $config
     fi
     
-    if grep -q "backupdir=.\*" $config; then
+    grep -q '^backupdir="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@backupdir=.*@backupdir=\"$backupdir\"@" $config
     else
         echo "backupdir=\"$backupdir\"" >> $config
     fi
     
-    if grep -q "rc=.\*" $config; then
+    grep -q '^rc="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/rc=.*/rc=\"$rc\"/" $config
     else
         echo "rc=\"$rc\"" >> $config
     fi
     
-    if grep -q "ignore=.\*" $config; then
+    grep -q '^ignore="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@ignore=.*@ignore=\"$ignore\"@" $config
     else
         echo "ignore=\"$ignore\"" >> $config
     fi
 
-    if grep -q "master=.\*" $config; then
+    grep -q '^master="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/master=.*/master=\"$master\"/" $config
     else
         echo "master=\"$master\"" >> $config
     fi
 
-    if grep -q "prod=.\*" $config; then
+    grep -q '^prod="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/prod=.*/prod=\"$prod\"/" $config
     else
         echo "prod=\"$prod\"" >> $config
     fi
 
-    if grep -q "version=.\*" $config; then
+    grep -q '^version="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/version=.*/version=\"$version\"/" $config
     else
         echo "version=\"$version\"" >> $config
     fi
 
-    if grep -q "doc=.\*" $config; then
+    grep -q '^doc="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@doc=.*@doc=\"$doc\"@" $config
     else
         echo "doc=\"$doc\"" >> $config
     fi
 
-    if grep -q "objectives=.\*" $config; then
+    grep -q '^objectives="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@objectives=.*@objectives=\"$objectives\"@" $config
     else
         echo "objectives=\"$objectives\"" >> $config
     fi
 
-    if grep -q "readme=.\*" $config; then
+    grep -q '^readme="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@readme=.*@readme=\"$readme\"@" $config
     else
         echo "readme=\"$readme\"" >> $config
     fi
 
-    if grep -q "tag=.\*" $config; then
+    grep -q '^tag="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/tag=.*/tag=\"$tag\"/" $config
     else
         echo "tag=\"$tag\"" >> $config
     fi
 
-    if grep -q "state=.\*" $config; then
+    grep -q '^state="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s/state=.*/state=\"$state\"/" $config
     else
         echo "state=\"$state\"" >> $config
     fi
     
-    if grep -q "logfile=.\*" $config; then
+    grep -q '^logfile="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@logfile=.*@logfile=\"$logfile\"@" $config
     else
         echo "logfile=\"$logfile\"" >> $config
     fi
 
-    if grep -q "root=.\*" $config; then
+    grep -q '^root="[^"]*"$' $config
+    if [[ $? -eq 0 ]]; then
         sed -i -e "s@root=.*@root=\"$root\"@" $config
     else
         echo "root=\"$root\"" >> $config

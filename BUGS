@@ -1,0 +1,10 @@
+When re-sourcing the script for update:
+
+bash: [[: .vcs.config.sh: syntax error: operand expected (error token is ".vcs.config.sh")
+bash: [[: .gitignore: syntax error: operand expected (error token is ".gitignore")
+bash: [[: master: expression recursion level exceeded (error token is "master")
+bash: [[: prod: expression recursion level exceeded (error token is "prod")
+bash: [[: .todo.now: syntax error: operand expected (error token is ".todo.now")
+bash: [[: /home/jpic/var/backups: syntax error: operand expected (error token is "/home/jpic/var/backups")
+bash: [[: /home/jpic/include/shell: syntax error: operand expected (error token is "/home/jpic/include/shell")
+bash: [[: .logfile: syntax error: operand expected (error token is ".logfile")
