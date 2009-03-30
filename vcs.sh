@@ -440,18 +440,32 @@ function load() {
 # Sets $root to <path>, changes directory to $root and runs load(config).
 function starthacking() {
     if [[ $1 ]]; then
-        root=$1
+        test_root=$1
+        if [[ -d $test_root ]]; then
+            root=$test_root
+        elif [[ $CDPATH != "" ]]; then
+            declare -i i=1
+            while [[ $tmp != "" || $i -eq 1 ]]; do
+                tmp=`echo $CDPATH | cut -d : -f "$i"`
+                test_root="${tmp}/$1"
+                if [[ -d "$test_root" ]]; then
+                    root=$test_root
+                    break
+                fi
+                i=$i+1
+            done
+        fi
+        
+        if [[ "$root" -eq "" ]]; then
+            root=$1
+            echo "Creating $root"
+            mkdir -p $root
+        fi
     else
         root=`pwd`
     fi
 
-    if [[ -d $root ]]; then
-        echo "Found $root";
-    else
-        echo "Create $root";
-        mkdir -p $root
-    fi
-
+    echo "Changing directory $root"
     cd $root
 
     if [[ $2 && -f $2 ]]; then
