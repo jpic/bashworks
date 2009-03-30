@@ -436,9 +436,14 @@ function load() {
 # }}}
 
 # Usage: starthacking [<path=`pwd`> [<config>]]
+# Alias: hack
 #
 # Sets $root to <path>, changes directory to $root and runs load(config).
 function starthacking() {
+    if [[ -f $config ]]; then
+        save
+    fi
+
     if [[ $1 ]]; then
         test_root=$1
         if [[ -d $test_root ]]; then
@@ -477,6 +482,7 @@ function starthacking() {
         save
     fi
 }
+alias hack="starthacking"
 
 # Usage: helpintro [<hide navigation>]
 #
