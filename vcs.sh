@@ -244,7 +244,7 @@ function unstash() {
 # Read critical investigation results
 # Pipes $readme contents into $PAGER.
 function readme() {
-    cat $readme | $PAGER
+    cat $readme
 }
 # Usage: writeme
 #
@@ -255,7 +255,7 @@ function writeme() {
 }
 # Read installation and maintenance investigation
 function readbug() {
-    cat $bug | $PAGER
+    cat $bug
 }
 # Write installation and maintenance investigation
 function writebug() {
@@ -263,7 +263,7 @@ function writebug() {
 }
 # Read installation and maintenance investigation
 function readdoc() {
-    cat $doc | $PAGER
+    cat $doc
 }
 # Write installation and maintenance investigation
 function writedoc() {
@@ -271,7 +271,7 @@ function writedoc() {
 }
 # Read current session objective
 function readobj() {
-    cat $objectives | $PAGER
+    cat $objectives
 }
 # Write current session objective
 function writeobj() {
