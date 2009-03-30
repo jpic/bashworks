@@ -31,6 +31,8 @@ function tag_update() {
     else
         tag="${version}_${rc}"
     fi;
+
+    save
 }
 # Usage: tag [<commit> [<tag name>]]
 #
@@ -41,6 +43,7 @@ function tag() {
     if [[ $1 ]]; then snapshot=$1; fi
     if [[ $2 ]]; then tag=$2; fi
     git commit $tag $snapshot
+    save
 }
 
 # Usage: tag_rc [<rc>]
@@ -52,6 +55,7 @@ function tag_rc() {
     tag_update
     git tag $tag
     increment_rc
+    save
 }
 
 # Usage: tag_state [<state>]
@@ -63,6 +67,7 @@ function tag_state() {
     tag_update
     git tag $tag
     increment_state
+    save
 }
 
 function tag_version()
@@ -71,6 +76,7 @@ function tag_version()
     tag_update
     git tag $tag
     increment_version
+    save
 }
 # }}}
 # {{{ version, state, rc incrementers
