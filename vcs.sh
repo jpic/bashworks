@@ -1,22 +1,22 @@
 #!/bin/bash
 DEFAULT_CONFIG=".vcs.config.sh"
 
-if [[ $config -eq "" ]]; then config="$DEFAULT_CONFIG"; fi
-if [[ $ignore -eq "" ]]; then ignore=".gitignore"; fi
-if [[ $master -eq "" ]]; then master="master"; fi
-if [[ $prod -eq "" ]]; then prod="prod"; fi
-if [[ $version -eq "" ]]; then version="0"; fi
-if [[ $rc -eq "" ]]; then rc="0"; fi
-if [[ $doc -eq "" ]]; then doc="DOCUMENTATION"; fi
-if [[ $bug -eq "" ]]; then bug="BUGS"; fi
-if [[ $objectives -eq "" ]]; then objectives=".todo.now"; fi
-if [[ $state -eq "" ]]; then state="alpha"; fi
-if [[ $feature -eq "" ]]; then feature="planning"; fi
-if [[ $tag -eq "" ]]; then tag=""; fi
-if [[ $readme -eq "" ]]; then readme="README"; fi
-if [[ $backupdir -eq "" ]]; then backupdir="${HOME}/var/backups"; fi
-if [[ $root -eq "" ]]; then root=""; fi
-if [[ $logfile -eq "" ]]; then logfile=".logfile"; fi
+if [[ $config == "" ]]; then config="$DEFAULT_CONFIG"; fi
+if [[ $ignore == "" ]]; then ignore=".gitignore"; fi
+if [[ $master == "" ]]; then master="master"; fi
+if [[ $prod == "" ]]; then prod="prod"; fi
+if [[ $version == "" ]]; then version="0"; fi
+if [[ $rc == "" ]]; then rc="0"; fi
+if [[ $doc == "" ]]; then doc="DOCUMENTATION"; fi
+if [[ $bug == "" ]]; then bug="BUGS"; fi
+if [[ $objectives == "" ]]; then objectives=".todo.now"; fi
+if [[ $state == "" ]]; then state="alpha"; fi
+if [[ $feature == "" ]]; then feature="planning"; fi
+if [[ $tag == "" ]]; then tag=""; fi
+if [[ $readme == "" ]]; then readme="README"; fi
+if [[ $backupdir == "" ]]; then backupdir="${HOME}/var/backups"; fi
+if [[ $root == "" ]]; then root=""; fi
+if [[ $logfile == "" ]]; then logfile=".logfile"; fi
 # {{{ tag functions
 # Usage: tag_update [<version number> [<state=$state> [<rc=$rc>] ] ]
 #
@@ -232,7 +232,7 @@ function unstash() {
     echo "Unstash your debug stuff? y<CR>"
     read confirm
     
-    if [[ $confirm -eq 'y' ]]; then
+    if [[ $confirm == 'y' ]]; then
         echo "Yes sir!"
         git stash apply
     fi
@@ -444,15 +444,15 @@ function starthacking() {
         save
     fi
 
-    if [[ $1 ]]; then
-        test_root=$1
-        if [[ -d $test_root ]]; then
-            root=$test_root
-        elif [[ $CDPATH != "" ]]; then
+    if [[ "$1" ]]; then
+        test_root="$1"
+        if [[ -d "$test_root" ]]; then
+            root="$test_root"
+        elif [[ "$CDPATH" != "" ]]; then
             declare -i i=1
             while [[ $tmp != "" || $i -eq 1 ]]; do
                 tmp=`echo $CDPATH | cut -d : -f "$i"`
-                test_root="${tmp}/$1"
+                test_root="${tmp}/${1}"
                 if [[ -d "$test_root" ]]; then
                     root=$test_root
                     break
@@ -461,8 +461,8 @@ function starthacking() {
             done
         fi
         
-        if [[ "$root" -eq "" ]]; then
-            root=$1
+        if [[ "$root" == "" ]]; then
+            root="$1"
             echo "Creating $root"
             mkdir -p $root
         fi
