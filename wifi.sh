@@ -415,6 +415,20 @@ function connect() {
     source $1/$CONFIG
 }
 
+function reload() {
+    if [[ $1 != "" ]]; then
+        TIME=$1
+    else
+        TIME=1
+    fi
+
+    ifconfig wlan0 down
+    rmmod {rtl8187,mac80211,eeprom_93cx6,cfg80211}
+    sleep $TIME
+    modprobe rtl8187
+    ifconfig wlan0 up
+}
+
 helpintro 0
 helphacking 0
 helpconnect 0
