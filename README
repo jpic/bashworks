@@ -11,6 +11,7 @@ Versions
 0.1_alpha0: new extension: vps.sh all functions and variablesprefixed with vps_
           wifi.sh: bugfix, added reload function, stable.
           vcs.sh: regenerate $tag on load, stable.
+0.1_alpha1: tested/fixed vps stuff except ssh
 
 Couchdb backend design
 ======================
