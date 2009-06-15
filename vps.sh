@@ -311,4 +311,13 @@ function vps_build() { # {{{
         -m template -- \
             -d gentoo \
             -t $stage_path
+
+    cd $vps_root/etc/runlevels/default
+    ln -sfn ../../init.d/sshd .
+} # }}}
+function vps_enter() { # {{{
+    vserver $vps_name enter
+} # }}}
+function vps_delete() { # {{{
+    vserver $vps_name delete
 } # }}}
