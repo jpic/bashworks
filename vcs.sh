@@ -432,6 +432,8 @@ function load() {
         echo "$config loaded"
         PS1="(dev) $PS1"
     fi
+
+    tag_update
 }
 # }}}
 
