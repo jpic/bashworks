@@ -129,32 +129,32 @@ function vps_save() {
         echo "vps_config_file=\"$vps_config_file\"" >> $vps_config_file
     fi
 
-    grep -q '^vps_host_ip="[^"]*"$' $vps_host_ip
+    grep -q '^vps_host_ip="[^"]*"$' $vps_config_file
     if [[ $? -eq 0 ]]; then
-        sed -i -e "s@vps_host_ip=.*@vps_host_ip=\"$vps_host_ip\"@" $vps_host_ip
+        sed -i -e "s@vps_host_ip=.*@vps_host_ip=\"$vps_host_ip\"@" $vps_config_file
     else
-        echo "vps_host_ip=\"$vps_host_ip\"" >> $vps_host_ip
+        echo "vps_host_ip=\"$vps_host_ip\"" >> $vps_config_file
     fi
 
-    grep -q '^vps_ip="[^"]*"$' $vps_ip
+    grep -q '^vps_ip="[^"]*"$' $vps_config_file
     if [[ $? -eq 0 ]]; then
-        sed -i -e "s@vps_ip=.*@vps_ip=\"$vps_ip\"@" $vps_ip
+        sed -i -e "s@vps_ip=.*@vps_ip=\"$vps_ip\"@" $vps_config_file
     else
-        echo "vps_ip=\"$vps_ip\"" >> $vps_ip
+        echo "vps_ip=\"$vps_ip\"" >> $vps_config_file
     fi
 
-    grep -q '^vps_name="[^"]*"$' $vps_name
+    grep -q '^vps_name="[^"]*"$' $vps_config_file
     if [[ $? -eq 0 ]]; then
-        sed -i -e "s@vps_name=.*@vps_name=\"$vps_name\"@" $vps_name
+        sed -i -e "s@vps_name=.*@vps_name=\"$vps_name\"@" $vps_config_file
     else
-        echo "vps_name=\"$vps_name\"" >> $vps_name
+        echo "vps_name=\"$vps_name\"" >> $vps_config_file
     fi
 
-    grep -q '^vps_id="[^"]*"$' $vps_id
+    grep -q '^vps_id="[^"]*"$' $vps_config_file
     if [[ $? -eq 0 ]]; then
-        sed -i -e "s@vps_id=.*@vps_id=\"$vps_id\"@" $vps_id
+        sed -i -e "s@vps_id=.*@vps_id=\"$vps_id\"@" $vps_config_file
     else
-        echo "vps_id=\"$vps_id\"" >> $vps_id
+        echo "vps_id=\"$vps_id\"" >> $vps_config_file
     fi
 
     cd $current
