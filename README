@@ -7,8 +7,8 @@ Versions
 0_beta2: wifi.sh refactor, consistency between vcs.sh and wifi.sh
 
 1_alpha0: new extension: vps.sh all functions and variablesprefixed with vps_
-          wifi.sh: bugfix, added reload function
-          vcs.sh: regenerate $tag on load
+          wifi.sh: bugfix, added reload function, stable.
+          vcs.sh: regenerate $tag on load, stable.
 
 Couchdb backend design
 ======================
