@@ -237,10 +237,9 @@ function vps_init() {
 
     if [[ $vps_ip == "" ]]; then
         echo "*BUG* No intranet found for host ip $vps_host_ip"
-        exit 2
+        return 2
     fi
 
-    cd $vps_config_dir
     vps_save
 
     echo "VPS configuration set up, check and run vps_generate or DIY"

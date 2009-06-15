@@ -6,7 +6,9 @@ Versions
 0_alpha2: couchdb backend
 0_beta2: wifi.sh refactor, consistency between vcs.sh and wifi.sh
 
-1_alpha0: new extension: vps.sh all functions and variablesprefixed with vps_
+# WTH did i not tag versions?
+
+0.1_alpha0: new extension: vps.sh all functions and variablesprefixed with vps_
           wifi.sh: bugfix, added reload function, stable.
           vcs.sh: regenerate $tag on load, stable.
 
