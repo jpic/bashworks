@@ -176,7 +176,7 @@ function vps_load_config() {
         echo "Shell ready to conquer the world, dear master"
     else
         echo "$vps_config_file loaded"
-        PS1="(dev) $PS1"
+        PS1="(vserver:${vps_name}) $PS1"
     fi
 
     tag_update
@@ -210,7 +210,7 @@ function vps_hack() {
 # 
 # Sets up your environment to create a new vps.
 function vps_init() {
-    if [[ $1 == "" || $2 == ""]]; then
+    if [[ $1 == "" ]] || [[ $2 == "" ]]; then
         echo "Usage: vps_init <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">]"
         return 2
     fi
