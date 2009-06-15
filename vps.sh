@@ -321,3 +321,9 @@ function vps_enter() { # {{{
 function vps_delete() { # {{{
     vserver $vps_name delete
 } # }}}
+function vps_delete_test_vps() {
+    cd $vps_config_dir
+    for name in test*; do
+        vserver $name delete
+    done
+}
