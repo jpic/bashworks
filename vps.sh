@@ -106,6 +106,10 @@ function is_blocked_iptables() { # {{{
 # Tryes to just overwrite variable values if the file exists
 # Also sets $root to the current directory
 function vps_save() {
+    local current=`pwd`
+
+    cd $vps_config_dir/$vps_name
+
     if [[ $1 ]]; then
         vps_config_file="$1"
     fi
@@ -152,6 +156,8 @@ function vps_save() {
     else
         echo "vps_id=\"$vps_id\"" >> $vps_id
     fi
+
+    cd $current
 } #}}}
 # vps_load_config [<config file>] # {{{
 #
