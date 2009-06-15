@@ -293,7 +293,7 @@ function vps_setnet() { # {{{
     ln -sfn ../../init.d/dummy.eth0 .;
     
     # net config
-    echo config_dummy0=\"$vps_ip netmask 255.255.255.0\" >> $vps_root/etc/conf.d
+    echo config_dummy0=\"$vps_ip netmask 255.255.255.0\" >> $vps_root/etc/conf.d/net
 } # }}}
 # vps_gestage # {{{
 function vps_getstage() {
