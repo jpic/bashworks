@@ -108,7 +108,8 @@ function is_blocked_iptables() { # {{{
 function vps_save() {
     local current=`pwd`
 
-    cd $vps_config_dir/$vps_name
+    cd $vps_config_dir
+    touch $vps_config_file
 
     if [[ $1 ]]; then
         vps_config_file="$1"
