@@ -267,15 +267,15 @@ function forge() {
     INJECT_PACKETS="inject"
 
     if [[ $DESTINATION_PORT != "" ]]; then
-        $DESTINATION = $DESTINATION_IP
+        DESTINATION=$DESTINATION_IP
     else
-        $DESTINATION = "$DESTINATION_IP:$DESTINATION_PORT"
+        DESTINATION="$DESTINATION_IP:$DESTINATION_PORT"
     fi
 
     if [[ $SOURCE_PORT != "" ]]; then
-        $SOURCE = $SOURCE_IP
+        SOURCE=$SOURCE_IP
     else
-        $SOURCE = "$SOURCE_IP:$SOURCE_PORT"
+        SOURCE="$SOURCE_IP:$SOURCE_PORT"
     fi
 
     packetforge-ng -0 \
