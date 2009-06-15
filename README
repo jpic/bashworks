@@ -3,7 +3,40 @@ Versions
 
 0_alpha0: what i and kore cracked wep keys with
 0_alpha1: new extension: vcs.sh
+0_alpha2: couchdb backend
 0_beta2: wifi.sh refactor, consistency between vcs.sh and wifi.sh
+
+1_alpba0: new extension: vps.sh all functions and variablesprefixed with vps_
+
+Couchdb backend design
+======================
+
+For version 2.
+
+Document structure
+------------------
+
+uuid
+    Project path, wich will be tested against $CDPATH
+variables
+    Save as fields, all optionnal
+
+(kthxbye)
+
+Objectives, design
+------------------
+
+todo [ <shortname> <description> ]
+    Adds a todo json object to document field "objectives" with properties: shortname, timestamp, description. If no argument is provided: list those who don't have the "done" property defined.
+
+check <shortname>
+    Adds a timestamp to the json object from document field "objectives" which shortname corresponds, and then print the list of todo objects that haven't a "timestamp" property, or return -1.
+
+Also provide various decorators like rc_commit, version_commit, etc, etc ...:
+
+- rctodo, rccheck
+- statetodo, statecheck
+- versiontodo, statetodo
 
 Author
 ======
