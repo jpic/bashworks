@@ -9,11 +9,11 @@ vps_config_dir="/etc/vservers"
 vps_packages_dir="/vservers/master/usr/portpage/packages"
 vps_ssh_timeout=600
 max_timeout=600
-declare -a nat_internet_mapper[0]="88.191.110.204"
-declare -a nat_internet_mapper[1]="88.191.108.204"
+declare -a nat_internet_mapper[1]="88.191.110.204"
+declare -a nat_internet_mapper[2]="88.191.108.204"
 
-declare -a nat_intranet_mapper[0]="192.168.1."
-declare -a nat_intranet_mapper[1]="192.168.2."
+declare -a nat_intranet_mapper[1]="192.168.1."
+declare -a nat_intranet_mapper[2]="192.168.2."
 
 # build config
 stage_name="stage3-i686-current.tar.bz2";
@@ -224,14 +224,19 @@ function vps_init() {
     vps_id=$1
     vps_name=$2
     vps_root=$vps_dir/$vps_name
+    vps_config_file=$vps_name.config
 
     if [[ $3 != "" ]]; then
         vps_host_ip=$3
     fi
 
-    for i in ${#nat_internet_mapper[*]}; do
+    for i in `seq 1 ${#nat_internet_mapper[*]}` ; do
+        if [[ ${nat_internet_mapper[$i]} == "" ]]; then
+            break # avoid empty last item
+        fi
+
         if [[ ${nat_internet_mapper[$i]} == $vps_host_ip ]]; then
-            vps_ip="${nat_intranet_mapper[$i]}.${vps_id}";
+            vps_ip="${nat_intranet_mapper[$i]}${vps_id}";
         fi
     done
 
