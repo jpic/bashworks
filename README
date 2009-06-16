@@ -1,35 +1,38 @@
+Who said "temporary bash scripts"?
+
 Versions
-========
+````````
 
 0_alpha0: what i and kore cracked wep keys with
 0_alpha1: new extension: vcs.sh
-0_alpha2: couchdb backend
-0_beta2: wifi.sh refactor, consistency between vcs.sh and wifi.sh
-
-# WTH did i not tag versions?
 
 0.1_alpha0: new extension: vps.sh all functions and variablesprefixed with vps_
           wifi.sh: bugfix, added reload function, stable.
           vcs.sh: regenerate $tag on load, stable.
-0.1_alpha1: tested/fixed vps stuff except ssh
+0.1_alpha1: vps.sh: tested/fixed vps stuff except ssh
+0.1_alpha2: vps.sh: vps_ssh works
+0.1_alpha3: vps.sh: portage shortcuts
+0.1_beta0:  vps.sh: everything seems to work, freezing vps_ api
+0.1_beta1:  vps.sh: api doc
+0.1: release
 
-Couchdb backend design
-======================
+Roadmap
+```````
 
-For version 2.
+Refactor
+========
 
-Document structure
-------------------
+Refactor save() functions, and configuration into a new extension framework.sh.
+Prefix wifi and vcs variables/functions.
 
-uuid
-    Project path, wich will be tested against $CDPATH
-variables
-    Save as fields, all optionnal
+Documentation
+=============
 
-(kthxbye)
+How to use this scripts efficiently: overloading and aliases.
+Document vps.sh
 
-Objectives, design
-------------------
+vcs.sh
+------
 
 todo [ <shortname> <description> ]
     Adds a todo json object to document field "objectives" with properties: shortname, timestamp, description. If no argument is provided: list those who don't have the "done" property defined.
@@ -44,11 +47,11 @@ Also provide various decorators like rc_commit, version_commit, etc, etc ...:
 - versiontodo, statetodo
 
 Author
-======
+``````
 
 James Pic <jamespic@gmail.com>
 
 Credit
-======
+``````
 
 All Open Source hackers. Thanks a bunch for your involvement!
