@@ -3,7 +3,6 @@
 DEFAULT_CONFIG="config"
 
 # iptables config
-iptables_protector=/tmp/protect_iptables
 vps_dir="/vservers"
 vps_config_dir="/etc/vservers"
 vps_packages_dir="/vservers/master/usr/portpage/packages"
@@ -60,49 +59,17 @@ function vps_ssh() {
         -j DNAT --to-destination $vps_ip:22
 
     echo "You have $vps_ssh_timeout seconds to ssh connect to $vps_host_ip:$port";   
-    block_iptables $vps_ssh_timeout
+    echo "ssh -p $port $vps_host_ip # please paste this command dear master"
+
+    sleep $vps_ssh_timeout
+
+    iptables -t nat -D POSTROUTING -s ${vps_intranet}0/24 \
+        -d ! ${vps_intranet}0/24 -j SNAT --to-source $vps_host_ip
+    
+    iptables -t nat -D PREROUTING -s ! ${vps_intranet}0/24 \
+        -m tcp -p tcp --dport $port \
+        -j DNAT --to-destination $vps_ip:22
 } #}}}
-# block_iptables <timeout> # {{{ 
-function block_iptables() { 
-    if [[ $1 == "" ]]; then
-    	echo "Usage: block_iptables <timeout (seconds)>"
-    	return 2
-    fi
-
-    timeout=$1
-
-    my_block=`date +%s`
-    echo $my_block > $iptables_protector
-    sleep $timeout
-
-    if [[ ! -f $protector ]]; then
-        echo "*BUG* Something removed $protector."
-        echo "      Functions should only remove $protector when it contains"
-        echo "      the timestamp set by the function itself."
-        echo "      I'll continue my job and reset iptables anyway"
-        actual_block=$my_block
-    else
-        actual_block=`cat $protector`
-    fi
-
-    if [[ $actual_block != $my_block ]]; then
-        echo "*NOT* reseting iptables *yet*, a concurant block was requested."
-        return 0
-    else
-        echo "Time up, resetting iptables"
-        unlink $iptables_protector;:
-        shorewall clear
-        shorewall refresh
-    fi
-} # }}}
-function is_blocked_iptables() { # {{{
-    if [[ -f $protector ]]; then
-        return true
-    else
-        return false
-    fi
-}
-#}}}
 # vps_save [<config file=vps_config_file>] # {{{
 #
 # Can overwrite vps_config_file
