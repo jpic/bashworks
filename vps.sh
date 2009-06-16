@@ -28,6 +28,7 @@ if [[ $vps_id == "" ]]; then vps_id=""; fi
 if [[ $vps_ip == "" ]]; then vps_ip=""; fi
 if [[ $vps_name == "" ]]; then vps_name=""; fi
 if [[ $vps_root == "" ]]; then vps_root=""; fi
+if [[ $vps_intranet == "" ]]; then vps_intranet=""; fi
 if [[ $vps_config_path == "" ]]; then vps_config_path="$DEFAULT_CONFIG"; fi
 # }}}
 
@@ -38,7 +39,7 @@ function vps_help() {
 vps_help
 
 
-# vps_ssh <port> # {{{
+# vps_ssh <port> [ <timeout: int seconds> ] # {{{
 function vps_ssh() {
     if [[ $1 == "" ]]; then
     	echo "Usage: vps_ssh <port>"
@@ -47,12 +48,12 @@ function vps_ssh() {
 
     port=$1
 
-    iptables -t nat -A POSTROUTING -s 192.168.1.0/24 \
-        -d ! 192.168.1.0/24 -j SNAT --to-source $vps_host_ip
+    iptables -t nat -A POSTROUTING -s ${vps_intranet}0/24 \
+        -d ! ${vps_intranet}0/24 -j SNAT --to-source $vps_host_ip
     
-    iptables -t nat -A PREROUTING -s ! 192.168.1.0/24 \
+    iptables -t nat -A PREROUTING -s ! ${vps_intranet}0/24 \
         -m tcp -p tcp --dport $port \
-        -j DNAT --to-destination $vps_ip:$vport
+        -j DNAT --to-destination $vps_ip:22
 
     echo "You have $vps_ssh_timeout seconds to ssh connect to $vps_host_ip:$port";   
     block_iptables $vps_ssh_timeout
@@ -158,6 +159,13 @@ function vps_save() {
         echo "vps_id=\"$vps_id\"" >> $vps_config_file
     fi
 
+    grep -q '^vps_intranet="[^"]*"$' $vps_config_file
+    if [[ $? -eq 0 ]]; then
+        sed -i -e "s@vps_intranet=.*@vps_intranet=\"$vps_intranet\"@" $vps_config_file
+    else
+        echo "vps_intranet=\"$vps_intranet\"" >> $vps_config_file
+    fi
+
     cd $current
 } #}}}
 # vps_load_config [<config file>] # {{{
@@ -237,7 +245,8 @@ function vps_init() {
         fi
 
         if [[ ${nat_internet_mapper[$i]} == $vps_host_ip ]]; then
-            vps_ip="${nat_intranet_mapper[$i]}${vps_id}";
+            vps_intranet=${nat_intranet_mapper[$i]}
+            vps_ip="${nat_intranet_mapper[$i]}${vps_id}"
         fi
     done
 
