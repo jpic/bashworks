@@ -302,8 +302,16 @@ function vps_delete() { # {{{
     vserver $vps_name delete
 } # }}}
 function vps_delete_test_vps() {
+    current=`pwd`
+
     cd $vps_config_dir
     for name in test*; do
-        vserver $name delete
+        if [[ -d $name ]]; then
+            vserver $name delete
+        else
+            unlink $name
+        fi
     done
+
+    cd $current
 }
