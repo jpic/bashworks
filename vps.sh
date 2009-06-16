@@ -46,6 +46,10 @@ function vps_ssh() {
     	return 2
     fi
 
+    if [[ $2 ]]; then
+        vps_ssh_timeout=$2
+    fi
+
     port=$1
 
     iptables -t nat -A POSTROUTING -s ${vps_intranet}0/24 \
