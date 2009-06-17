@@ -28,6 +28,7 @@ if [[ $vps_ip == "" ]]; then vps_ip=""; fi
 if [[ $vps_name == "" ]]; then vps_name=""; fi
 if [[ $vps_root == "" ]]; then vps_root=""; fi
 if [[ $vps_intranet == "" ]]; then vps_intranet=""; fi
+if [[ $vps_master == "" ]]; then vps_master="master"; fi
 if [[ $vps_config_path == "" ]]; then vps_config_path="$DEFAULT_CONFIG"; fi
 # }}}
 
@@ -135,6 +136,13 @@ function vps_save_config() {
         sed -i -e "s@vps_intranet=.*@vps_intranet=\"$vps_intranet\"@" $vps_config_file
     else
         echo "vps_intranet=\"$vps_intranet\"" >> $vps_config_file
+    fi
+
+    grep -q '^vps_master="[^"]*"$' $vps_config_file
+    if [[ $? -eq 0 ]]; then
+        sed -i -e "s@vps_master=.*@vps_master=\"$vps_master\"@" $vps_config_file
+    else
+        echo "vps_master=\"$vps_master\"" >> $vps_config_file
     fi
 
     cd $current
@@ -303,3 +311,36 @@ function vps_delete_test_vps() { # {{{
 
     cd $current
 } # }}}
+# vps_emerge <emerge options> {{{
+#
+# Emerges in $vps_master then from the binpkg to $vps_name
+function vps_emerge() {
+    vemerge $vps_master -- $@
+
+    if [[ $? != 0 ]]; then
+        echo "Emerging on $vps_master did not succeed, not merging binary package to $vps_name"
+        return 2
+    fi
+
+    vemerge $vps_name -- -Kav $@
+} # }}}
+# vps_use <package atom> <flags>
+function vps_euse() {
+    local atom=$1
+    shift 1
+    local use=$@
+
+    local current_vps=$vps_name
+    vps_load_config $vps_master
+    echo $atom $use >> $vps_root/etc/portage/package.use
+    vps_load_config $current_vps
+}
+# vps_backport <package atom>
+function vps_ebackport() {
+    local atom=$1
+
+    local current_vps=$vps_name
+    vps_load_config $vps_master
+    echo $atom >> $vps_root/etc/portage/package.keywords
+    vps_load_config $current_vps
+}
