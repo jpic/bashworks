@@ -145,8 +145,10 @@ function vps_save_config() {
 function vps_load_config() {
     source $vps_config_dir/${vps_name}.config
 
-    if [[ `echo $PS1 | grep "(vps:[^)]*)"` ]]; then
-        PS1=`echo '$PS1' | sed -e "s/(vps:[^)]*)/(vps:${vps_name})/"`
+    echo $PS1 | grep -q "(vps:[^)]*)"
+
+    if [[ $? == "0" ]]; then
+        PS1=`echo ${PS1} | sed -e "s/(vps:[^)]*)/(vps:${vps_name})/"`
     else
         PS1="(vps:${vps_name}) $PS1"
     fi
