@@ -220,9 +220,6 @@ function vps_generate() { # {{{
     vps_save_config
     vps_start
 } # }}}
-function vps_start() { # {{{
-    vserver $vps_name start
-} # }}}
 function vps_setportage() { # {{{
     echo $vps_packages_dir /usr/portage/packages none bind,ro 0 0 >> $vps_root/etc/fstab
 } # }}}
@@ -281,7 +278,16 @@ function vps_enter() { # {{{
 function vps_delete() { # {{{
     vserver $vps_name delete
 } # }}}
-function vps_delete_test_vps() {
+function vps_start() { # {{{
+    vserver $vps_name start
+} # }}}
+function vps_stop() { # {{{
+    vserver $vps_name stop
+} # }}}
+function vps_restart() { # {{{
+    vserver $vps_name restart
+} # }}}
+function vps_delete_test_vps() { # {{{
     current=`pwd`
 
     cd $vps_config_dir
@@ -294,4 +300,4 @@ function vps_delete_test_vps() {
     done
 
     cd $current
-}
+} # }}}
