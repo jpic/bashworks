@@ -70,14 +70,14 @@ function vps_ssh() {
         -m tcp -p tcp --dport $port \
         -j DNAT --to-destination $vps_ip:22
 } #}}}
-# vps_save [<config file=vps_config_file>] # {{{
+# vps_save_config [<config file=vps_config_file>] # {{{
 #
 # Can overwrite vps_config_file
 #
 # Saves all our env variables to the config file
 # Tryes to just overwrite variable values if the file exists
 # Also sets $root to the current directory
-function vps_save() {
+function vps_save_config() {
     local current=`pwd`
 
     cd $vps_config_dir
@@ -87,7 +87,7 @@ function vps_save() {
         vps_config_file="$1"
     fi
 
-    if [[ -f $vps_config_file ]]; then
+    if [[ -f $vps_config_dir/$vps_config_file ]]; then
         echo "updating $vps_config_file"
     else
         echo "creating $vps_config_file"
@@ -139,39 +139,22 @@ function vps_save() {
 
     cd $current
 } #}}}
-# vps_load_config [<config file>] # {{{
+# vps_load_config [<vps_name>] # {{{
 #
-# Loads a config file, which is determined in this order:
-# - a config file path was specified to "vps_load_config": use $1
-# - vps_config_file is not "": use vps_config_file
-# - use config
+# Loads $vps_config_dir/$vps_name.config and updates PS1
 function vps_load_config() {
-    if [[ $1 ]]; then
-        source $1
-    elif [[ $vps_config_file ]]; then
-        source $vps_config_file
-    elif [[ -f $DEFAULT_CONFIG ]]; then
-        source $DEFAULT_CONFIG
-    else
-        echo "Nothing to vps_load_config"
-        return -1
-    fi
+    source $vps_config_dir/${vps_name}.config
 
-    if [[ `echo $PS1 | grep dev` ]]; then
-        # Polite placeholder
-        echo "Shell ready to conquer the world, dear master"
+    if [[ `echo $PS1 | grep "(vps:[^)]*)"` ]]; then
+        PS1=`echo '$PS1' | sed -e "s/(vps:[^)]*)/(vps:${vps_name})/"`
     else
-        echo "$vps_config_file loaded"
-        PS1="(vserver:${vps_name}) $PS1"
+        PS1="(vps:${vps_name}) $PS1"
     fi
-
-    tag_update
-}
-# }}}
+} # }}}
 # vps_hack [<vps_name> [<config>]] # {{{
 function vps_hack() {
     if [[ -f $vps_config_file ]]; then
-        vps_save
+        vps_save_config
     fi
 
     if [[ "$1" ]]; then
@@ -188,16 +171,16 @@ function vps_hack() {
     elif [[ -f $vps_config_file ]]; then
         vps_load_config $vps_config_file
     else
-        vps_save
+        vps_save_config
     fi
 }
 # }}}
-# vps_init <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">] # {{{
+# vps_create_config <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">] # {{{
 # 
 # Sets up your environment to create a new vps.
-function vps_init() {
+function vps_create_config() {
     if [[ $1 == "" ]] || [[ $2 == "" ]]; then
-        echo "Usage: vps_init <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">]"
+        echo "Usage: vps_create_config <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">]"
         return 2
     fi
 
@@ -226,7 +209,8 @@ function vps_init() {
         return 2
     fi
 
-    vps_save
+    vps_save_config
+    vps_load_config
 
     echo "VPS configuration set up, check and run vps_generate or DIY"
 } # }}}
@@ -236,7 +220,7 @@ function vps_generate() { # {{{
     vps_setnet
     vps_setportage
     vps_setpreferences
-    vps_save
+    vps_save_config
     vps_start
 } # }}}
 function vps_start() { # {{{
@@ -254,7 +238,6 @@ function vps_setpreferences() { # {{{
 } # }}}
 function vps_setnet() { # {{{
     # vserver config
-    mkdir -p /etc/vservers/$vps_name/interfaces/0
     cd /etc/vservers/$vps_name/interfaces/0
     echo dummy0 > dev
     echo $vps_ip > ip
