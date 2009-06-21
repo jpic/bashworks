@@ -156,10 +156,19 @@ function vps_save_config() {
 
     cd $current
 } #}}}
-# vps_load_config [<vps_name>] # {{{
+# vps_load_config <vps_name> # {{{
 #
 # Loads $vps_config_dir/$vps_name.config and updates PS1
 function vps_load_config() {
+    usage="vps_load_config <vps_name>"
+
+    vps_name=$1
+
+    if [[ $vps_name == "" ]]; then
+        echo $usage
+        return 2
+    fi
+
     source $vps_config_dir/${vps_name}.config
 
     echo $PS1 | grep -q "(vps:[^)]*)"
@@ -170,30 +179,6 @@ function vps_load_config() {
         PS1="(vps:${vps_name}) $PS1"
     fi
 } # }}}
-# vps_hack [<vps_name> [<config>]] # {{{
-function vps_hack() {
-    if [[ -f $vps_config_file ]]; then
-        vps_save_config
-    fi
-
-    if [[ "$1" ]]; then
-        vps_name="$1"
-        test=$vps_config_dir/$vps_name
-        if [[ ! -d $test ]]; then
-            echo "Can't find $test!"
-            return 2
-        fi
-    fi
-
-    if [[ $2 && -f $2 ]]; then
-        vps_load_config $2
-    elif [[ -f $vps_config_file ]]; then
-        vps_load_config $vps_config_file
-    else
-        vps_save_config
-    fi
-}
-# }}}
 # vps_create_config <vps_id> <vps_name> [<vps_host_ip="88.191.110.204">] # {{{
 # 
 # Sets up your environment to create a new vps.
