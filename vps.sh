@@ -291,6 +291,7 @@ function vps_enter() { # {{{
 } # }}}
 function vps_delete() { # {{{
     vserver $vps_name delete
+    rm $vps_config_path
 } # }}}
 function vps_start() { # {{{
     vserver $vps_name start
