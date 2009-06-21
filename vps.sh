@@ -8,11 +8,13 @@ vps_config_dir="/etc/vservers"
 vps_packages_dir="/vservers/master/usr/portpage/packages"
 vps_ssh_timeout=60
 max_timeout=600
-declare -a vps_internet_map[1]="88.191.110.204"
-declare -a vps_internet_map[2]="88.191.108.204"
 
-declare -a vps_intranet_map[1]="192.168.1."
-declare -a vps_intranet_map[2]="192.168.2."
+# eth0
+vps_internet_map+=("88.191.110.204")
+vps_intranet_map+=("192.168.1.")
+# eth1
+vps_internet_map+=("88.191.108.204")
+vps_intranet_map+=("192.168.2.")
 
 # build config
 stage_name="stage3-i686-current.tar.bz2";
@@ -203,7 +205,7 @@ function vps_create_config() {
         vps_host_ip=$3
     fi
 
-    for i in `seq 1 ${#vps_internet_map[*]}` ; do
+    for i in `seq 0 $((${#vps_internet_map[@]}-1))`; do
         if [[ ${vps_internet_map[$i]} == $vps_host_ip ]]; then
             vps_intranet=${vps_intranet_map[$i]}
             vps_ip="${vps_intranet_map[$i]}${vps_id}"
