@@ -17,8 +17,8 @@ vps_internet_map+=("88.191.108.204")
 vps_intranet_map+=("192.168.2.")
 
 # build config
-stage_name="stage3-i686-current.tar.bz2";
-stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/${stage_name}";
+stage_name="gentoo-vserver-i686-20090611.tar.bz2";
+stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${stage_name}";
 stage_dir="/tmp";
 stage_path="${stage_dir}/${stage_name}";
 
