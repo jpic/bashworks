@@ -323,6 +323,12 @@ function vps_delete_test_vps() { # {{{
 #
 # Emerges in $vps_master then from the binpkg to $vps_name
 function vps_emerge() {
+    vemerge $vps_name -- -K $@
+
+    if [[ $? == 0 ]]; then
+        return 0
+    fi
+
     vemerge $vps_master -- $@
 
     if [[ $? != 0 ]]; then
