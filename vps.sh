@@ -31,6 +31,7 @@ if [[ $vps_name == "" ]]; then vps_name=""; fi
 if [[ $vps_root == "" ]]; then vps_root=""; fi
 if [[ $vps_intranet == "" ]]; then vps_intranet=""; fi
 if [[ $vps_master == "" ]]; then vps_master="master"; fi
+if [[ $vps_admin == "" ]]; then read -p "Enter your username: " vps_admin; fi
 if [[ $vps_config_path == "" ]]; then vps_config_path="$DEFAULT_CONFIG"; fi
 # }}}
 
@@ -237,11 +238,12 @@ function vps_updateportage() { # {{{{
     vps_load_config $current_vps
 } # }}}
 function vps_setpreferences() { # {{{
-    echo "*WARNING* you should overload this function which installs jpic's preferences"
-
-    # copy jpic ssh pubkey
-    mkdir -p $vserver_path/root/.ssh/
-    cp /home/jpic/.ssh/authorized_key* $vserver_path/root/.ssh/
+    mkdir -p $vps_root/root/.ssh/
+    cp /home/$vps_admin/.ssh/authorized_key* $vps_root/root/.ssh/
+    cp -r /home/$vps_admin/.bashrc $vps_root/root
+    cp -r /home/$vps_admin/.vim* $vps_root/root
+    cp -r /home/$vps_admin/.screenrc $vps_root/root
+    cp -r /home/$vps_admin/.terminfo $vps_root/root
 } # }}}
 function vps_setnet() { # {{{
     # vserver config
