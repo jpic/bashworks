@@ -211,7 +211,7 @@ function vps_create_config() {
     fi
 
     vps_save_config
-    vps_load_config
+    vps_load_config $vps_name
 
     echo "VPS configuration set up, check and run vps_generate or DIY"
 } # }}}
