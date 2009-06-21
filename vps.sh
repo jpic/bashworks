@@ -267,8 +267,7 @@ function vps_setnet() { # {{{
     # net config
     echo config_dummy0=\"$vps_ip netmask 255.255.255.0\" >> $vps_root/etc/conf.d/net
 } # }}}
-# vps_gestage # {{{
-function vps_getstage() {
+function vps_getstage() { # {{{
     if [[ ! -f $stage_path ]]; then
         cd $stage_dir;
         sudo -u nobody wget $stage_url;
