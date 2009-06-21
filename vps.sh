@@ -147,6 +147,13 @@ function vps_save_config() {
         echo "vps_master=\"$vps_master\"" >> $vps_config_file
     fi
 
+    grep -q '^vps_root="[^"]*"$' $vps_config_file
+    if [[ $? -eq 0 ]]; then
+        sed -i -e "s@vps_root=.*@vps_root=\"$vps_root\"@" $vps_config_file
+    else
+        echo "vps_root=\"$vps_root\"" >> $vps_config_file
+    fi
+
     cd $current
 } #}}}
 # vps_load_config [<vps_name>] # {{{
