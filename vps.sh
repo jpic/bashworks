@@ -302,6 +302,9 @@ function vps_stop() { # {{{
 function vps_restart() { # {{{
     vserver $vps_name restart
 } # }}}
+function vps_exec() { # {{{
+    vserver $vps_name exec $@
+} # }}}
 function vps_delete_test_vps() { # {{{
     current=`pwd`
 
