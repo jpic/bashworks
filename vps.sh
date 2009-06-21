@@ -223,9 +223,18 @@ function vps_generate() { # {{{
     vps_setpreferences
     vps_save_config
     vps_start
+    vps_updateportage
 } # }}}
 function vps_setportage() { # {{{
     echo $vps_packages_dir /usr/portage/packages none bind,ro 0 0 >> $vps_root/etc/fstab
+} # }}}
+function vps_updateportage() { # {{{{
+    local current_root=$vps_root
+    local current_vps=$vps_name
+    vps_load_config $vps_master
+    cp -r $vps_root/etc/portage/* $current_root/etc/portage
+    echo $atom $use >> $vps_root/etc/portage/package.use
+    vps_load_config $current_vps
 } # }}}
 function vps_setpreferences() { # {{{
     echo "*WARNING* you should overload this function which installs jpic's preferences"
@@ -328,6 +337,8 @@ function vps_euse() {
     vps_load_config $vps_master
     echo $atom $use >> $vps_root/etc/portage/package.use
     vps_load_config $current_vps
+
+    vps_updateportage
 }
 # vps_backport <package atom>
 function vps_ebackport() {
@@ -337,4 +348,6 @@ function vps_ebackport() {
     vps_load_config $vps_master
     echo $atom >> $vps_root/etc/portage/package.keywords
     vps_load_config $current_vps
+    
+    vps_updateportage
 }
