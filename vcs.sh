@@ -1,22 +1,21 @@
 #!/bin/bash
 DEFAULT_CONFIG=".vcs.config.sh"
 
-if [[ $config == "" ]]; then config="$DEFAULT_CONFIG"; fi
-if [[ $ignore == "" ]]; then ignore=".gitignore"; fi
-if [[ $master == "" ]]; then master="master"; fi
-if [[ $prod == "" ]]; then prod="prod"; fi
-if [[ $version == "" ]]; then version="0"; fi
-if [[ $rc == "" ]]; then rc="0"; fi
-if [[ $doc == "" ]]; then doc="DOCUMENTATION"; fi
-if [[ $bug == "" ]]; then bug="BUGS"; fi
-if [[ $objectives == "" ]]; then objectives=".todo.now"; fi
-if [[ $state == "" ]]; then state="alpha"; fi
-if [[ $feature == "" ]]; then feature="planning"; fi
-if [[ $tag == "" ]]; then tag=""; fi
-if [[ $readme == "" ]]; then readme="README"; fi
-if [[ $backupdir == "" ]]; then backupdir="${HOME}/var/backups"; fi
-if [[ $root == "" ]]; then root=""; fi
-if [[ $logfile == "" ]]; then logfile=".logfile"; fi
+if [[ $config -eq "" ]]; then config="$DEFAULT_CONFIG"; fi
+if [[ $ignore -eq "" ]]; then ignore=".gitignore"; fi
+if [[ $master -eq "" ]]; then master="master"; fi
+if [[ $prod -eq "" ]]; then prod="prod"; fi
+if [[ $version -eq "" ]]; then version="0"; fi
+if [[ $rc -eq "" ]]; then rc="0"; fi
+if [[ $doc -eq "" ]]; then doc="DOCUMENTATION"; fi
+if [[ $objectives -eq "" ]]; then objectives=".todo.now"; fi
+if [[ $state -eq "" ]]; then state="alpha"; fi
+if [[ $feature -eq "" ]]; then feature="planning"; fi
+if [[ $tag -eq "" ]]; then tag=""; fi
+if [[ $readme -eq "" ]]; then readme="README"; fi
+if [[ $backupdir -eq "" ]]; then backupdir="${HOME}/var/backups"; fi
+if [[ $root -eq "" ]]; then root=""; fi
+if [[ $logfile -eq "" ]]; then logfile=".logfile"; fi
 # {{{ tag functions
 # Usage: tag_update [<version number> [<state=$state> [<rc=$rc>] ] ]
 #
@@ -31,8 +30,6 @@ function tag_update() {
     else
         tag="${version}_${rc}"
     fi;
-
-    save
 }
 # Usage: tag [<commit> [<tag name>]]
 #
@@ -43,7 +40,6 @@ function tag() {
     if [[ $1 ]]; then snapshot=$1; fi
     if [[ $2 ]]; then tag=$2; fi
     git commit $tag $snapshot
-    save
 }
 
 # Usage: tag_rc [<rc>]
@@ -55,7 +51,6 @@ function tag_rc() {
     tag_update
     git tag $tag
     increment_rc
-    save
 }
 
 # Usage: tag_state [<state>]
@@ -67,7 +62,6 @@ function tag_state() {
     tag_update
     git tag $tag
     increment_state
-    save
 }
 
 function tag_version()
@@ -76,7 +70,6 @@ function tag_version()
     tag_update
     git tag $tag
     increment_version
-    save
 }
 # }}}
 # {{{ version, state, rc incrementers
@@ -232,7 +225,7 @@ function unstash() {
     echo "Unstash your debug stuff? y<CR>"
     read confirm
     
-    if [[ $confirm == 'y' ]]; then
+    if [[ $confirm -eq 'y' ]]; then
         echo "Yes sir!"
         git stash apply
     fi
@@ -244,7 +237,7 @@ function unstash() {
 # Read critical investigation results
 # Pipes $readme contents into $PAGER.
 function readme() {
-    cat $readme
+    cat $readme | $PAGER
 }
 # Usage: writeme
 #
@@ -253,17 +246,10 @@ function readme() {
 function writeme() {
     $EDITOR $readme
 }
-# Read installation and maintenance investigation
-function readbug() {
-    cat $bug
-}
-# Write installation and maintenance investigation
-function writebug() {
-    $EDITOR $bug
-}
+
 # Read installation and maintenance investigation
 function readdoc() {
-    cat $doc
+    cat $doc | $PAGER
 }
 # Write installation and maintenance investigation
 function writedoc() {
@@ -271,7 +257,7 @@ function writedoc() {
 }
 # Read current session objective
 function readobj() {
-    cat $objectives
+    cat $objectives | $PAGER
 }
 # Write current session objective
 function writeobj() {
@@ -301,109 +287,88 @@ function save() {
         echo "" >> $config
     fi
 
-    grep -q '^config="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "config=.\*" $config; then
         sed -i -e "s@config=.*@config=\"$config\"@" $config
     else
         echo "config=\"$config\"" >> $config
     fi
     
-    grep -q '^backupdir="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "backupdir=.\*" $config; then
         sed -i -e "s@backupdir=.*@backupdir=\"$backupdir\"@" $config
     else
         echo "backupdir=\"$backupdir\"" >> $config
     fi
     
-    grep -q '^rc="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "rc=.\*" $config; then
         sed -i -e "s/rc=.*/rc=\"$rc\"/" $config
     else
         echo "rc=\"$rc\"" >> $config
     fi
     
-    grep -q '^ignore="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "ignore=.\*" $config; then
         sed -i -e "s@ignore=.*@ignore=\"$ignore\"@" $config
     else
         echo "ignore=\"$ignore\"" >> $config
     fi
 
-    grep -q '^master="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "master=.\*" $config; then
         sed -i -e "s/master=.*/master=\"$master\"/" $config
     else
         echo "master=\"$master\"" >> $config
     fi
 
-    grep -q '^prod="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "prod=.\*" $config; then
         sed -i -e "s/prod=.*/prod=\"$prod\"/" $config
     else
         echo "prod=\"$prod\"" >> $config
     fi
 
-    grep -q '^version="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "version=.\*" $config; then
         sed -i -e "s/version=.*/version=\"$version\"/" $config
     else
         echo "version=\"$version\"" >> $config
     fi
 
-    grep -q '^doc="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "doc=.\*" $config; then
         sed -i -e "s@doc=.*@doc=\"$doc\"@" $config
     else
         echo "doc=\"$doc\"" >> $config
     fi
 
-    grep -q '^objectives="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "objectives=.\*" $config; then
         sed -i -e "s@objectives=.*@objectives=\"$objectives\"@" $config
     else
         echo "objectives=\"$objectives\"" >> $config
     fi
 
-    grep -q '^readme="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "readme=.\*" $config; then
         sed -i -e "s@readme=.*@readme=\"$readme\"@" $config
     else
         echo "readme=\"$readme\"" >> $config
     fi
 
-    grep -q '^tag="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "tag=.\*" $config; then
         sed -i -e "s/tag=.*/tag=\"$tag\"/" $config
     else
         echo "tag=\"$tag\"" >> $config
     fi
 
-    grep -q '^state="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "state=.\*" $config; then
         sed -i -e "s/state=.*/state=\"$state\"/" $config
     else
         echo "state=\"$state\"" >> $config
     fi
     
-    grep -q '^logfile="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "logfile=.\*" $config; then
         sed -i -e "s@logfile=.*@logfile=\"$logfile\"@" $config
     else
         echo "logfile=\"$logfile\"" >> $config
     fi
 
-    grep -q '^root="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
+    if grep -q "root=.\*" $config; then
         sed -i -e "s@root=.*@root=\"$root\"@" $config
     else
         echo "root=\"$root\"" >> $config
-    fi
-
-    grep -q '^bug="[^"]*"$' $config
-    if [[ $? -eq 0 ]]; then
-        sed -i -e "s@bug=.*@bug=\"$bug\"@" $config
-    else
-        echo "bug=\"$bug\"" >> $config
     fi
 }
 
@@ -432,47 +397,26 @@ function load() {
         echo "$config loaded"
         PS1="(dev) $PS1"
     fi
-
-    tag_update
 }
 # }}}
 
 # Usage: starthacking [<path=`pwd`> [<config>]]
-# Alias: hack
 #
 # Sets $root to <path>, changes directory to $root and runs load(config).
 function starthacking() {
-    if [[ -f $config ]]; then
-        save
-    fi
-
-    if [[ "$1" ]]; then
-        test_root="$1"
-        if [[ -d "$test_root" ]]; then
-            root="$test_root"
-        elif [[ "$CDPATH" != "" ]]; then
-            declare -i i=1
-            while [[ $tmp != "" || $i -eq 1 ]]; do
-                tmp=`echo $CDPATH | cut -d : -f "$i"`
-                test_root="${tmp}/${1}"
-                if [[ -d "$test_root" ]]; then
-                    root=$test_root
-                    break
-                fi
-                i=$i+1
-            done
-        fi
-        
-        if [[ "$root" == "" ]]; then
-            root="$1"
-            echo "Creating $root"
-            mkdir -p $root
-        fi
+    if [[ $1 ]]; then
+        root=$1
     else
         root=`pwd`
     fi
 
-    echo "Changing directory $root"
+    if [[ -d $root ]]; then
+        echo "Found $root";
+    else
+        echo "Create $root";
+        mkdir -p $root
+    fi
+
     cd $root
 
     if [[ $2 && -f $2 ]]; then
@@ -484,7 +428,6 @@ function starthacking() {
         save
     fi
 }
-alias hack="starthacking"
 
 # Usage: helpintro [<hide navigation>]
 #
