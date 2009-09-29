@@ -204,11 +204,11 @@ function conf_load() {
 }
 
 #-------------------------- 
-## Configure a module
+## Interactive interface to module configuration
 ## @param Module name
 #-------------------------- 
-function conf_module() {
-    local usage="conf_save \$module_name [\$module_conf_path]"
+function conf_interactive() {
+    local usage="conf_save \$module_name"
     local module_name="$1"
     local module_variables="${module_name}_variables[@]"
 

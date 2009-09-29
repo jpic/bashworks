@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 #--------------------------
-##	@Synopsis	Break management configuration
+##	@Synopsis	Mpd management conf
 ##	@Copyright	Copyright 2009, James Pic
 ##	@License	Apache
 #--------------------------
 
 #--------------------------
-## Save your break configuration
+## Save your mpd configuration
 #--------------------------
-function break_conf_save() {
-    conf_save break
+function mpd_conf_save() {
+    conf_save mpd
 }
 
 #--------------------------
-## Load your break configuration
+## Load your mpd configuration
 #--------------------------
-function break_conf_load() {
-    conf_load break
+function mpd_conf_load() {
+    conf_load mpd
 }
 
 #--------------------------
 ## Interactive module configuration
 #--------------------------
-function break_conf_interactive() {
-    conf_interactive break
+function mpd_conf_interactive() {
+    conf_interactive mpd
 }

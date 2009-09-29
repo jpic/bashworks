@@ -1,0 +1,2 @@
+screen -t player    2   musicplayer
+screen -t ctrl      1   musiccontrol
