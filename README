@@ -20,6 +20,7 @@ Versions
 0.2_alpha4: simple demonstration music module
 0.2_alpha5: convenient interactive module configuration UI: conf_module()
 0.3_alpha0: major refactor
+0.4_alpha0: "remove 50% of code" refactor
 
 Roadmap
 ```````
@@ -33,6 +34,12 @@ The 0.3 version aims toward a better module layout:
 - functions go in yourmodule/functions.sh
 - tiein functions like if yourmodule uses conf then it goes in yourmodule/conf.sh
 - yourmodule/source.sh should only define runtime critical stuff ie. variables, init() start() stop() etc ..
+
+The 0.4 version aims toward a better design:
+
+- conf does not do any magic and is driven by yourmodule/conf.sh submodule,
+- jpic does less magic and just takes cares of sourcing, initializing and blacklisting modules,
+- jpic is renamed to "module" and most functions are renamed for better consistency,
 
 Bootstrap script
 ````````````````
