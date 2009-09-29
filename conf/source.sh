@@ -37,6 +37,30 @@ function conf_reset() {
 }
 
 #-------------------------- 
+## Loads default and then load the config file
+## @param Module name
+#-------------------------- 
+function conf_reload() {
+    local usage="conf_reload \$module_name"
+    local module_name="$1"
+    local module_conf_loader="${module_name}_load"
+
+    if [[ -z $module_name ]]; then
+        jpic_print_error "Usage: $usage"
+        return 2
+    fi
+
+    conf_reset $module_name
+
+
+    if [[ $(declare -f $module_conf_loader) ]]; then
+        $module_conf_loader
+    else
+        conf_load $module_name
+    fi
+}
+
+#-------------------------- 
 ## <p>Saves variables of a module in a file in a loadable format.</p>
 ## <p>
 ## Relies on conf_path_getter().
