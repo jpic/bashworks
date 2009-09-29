@@ -19,7 +19,7 @@ Versions
 0.2_alpha3: simple demonstration volume control module
 0.2_alpha4: simple demonstration music module
 0.2_alpha5: convenient interactive module configuration UI: conf_module()
-0.2_alpha6: multi-instance configuration support
+0.3_alpha0: major refactor
 
 Roadmap
 ```````
@@ -27,6 +27,12 @@ Roadmap
 Skipping directly to 0.2 without 0.1 release.
 
 The 0.2 version aims toward modularity, ease of initial development and refactoring, even more documented API with bashdoc, and lots of fun playing around with bash with the help of #bash@irc.freenode.net.
+
+The 0.3 version aims toward a better module layout:
+
+- functions go in yourmodule/functions.sh
+- tiein functions like if yourmodule uses conf then it goes in yourmodule/conf.sh
+- yourmodule/source.sh should only define runtime critical stuff ie. variables, init() start() stop() etc ..
 
 Bootstrap script
 ````````````````
