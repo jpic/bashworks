@@ -95,6 +95,7 @@ function jpic_init_modules() {
 
 # {{{ Printing functions
 # @Credit prince_jammys#bash@irc.freenode.net
+# @Credit SourceMage GNU/Linux for bashdoc and the print_ functions
 GOOD=$'\e[32;01m'
 WARN=$'\e[33;01m'
 BAD=$'\e[31;01m'
