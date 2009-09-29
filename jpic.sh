@@ -94,6 +94,7 @@ function jpic_init_modules() {
 }
 
 # {{{ Printing functions
+# @Credit prince_jammys#bash@irc.freenode.net
 GOOD=$'\e[32;01m'
 WARN=$'\e[33;01m'
 BAD=$'\e[31;01m'
@@ -105,7 +106,7 @@ NORMAL=$'\e[0m'
 ##	@Stderr	Formated message
 #--------------------------
 jpic_print_error () {
-	echo -e " ${BAD}*${NORMAL} $*" >&2
+	echo -e " ${BAD}*${NORMAL} ${FUNCNAME[1]}(): $*" >&2
 }
 #--------------------------
 ##	Output warning message
@@ -113,7 +114,7 @@ jpic_print_error () {
 ##	@Stderr	Formated message
 #--------------------------
 jpic_print_warn () {
-	echo -e " ${WARN}*${NORMAL} $*" >&2
+	echo -e " ${WARN}*${NORMAL} ${FUNCNAME[1]}(): $*" >&2
 }
 #--------------------------
 ##	Output info message
@@ -121,7 +122,7 @@ jpic_print_warn () {
 ##	@Stderr	Formated message
 #--------------------------
 jpic_print_info () {
-	echo -e " ${GOOD}*${NORMAL} $*" >&2
+	echo -e " ${GOOD}*${NORMAL} ${FUNCNAME[1]}(): $*" >&2
 }
 #--------------------------
 ##	Output debug message
