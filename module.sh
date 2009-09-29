@@ -38,16 +38,16 @@ if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 	echo "Please install a newer version:"
 	echo " * Either use your distro's packages"
 	echo " * Or see http://www.gnu.org/software/bash/"
-	exit 2
+	return 2
 fi
 # }}}
-if [[ -z $MODULES_PATH ]]; then # {{{ exit if $MODULES_PATH is not defined
+if [[ -z $MODULES_PATH ]]; then # {{{ return if $MODULES_PATH is not defined
     echo "Sorry, MODULES_PATH is not defined"
     echo "MODULES_PATH should contain a list of paths like the PATH variable"
     echo "It should contain a list of directories containing modules"
     echo "Each directory should be separated by ':'"
     echo "A module should be a folder with a file called 'source.sh' in it."
-	exit 2
+	return 2
 fi
 # }}}
 
