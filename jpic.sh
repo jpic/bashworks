@@ -103,6 +103,9 @@ function jpic_module_source() {
     source $module_source_path
 }
 
+#-------------------------- 
+## Runs yourmodule_init if it exists, for each sourced module.
+#-------------------------- 
 function jpic_init_modules() {
     for module_name in ${!jpic_module_paths[@]}; do
         local module_init="${module_name}_init"
@@ -113,6 +116,16 @@ function jpic_init_modules() {
 
         jpic_print_debug "Initialised $module_name"
     done
+}
+
+
+#-------------------------- 
+## Outputs the absolute path to a module.
+#-------------------------- 
+function jpic_get_module_path() {
+    module_name="$1"
+
+    echo ${jpic_module_paths[$module_name]}
 }
 
 # {{{ Printing functions
