@@ -9,7 +9,7 @@
 #--------------------------
 ## Declares module configuration variable names.
 #--------------------------
-function volume_init() {
+function volume_source() {
     unset volume_variables
     volume_variables+=("interval")
     volume_variables+=("current")
@@ -18,6 +18,8 @@ function volume_init() {
 
     jpic_module_source volume functions.sh
     jpic_module_source volume conf.sh
+
+    volume_defaults_setter
 }
 
 #--------------------------
@@ -28,4 +30,3 @@ function volume_defaults_setter() {
     volume_current=$(volume_get_current)
     volume_conf_path=${HOME}/.volume
 }
-

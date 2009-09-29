@@ -6,14 +6,6 @@
 ##	@License	Apache
 
 #--------------------------
-## Sets the default break interval to 7200 and conf path to ~/.break
-#--------------------------
-function break_defaults_setter() {
-    break_interval=7200
-    break_conf_path=${HOME}/.break
-}
-
-#--------------------------
 ## Is your break granted?
 #--------------------------
 function break_request() {

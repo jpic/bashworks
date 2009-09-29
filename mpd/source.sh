@@ -9,7 +9,7 @@
 #--------------------------
 ## Declares module configuration variable names.
 #--------------------------
-function mpd_init() {
+function mpd_source() {
     unset mpd_variables
     mpd_variables+=("host")
     mpd_variables+=("port")
@@ -23,6 +23,8 @@ function mpd_init() {
 
     jpic_module_source mpd functions.sh
     jpic_module_source mpd conf.sh
+
+    mpd_defaults_setter
 }
 
 #--------------------------

@@ -9,7 +9,7 @@
 #--------------------------
 ## Declares module configuration variable names.
 #--------------------------
-function todo_init() {
+function todo_source() {
     unset todo_variables
     todo_variables+=("list")
     # prefix variable names

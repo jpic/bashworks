@@ -226,5 +226,6 @@ function conf_interactive() {
         fi
     done
 
-    conf_save $module_name
+    ${module_name}_conf_save
+    ${module_name}_conf_load
 }

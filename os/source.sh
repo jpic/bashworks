@@ -11,7 +11,7 @@
 #--------------------------
 ## Declares module configuration variable names and sets the os.
 #--------------------------
-function os_init() {
+function os_source() {
     unset os_variables
     os_variables+=("type")
     # prefix variable names
