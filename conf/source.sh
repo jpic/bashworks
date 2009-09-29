@@ -145,3 +145,33 @@ function conf_path_getter() {
     
     echo "${!module_conf_path_varname}"
 }
+
+#-------------------------- 
+## <p>Loads variables of a module from a filet.</p>
+## <p>
+## Relies on conf_path_getter()
+## </p>
+## @param Module name
+## @param Module configuration path (optionnal)
+## @return 2 If it could not load the module variables from a  conf file.
+#-------------------------- 
+function conf_load() {
+    local usage="conf_save \$module_name [\$module_conf_path]"
+    local module_name="$1"
+    local module_conf_path="$2"
+
+    if [[ -z $module_name ]]; then
+        jpic_print_error "Usage: $usage"
+        return 2
+    fi
+
+    module_conf_path=$(conf_path_getter $module_name $module_conf_path)
+
+    # make sure that a zero status was returned
+    local -i ret=$?
+    if [[ $ret != 0 ]]; then
+        return $ret
+    fi
+
+    source $module_conf_path
+}
