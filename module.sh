@@ -72,6 +72,7 @@ function module_source() {
     declare -a paths=($(echo $MODULES_PATH | tr : " "))
 
     local module_name=""
+    local module_path=""
     local module_source_path=""
     local module_source=""
 
@@ -80,30 +81,6 @@ function module_source() {
         for module_path in ${path}/*; do
             
             module_name="${module_path##*/}"
-            module_source_path="${module_path}/source.sh"
-            module_source_function="${module_name}_source"
-
-            if [[ ! -f $module_source_path ]]; then
-                continue
-            fi
-
-            # blacklist check
-            if [[ $(module_blacklist_check $module_name) ]]; then
-                continue
-            fi
-
-            # source module source path
-            source $module_source_path
-            
-            # blacklist check
-            if [[ $(module_blacklist_check $module_name) ]]; then
-                continue
-            fi
-            
-            # run module source function if it is declared
-            if [[ $(declare -f $module_source_function) ]]; then
-                $module_source_function
-            fi
             
             # blacklist check
             if [[ $(module_blacklist_check $module_name) ]]; then
@@ -114,6 +91,34 @@ function module_source() {
             module_paths[$module_name]=$module_path
 
         done
+    done
+
+    for module_name in ${!module_paths[@]}; do
+        module_path="${module_paths[$module_name]}"
+        module_source_path="${module_path}/source.sh"
+        module_source_function="${module_name}_source"
+
+        if [[ ! -f $module_source_path ]]; then
+            continue
+        fi
+
+        # blacklist check
+        if [[ $(module_blacklist_check $module_name) ]]; then
+            continue
+        fi
+
+        # source module source path
+        source $module_source_path
+        
+        # blacklist check
+        if [[ $(module_blacklist_check $module_name) ]]; then
+            continue
+        fi
+        
+        # run module source function if it is declared
+        if [[ $(declare -f $module_source_function) ]]; then
+            $module_source_function
+        fi
     done
 }
 
