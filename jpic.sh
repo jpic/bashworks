@@ -94,6 +94,27 @@ function jpic_init_modules() {
     done
 }
 
+#-------------------------- 
+## Sources a file from a module directory
+## @param Module name
+## @param Path to file to source
+#-------------------------- 
+function jpic_module_source() {
+    local usage="example usage: jpic_module_source conf functions.sh"
+    local module_name=$1
+    local module_source=$2
+    local module_dir=${jpic_module_paths[$module_name]}
+    local module_source_path=$module_dir/$module_source
+
+    if [[ -z $module_name ]] || [[ -z $module_source ]]; then
+        jpic_print_error $usage
+        return 2
+    fi
+
+    jpic_print_debug "Sourcing submodule: $module_source_path"
+    source $module_source_path
+}
+
 # {{{ Printing functions
 # @Credit prince_jammys#bash@irc.freenode.net
 # @Credit SourceMage GNU/Linux for bashdoc and the print_ functions
