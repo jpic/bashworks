@@ -17,8 +17,8 @@
 function conf_reset() {
     local usage="conf_reset \$module_name"
     local module_name="$1"
-    local module_variable_names="${module_name}_variables"
     local module_defaults_setter="${module_name}_defaults_setter"
+    local module_variables="${module_name}_variables[@]"
 
     if [[ -z $module_name ]]; then
         jpic_print_error "Usage: $usage"
@@ -26,7 +26,7 @@ function conf_reset() {
     fi
 
     # unset all declared module variables
-    for variable in $module_variable_names; do
+    for variable in ${!module_variables}; do
         unset $variable
     done
     
@@ -51,7 +51,6 @@ function conf_reload() {
     fi
 
     conf_reset $module_name
-
 
     if [[ $(declare -f $module_conf_loader) ]]; then
         $module_conf_loader
