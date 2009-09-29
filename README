@@ -15,9 +15,10 @@ Versions
 0.1_beta0:  vps.sh: everything seems to work, freezing vps_ api
 0.2_alpha0: bootstrap script
 0.2_alpha1: configuration module (part that was decoupled) with a simple demonstration break module
-0.2_alpha2: simple demonstration volume control module
-0.2_alpha3: simple demonstration music module
-0.2_alpha4: multi-instance configuration support
+0.2_alpha2: os management module basics
+0.2_alpha3: simple demonstration volume control module
+0.2_alpha4: simple demonstration music module
+0.2_alpha5: multi-instance configuration support
 
 Roadmap
 ```````
