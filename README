@@ -1,4 +1,4 @@
-Who said "temporary bash scripts"?
+Who said "temporary (bash) scripts"? Not me.
 
 Versions
 ````````
@@ -13,45 +13,29 @@ Versions
 0.1_alpha2: vps.sh: vps_ssh works
 0.1_alpha3: vps.sh: portage shortcuts
 0.1_beta0:  vps.sh: everything seems to work, freezing vps_ api
-0.1_beta1:  vps.sh: api doc
-0.1: release
+0.2_alpha0: bootstrap script
+0.2_alpha1: configuration module (part that was decoupled)
+0.2_alpha2: support custom variable load/export backends
 
 Roadmap
 ```````
 
-Refactor
-========
+Skipping directly to 0.2 without 0.1 release.
 
-Refactor save() functions, and configuration into a new extension framework.sh.
-Prefix wifi and vcs variables/functions.
+The 0.2 version aims toward modularity, ease of initial development and refactoring, even more documented API with bashdoc, and lots of fun playing around with bash with the help of #bash@irc.freenode.net.
 
-Documentation
-=============
+Bootstrap script
+````````````````
 
-How to use this scripts efficiently: overloading and aliases.
-Document vps.sh
+The bootstrap script "jpic.sh" will initiate any avalaible modules, refer to API documentation for more information.
 
-vcs.sh
-------
+Credit
+``````
 
-todo [ <shortname> <description> ]
-    Adds a todo json object to document field "objectives" with properties: shortname, timestamp, description. If no argument is provided: list those who don't have the "done" property defined.
-
-check <shortname>
-    Adds a timestamp to the json object from document field "objectives" which shortname corresponds, and then print the list of todo objects that haven't a "timestamp" property, or return -1.
-
-Also provide various decorators like rc_commit, version_commit, etc, etc ...:
-
-- rctodo, rccheck
-- statetodo, statecheck
-- versiontodo, statetodo
+#bash@irc.freenode.net: very very nice and knowledgeable users...
+All Open Source hackers. Thanks a bunch for your involvement!
 
 Author
 ``````
 
 James Pic <jamespic@gmail.com>
-
-Credit
-``````
-
-All Open Source hackers. Thanks a bunch for your involvement!
