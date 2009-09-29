@@ -12,6 +12,7 @@
 function todo_init() {
     unset todo_variables
     todo_variables+=("list")
+    todo_variables+=("list_name")
     # prefix variable names
     todo_variables=("${todo_variables[@]/#/todo_}")
 }
