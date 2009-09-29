@@ -196,5 +196,35 @@ function conf_load() {
         return $ret
     fi
 
-    source $module_conf_path
+    if [[ -f $module_conf_path ]]; then
+        source $module_conf_path
+    else
+        jpic_print_warn "$module_conf_path does not exist, not loaded"
+    fi
+}
+
+#-------------------------- 
+## Configure a module
+## @param Module name
+#-------------------------- 
+function conf_module() {
+    local usage="conf_save \$module_name [\$module_conf_path]"
+    local module_name="$1"
+    local module_variables="${module_name}_variables[@]"
+
+    conf_reload $module_name
+
+    jpic_print_info "Configuration reloaded"
+
+    for variable in ${!module_variables}; do
+        local value="${!variable}"
+
+        read -p "$variable [$value]: " input
+
+        if [[ -n $input ]]; then
+            declare $variable=$input
+        fi
+    done
+
+    conf_save $module_name
 }
