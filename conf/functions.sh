@@ -19,7 +19,7 @@
 #-------------------------- 
 function conf_save() {
     local conf_path="$1"
-    local conf_variable="$2"
+    local conf_variables="$2"
     local conf_value=""
 
     if [[ ! -f $conf_path ]]; then
@@ -74,17 +74,17 @@ function conf_load() {
 ## @param List of variable names
 #-------------------------- 
 function conf_interactive() {
-    local conf_variables="$1"
+    local conf_variables="$*"
     local conf_value=""
 
-    for variable in ${conf_variables[@]}; do
+    for variable in ${conf_variables}; do
         conf_value="${!variable}"
 
-        read -p "$variable [$conf_value]: " input
+        read -p "\$$variable [$conf_value]: " input
 
         if [[ -n $input ]]; then
-            declare $variable=$input
-            echo "Changed $variable to $input"
+            printf -v $variable $input
+            echo "Changed $variable to $input: ${!variable} $foo"
         fi
     done
 }
