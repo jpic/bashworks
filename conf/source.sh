@@ -21,7 +21,7 @@
 ## Module source callback.
 ##
 ## This function should be called when the module is loaded. It will
-## load the conf functions submodule.
+## load the functions submodule.
 #--------------------------
 function conf_source() {
     source $(module_get_path conf)/functions.sh

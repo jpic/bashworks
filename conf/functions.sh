@@ -80,10 +80,11 @@ function conf_interactive() {
     for variable in ${conf_variables[@]}; do
         conf_value="${!variable}"
 
-        read -p "$variable [$value]: " input
+        read -p "$variable [$conf_value]: " input
 
         if [[ -n $input ]]; then
             declare $variable=$input
+            echo "Changed $variable to $input"
         fi
     done
 }
