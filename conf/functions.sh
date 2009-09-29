@@ -19,7 +19,9 @@
 #-------------------------- 
 function conf_save() {
     local conf_path="$1"
-    local conf_variables="$2"
+    local conf_variables="$*"
+    # Skip the first parameter which is for $conf_path
+    conf_variables=${conf_variables#* }
     local conf_value=""
 
     if [[ ! -f $conf_path ]]; then
@@ -84,7 +86,7 @@ function conf_interactive() {
 
         if [[ -n $input ]]; then
             printf -v $variable $input
-            echo "Changed $variable to $input: ${!variable} $foo"
+            echo "Changed $variable to $input"
         fi
     done
 }
