@@ -64,9 +64,10 @@ function jpic_source_modules() {
         local module_name="${module_path##*/}"
         local module_source_path="${module_path}/source.sh"
         local module_source="${module_name}_source"
+        local module_disable="${module_path}/disable"
         
-        # source the module
-        if [[ -f $module_source_path ]]; then
+        # source the module if not disabled
+        if [[ -f $module_source_path ]] && [[ ! -f $module_disable ]]; then
             source $module_source_path
             
             # append to found modules
