@@ -7,10 +7,10 @@
 ##  Functions to help bash module development.
 #--------------------------
 
-# Check bash version. We need at least 3.2.x {{{
+# Check bash version. We need at least 4.0.x {{{
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 32 ]]; then
+if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 	echo "Sorry your bash version is too old!"
 	echo "You need at least version 3.2 of bash"
 	echo "Please install a newer version:"
