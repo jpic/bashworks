@@ -20,7 +20,7 @@ function conf_reset() {
     local module_variable_names="${module_name}_variables"
     local module_defaults_setter="${module_name}_defaults_setter"
 
-    if [[ $module_name == "" ]]; then
+    if [[ -z $module_name ]]; then
         jpic_print_error "Usage: $usage"
         return 2
     fi
