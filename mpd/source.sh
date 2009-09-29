@@ -36,3 +36,10 @@ function mpd_defaults_setter() {
     mpd_screenrc=${HOME}/include/shell/mpd/etc/screenrc
     mpd_conf_path=${HOME}/.mpd
 }
+
+#--------------------------
+## Load configuration on init
+#--------------------------
+function mpd_init() {
+    mpd_conf_load
+}

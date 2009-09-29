@@ -30,3 +30,10 @@ function volume_defaults_setter() {
     volume_current=$(volume_get_current)
     volume_conf_path=${HOME}/.volume
 }
+
+#--------------------------
+## Load configuration on init
+#--------------------------
+function volume_init() {
+    volume_conf_load
+}

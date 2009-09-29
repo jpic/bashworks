@@ -20,13 +20,16 @@ if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 fi
 # }}}
 
+declare -A jpic_module_paths
+declare -A jpic_module_variables
+
 #--------------------------
 ## Initialises the framework.
 #--------------------------
 function jpic_init() {
     jpic_debug=1
-    jpic_init_configure
-    jpic_init_clean_modules
+    jpic_repo_setup
+    jpic_source_modules
     jpic_init_modules
 }
 
@@ -41,7 +44,7 @@ function jpic_init() {
 ## files (default: <b>$HOME/etc</b>).
 ## </p>
 #-------------------------- 
-function jpic_init_configure() {
+function jpic_repo_setup() {
     # define a default path for "jpic-ish" modules
     if [[ $JPIC_MODULES_PATH == "" ]]; then
         export JPIC_MODULES_PATH="$HOME/include/shell"
@@ -53,43 +56,28 @@ function jpic_init_configure() {
     fi
 }
 
-#--------------------------
-## Resets paths to modules and variables from modules.
-#-------------------------- 
-function jpic_init_clean_modules() {
-    if [[ $jpic_module_paths != "" ]]; then
-        unset jpic_module_paths
-        declare -A jpic_module_paths
-    fi
-
-    if [[ $jpic_module_variables != "" ]]; then
-        unset jpic_module_variables
-        declare -A jpic_module_variables
-    fi
-}
-
 #-------------------------- 
 ## Finds and fires modules in the modules path.
 #-------------------------- 
-function jpic_init_modules() {
+function jpic_source_modules() {
     for module_path in $JPIC_MODULES_PATH/*; do
         local module_name="${module_path##*/}"
         local module_source_path="${module_path}/source.sh"
-        local module_init="${module_name}_init"
+        local module_source="${module_name}_source"
         
         # source the module
         if [[ -f $module_source_path ]]; then
             source $module_source_path
             
             # append to found modules
-            jpic_module_paths[$model_name]=$module_path
+            jpic_module_paths[$module_name]=$module_path
 
-            # attempt to call yourmodule_init()
-            if [[ $(declare -f $module_init) ]]; then
-                $module_init
+            # attempt to call yourmodule_source()
+            if [[ $(declare -f $module_source) ]]; then
+                $module_source
             fi
 
-            jpic_print_info "Initialised module $module_name from $module_path"
+            jpic_print_debug "Sourced $module_name"
         fi
     done
 }
@@ -113,6 +101,18 @@ function jpic_module_source() {
 
     jpic_print_debug "Sourcing submodule: $module_source_path"
     source $module_source_path
+}
+
+function jpic_init_modules() {
+    for module_name in ${!jpic_module_paths[@]}; do
+        local module_init="${module_name}_init"
+
+        if [[ $(declare -f $module_init) ]]; then
+            $module_init
+        fi
+
+        jpic_print_debug "Initialised $module_name"
+    done
 }
 
 # {{{ Printing functions

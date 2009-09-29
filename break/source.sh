@@ -32,3 +32,10 @@ function break_defaults_setter() {
     break_interval=7200
     break_conf_path=${HOME}/.break
 }
+
+#--------------------------
+## Load configuration on init
+#--------------------------
+function break_init() {
+    break_conf_load
+}
