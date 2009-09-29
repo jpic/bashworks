@@ -18,7 +18,8 @@ Versions
 0.2_alpha2: os management module basics
 0.2_alpha3: simple demonstration volume control module
 0.2_alpha4: simple demonstration music module
-0.2_alpha5: multi-instance configuration support
+0.2_alpha5: convenient interactive module configuration UI: conf_module()
+0.2_alpha6: multi-instance configuration support
 
 Roadmap
 ```````
