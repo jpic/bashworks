@@ -39,9 +39,7 @@ function conf_reset() {
 #-------------------------- 
 ## <p>Saves variables of a module in a file in a loadable format.</p>
 ## <p>
-## If the module configuration path param was not specified then it will try to
-## to use $yourmodule_conf_path <b>after</b> trying to call
-## yourmodule_conf_path_setter(), which could set $yourmodule_conf_path.
+## Relies on conf_path_getter().
 ## </p><p>
 ## Note that it will automatically try to create missing directories and inform
 ## the user.
@@ -54,38 +52,21 @@ function conf_save() {
     local usage="conf_save \$module_name [\$module_conf_path]"
     local module_name="$1"
     local module_conf_path="$2"
-    # conf path variable callback
-    local module_conf_path_setter="${module_name}_conf_path_setter"
-    # conf path variable
-    local module_conf_path_varname="${module_name}_conf_path"
     # module variables array
     local module_variables="${module_name}_variables[@]"
 
-    if [[ $module_name == "" ]]; then
+    if [[ -z $module_name ]]; then
         jpic_print_error "Usage: $usage"
         return 2
     fi
 
-    # if $2 was not specified
-    # and ${module_name}_set_conf_path is a function
-    if [[ -z $module_conf_path ]]; then
-        if [[ $(declare -f $module_conf_path_setter) ]]; then
-            # run the function
-            $module_conf_path_setter
+    module_conf_path=$(conf_path_getter $module_name $module_conf_path)
 
-            if [[ -z ${!module_conf_path_varname} ]]; then
-                jpic_print_error "Dying: $module_conf_path_setter() did not set \$$module_conf_path"
-                jpic_print_error "Usage: $usage"
-                return 2
-            fi
-        elif [[ -z ${!module_conf_path_varname} ]]; then
-            jpic_print_error "Dying: could not figure ${module_name} conf path"
-            jpic_print_error "Usage: $usage"
-            return 2
-        fi
+    # make sure that a zero status was returned
+    local -i ret=$?
+    if [[ $ret != 0 ]]; then
+        return $ret
     fi
-    
-    module_conf_path="${!module_conf_path_varname}"
 
     if [[ ! -f $module_conf_path ]]; then
         local directory=${module_conf_path%/*}
@@ -110,4 +91,57 @@ function conf_save() {
             echo "${variable}=\"${value}\"" >> $module_conf_path
         fi
     done
+}
+
+#-------------------------- 
+## <p>Outputs a configuration file path.</p>
+## <p>
+## If the module configuration path param was not specified then it will try to
+## to use $yourmodule_conf_path <b>after</b> trying to call
+## yourmodule_conf_path_setter(), which <b>should</b> set $yourmodule_conf_path
+## if it is declared.
+## </p>
+## @param Module name
+## @param Module configuration path (optionnal)
+## @return 2 If it could not save the module variables into a conf file.
+#-------------------------- 
+function conf_path_getter() {
+    local usage="conf_path_getter \$module_name [\$module_conf_path]"
+    local module_name="$1"
+    local module_conf_path="$2"
+
+    if [[ -n $module_conf_path ]]; then
+        echo $module_conf_path
+    fi
+
+    if [[ -z $module_name ]]; then
+        jpic_print_error "Usage: $usage"
+        return 2
+    fi
+
+    # conf path variable callback
+    local module_conf_path_setter="${module_name}_conf_path_setter"
+    # conf path variable
+    local module_conf_path_varname="${module_name}_conf_path"
+    
+    # if $2 was not specified
+    # and ${module_name}_set_conf_path is a function
+    if [[ -z $module_conf_path ]]; then
+        if [[ $(declare -f $module_conf_path_setter) ]]; then
+            # run the function
+            $module_conf_path_setter
+
+            if [[ -z ${!module_conf_path_varname} ]]; then
+                jpic_print_error "Dying: $module_conf_path_setter() did not set \$$module_conf_path"
+                jpic_print_error "Usage: $usage"
+                return 2
+            fi
+        elif [[ -z ${!module_conf_path_varname} ]]; then
+            jpic_print_error "Dying: could not figure ${module_name} conf path"
+            jpic_print_error "Usage: $usage"
+            return 2
+        fi
+    fi
+    
+    echo "${!module_conf_path_varname}"
 }
