@@ -24,6 +24,7 @@ fi
 ## Initialises the framework.
 #--------------------------
 function jpic_init() {
+    jpic_debug=1
     jpic_init_configure
     jpic_init_clean_modules
     jpic_init_modules
@@ -131,7 +132,9 @@ jpic_print_info () {
 ##	@Stderr	Formated message
 #--------------------------
 jpic_print_debug () {
-    echo -e "   $*" >&2
+    if [[ -n $jpic_debug ]]; then
+        echo -e "   $*" >&2
+    fi
 }
 # }}}
 
