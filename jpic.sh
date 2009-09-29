@@ -73,82 +73,22 @@ function jpic_init_clean_modules() {
 function jpic_init_modules() {
     for module_path in $JPIC_MODULES_PATH/*; do
         local module_name="${module_path##*/}"
-        local module_config_path="$module_path/config.sh"
+        local module_source_path="${module_path}/source.sh"
+        local module_init="${module_name}_init"
         
         # source the module
-        if [[ -f $module_config_path ]]; then
-            source $module_config_path
+        if [[ -f $module_source_path ]]; then
+            source $module_source_path
             
             # append to found modules
             jpic_module_paths[$model_name]=$module_path
 
-            jpic_print_info "Loaded module $module_name from $module_path"
-        fi
-    done
-}
+            # attempt to call yourmodule_init()
+            if [[ $(declare -f $module_init) ]]; then
+                $module_init
+            fi
 
-#-------------------------- 
-## <p>Saves variables of a module in a file in a loadable format.</p>
-## <p>
-## If the module configuration path param was not specified then it will try to
-## to use $yourmodule_config_path <b>after</b> trying to call
-## yourmodule_config_path_setter(), which could set $yourmodule_config_path.
-## </p><p>
-## Note that it will automatically try to create missing directories and inform
-## the user.
-## </p>
-## @param Module name
-## @param Module configuration path (optionnal)
-## @return 2 If it could not save the module variables into a config file.
-#-------------------------- 
-function jpic_module_save() {
-    local usage="jpic_module_save \$module_name [\$module_config_path]"
-    local module_name="$1"
-    local module_config_path="$2"
-    # config path variable callback
-    local module_config_path_setter="${module_name}_set_config_path"
-    # config path variable
-    local module_config_path_varname="${module_name}_config_path"
-    # module variables array
-    local module_variables="${module_name}_variables[@]"
-
-    if [[ $module_name == "" ]]; then
-        echo "$usage"
-        return 2
-    fi
-
-    # if $2 was not specified
-    # and ${module_name}_set_config_path is a function
-    if [[ -n $module_config_path ]] && [[ $(declare -f $module_config_path_setter) ]]; then
-        # run the function
-        $module_config_path_setter
-    # elif $2 was not specified
-    # and ${module_name}_config_path is not a non-zero variable
-    elif [[ -z $module_config_path ]] && [[ -n ${!module_config_path_varname} ]]; then
-        # use that variable
-        module_config_path="${!module_config_path_varname}"
-    else # die
-        jpic_print_error "Died: could not figure ${module_name} config path"
-        return 2
-    fi
-
-    if [[ ! -f $module_config_path ]]; then
-        # make required directories
-        local directory=${module_config_path%/*}
-        mkdir -p $directory
-        jpic_print_info "Created $directory for $module_config_path"
-        touch $module_config_path
-    fi
-
-    for variable in ${!module_variables}; do
-        local value="${!variable}"
-
-        grep -q "^${variable}=\"[^\"]*\"$" $module_config_path
-
-        if [[ $? -eq 0 ]]; then
-            sed -i -e "s@${variable}=.*@${variable}=\"$value\"@" $module_config_path
-        else
-            echo "${variable}=\"${value}\"" >> $module_config_path
+            jpic_print_info "Initialised module $module_name from $module_path"
         fi
     done
 }
