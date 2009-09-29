@@ -1,0 +1,5 @@
+alias commit="vcs_commit"
+alias add="vcs_add"
+alias addi="vcs_add_interactive"
+alias vdiff="vcs_diff"
+alias ignore="vcs_ignore"

@@ -1,0 +1,5 @@
+alias commit="vps_commit"
+alias add="vps_add"
+alias addi="vps_add_interactive"
+alias vdiff="vps_diff"
+alias ignore="vps_ignore"
