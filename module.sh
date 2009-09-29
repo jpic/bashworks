@@ -205,6 +205,10 @@ function module_blacklist_add() {
 ##
 ## It is useful to allow a module to be divided in submodules, it allows
 ## yourmodule_source() to source submodules.
+##
+## Example usage:
+##
+##     source $(module_get_path yourmodule)/yoursubmodule.sh
 ## 
 ## @Param   Module name
 #--------------------------
