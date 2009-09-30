@@ -190,6 +190,11 @@ function module_blacklist_check() {
 ##    module_blacklist_add yourmodule
 #--------------------------
 function module_blacklist_add() {
+    for module_name in $module_blacklist; do
+        if [[ $module_name == $1 ]]; then
+            return 0
+        fi
+    done
     module_blacklist+=("$1")
 }
 
