@@ -49,11 +49,9 @@ function break_source() {
 ##
 ## This function is responsible for putting the module in a useable state.
 ##
-## It tryes to set some defaults and load the user configuration data.
+## It tryes to set some defaults.
 #--------------------------
 function break_init() {
     break_interval=7200
     break_conf_path=${HOME}/.break
-
-    break_conf_load
 }

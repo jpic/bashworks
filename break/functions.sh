@@ -10,9 +10,15 @@
 #--------------------------
 function break_request() {
     if [[ -z $break_previous ]]; then
-        echo "Granted, enjoy"
+        echo "Enjoy your first break"
         break_do
-    elif (( $(( $(date +%s) - $break_previous )) < $break_interval )); then
+        return 0
+    fi
+
+    declare now="$(date +%s)"
+    actual_interval=$(( $now - $break_previous ))
+    
+    if (( $actual_interval < $break_interval )); then
         echo "Denied, get back to work."
     else
         echo "Granted, enjoy"
