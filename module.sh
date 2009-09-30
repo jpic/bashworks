@@ -275,7 +275,9 @@ print_info () {
 ##	@Stderr	Formated message
 #--------------------------
 print_debug () {
-    echo -e "   $*" >&2
+    if [[ -n $MODULES_DEBUG ]]; then
+        echo -e "   $*" >&2
+    fi
 }
 # }}}
 

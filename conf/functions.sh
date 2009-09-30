@@ -22,6 +22,9 @@ function conf_save() {
     local conf_variables="$*"
     # Skip the first parameter which is for $conf_path
     conf_variables=${conf_variables#* }
+    
+    print_debug Will save ${conf_variables[@]} to $conf_path
+
     local conf_value=""
 
     if [[ ! -f $conf_path ]]; then
