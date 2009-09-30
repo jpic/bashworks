@@ -17,6 +17,20 @@
 ## take a break.
 ##
 ## In case of rebellion then break_do() should be directly used.
+##
+## Example usage:
+## 
+##     jpic@natacha:~$ break_conf_interactive 
+##     $break_interval [7200]: 4
+##     Changed break_interval to 4
+##     jpic@natacha:~$ break_request && break_request && sleep 5 && break_request
+##     Granted, enjoy
+##     Denied, get back to work.
+##     Granted, enjoy
+##     jpic@natacha:~$ cat /home/jpic/.break
+##     break_interval="4"
+##     break_previous="1254303082"
+##
 #--------------------------
 
 #--------------------------
