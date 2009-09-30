@@ -12,7 +12,7 @@ function break_request() {
     if [[ -z $break_previous ]]; then
         echo "Granted, enjoy"
         break_do
-    elif [[ $(( $(date +%s) - $break_previous )) < $break_interval ]]; then
+    elif (( $(( $(date +%s) - $break_previous )) < $break_interval )); then
         echo "Denied, get back to work."
     else
         echo "Granted, enjoy"
