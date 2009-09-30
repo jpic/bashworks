@@ -275,9 +275,7 @@ print_info () {
 ##	@Stderr	Formated message
 #--------------------------
 print_debug () {
-    if [[ -n $jpic_debug ]]; then
-        echo -e "   $*" >&2
-    fi
+    echo -e "   $*" >&2
 }
 # }}}
 
