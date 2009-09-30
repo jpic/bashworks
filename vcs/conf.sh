@@ -6,11 +6,17 @@
 ##	@License	Apache
 #--------------------------
 
+unset vcs_variables
+vcs_variables+=("src_path")
+vcs_variables+=("type")
+# prefix variable names
+vcs_variables=("${vcs_variables[@]/#/vcs_}")
+
 #--------------------------
-## Save your vcs configuration
+## Save your vcs configuration to the current source path in file .vcs.sh
 #--------------------------
 function vcs_conf_save() {
-    conf_save vcs
+    conf_save $vcs_src_path/.vcs.sh $vcs_variables
 }
 
 #--------------------------
@@ -18,20 +24,14 @@ function vcs_conf_save() {
 ## @param Project name
 #--------------------------
 function vcs_conf_load() {
-    conf_load vcs
-}
-
-#--------------------------
-## Set the configuration path relative to the sources path
-#--------------------------
-function vcs_conf_path_setter() {
-    vcs_conf_path="${vcs_src_path}/.vcs.sh"
+    conf_load $vcs_src_path/.vcs.sh $vcs_variables
 }
 
 #--------------------------
 ## Interactive module configuration
 #--------------------------
 function vcs_conf_interactive() {
-    conf_interactive vcs
+    conf_interactive $vcs_variables
+    vcs_conf_save
 }
 

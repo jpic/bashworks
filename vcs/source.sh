@@ -10,24 +10,9 @@
 ## Declares module configuration variable names.
 #--------------------------
 function vcs_source() {
-    unset vcs_variables
-    vcs_variables+=("src_path")
-    vcs_variables+=("type")
-    # prefix variable names
-    vcs_variables=("${vcs_variables[@]/#/vcs_}")
-
-    jpic_module_source vcs functions.sh
-    jpic_module_source vcs conf.sh
-    jpic_module_source vcs aliases.sh
-
-    vcs_defaults_setter
-}
-
-#--------------------------
-## Sets the default vcs interval to 7200 and conf path to ~/.vcs
-#--------------------------
-function vcs_defaults_setter() {
-    return
+    source $(module_get_path vcs)/functions.sh
+    source $(module_get_path vcs)/conf.sh
+    source $(module_get_path vcs)/aliases.sh
 }
 
 #--------------------------
@@ -39,13 +24,11 @@ function vcs() {
     vcs_src_path="$1"
 
     if [[ -z $vcs_src_path ]]; then
-        jpic_print_error "Usage: $usage"
+        print_error "Usage: $usage"
         return 2
     fi
 
-    vcs_conf_path_setter
-
-    if [[ ! -f $vcs_conf_path ]]; then
+    if [[ ! -f $vcs_src_path/.vcs.sh ]]; then
         vcs_conf_save
     else
         vcs_conf_load
@@ -58,7 +41,7 @@ function vcs() {
             print_debug "Checking for $vcs_type in $vcs_src_path"
             if [[ -d ".$vcs_type" ]]; then
                 print_debug "Found $vcs_type in $vcs_src_path"
-                jpic_module_source vcs "${vcs_type}.sh"
+                source $(module_get_path vcs)/${vcs_type}.sh
             fi
         done
     fi
