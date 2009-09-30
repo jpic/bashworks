@@ -12,11 +12,6 @@
 ## Declares module configuration variable names and sets the os.
 #--------------------------
 function os_source() {
-    unset os_variables
-    os_variables+=("type")
-    # prefix variable names
-    os_variables=("${os_variables[@]/#/os_}")
-
     uname -a | grep -q -i bsd
     if [[ $? -eq 0 ]]; then
         os_type=bsd
