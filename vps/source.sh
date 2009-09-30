@@ -6,67 +6,80 @@
 ##	@License	Apache
 #--------------------------
 
-VPS_DIR="/vservers"
-VPS_CONFIG_FILE="vps.sh"
+if [[ -z $VPS_DIR ]]; then
+    VPS_DIR="/vservers"
+fi
+if [[ -z $VPS_ETC_DIR ]]; then
+    VPS_ETC_DIR="/etc/vservers"
+fi
 
 #--------------------------
 ## Declares module configuration variable names.
 #--------------------------
 function vps_source() {
-    unset vps_variables
-    vps_variables+=("name")
-    vps_variables+=("root")
-    vps_variables+=("id")
-    vps_variables+=("foo")
-    # prefix variable names
-    vps_variables=("${vps_variables[@]/#/vps_}")
-
-    jpic_module_source vps functions.sh
-    jpic_module_source vps conf.sh
-    jpic_module_source vps aliases.sh
-
-    vps_defaults_setter
+    source $(module_get_path vps)/functions.sh
+    source $(module_get_path vps)/conf.sh
 }
 
 #--------------------------
-## Sets the default vps interval to 7200 and conf path to ~/.vps
+## Prompts the admin for the host ip to use
 #--------------------------
-function vps_defaults_setter() {
-    vps_id=$(vps_get_free_id)
+function vps_network_setup_interactive() {
+    if [[ -z $VPS_INTERNET_MAP ]] || [[ -z $VPS_INTRANET_MAP ]]; then
+        print_error "VPS_INTERNET_MAP and VPS_INTRANET_MAP are not set, cannot interactively configure network"
+        module_blacklist_add vps
+        return 2
+    fi
+
+    local choice=""
+    local line=""
+    
+    print_info "Please select the network for this VPS"
+
+    for index in ${!VPS_INTERNET_MAP[@]}; do
+        line="${index}) "
+        
+        if [[ -n $VPS_LABEL_MAP ]]; then
+            line+="${VPS_LABEL_MAP[$index]} "
+        fi
+
+        line+="${VPS_INTERNET_MAP[$index]} "
+        line+="vps_ip: ${VPS_INTRANET_MAP[$index]}${vps_id}"
+
+        echo $line
+    done
 }
 
 #--------------------------
 ## Initialises a vps configuration with a given name
 ## @param VPS name
+## @param Silent (optionnal)
 #--------------------------
 function vps() {
     local usage="vps \$vps_name"
     vps_name="$1"
 
     if [[ -z $vps_name ]]; then
-        jpic_print_error "Usage: $usage"
+        print_error "Usage: $usage"
     fi
 
     vps_root="${VPS_DIR}/${vps_name}"
 
-    vps_conf_path_setter
-
     if [[ ! -f $vps_conf_path ]]; then
-        vps_defaults_setter
+        vps_id=$(vps_get_free_id)
+        vps_master="master"
+        vps_mailer="mail"
+        vps_packages_dir="${VPS_DIR}/${vps_master}/usr/portage/packages"
+        vps_stage_name="gentoo-vserver-i686-20090611.tar.bz2"
+        vps_stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${vps_stage_name}";
+        vps_stage_path="/tmp/${vps_stage_name}"
+        
+        vps_network_setup_interactive
+
         vps_conf_save
     else
         vps_conf_load
     fi
     
     cd $vps_src_path
-
-    if [[ -z $vps_type ]]; then
-        for vps_type in git hg svn; do
-            jpic_print_debug "Checking for $vps_type in $vps_src_path"
-            if [[ -d ".$vps_type" ]]; then
-                jpic_print_debug "Found $vps_type in $vps_src_path"
-                jpic_module_source vps "${vps_type}.sh"
-            fi
-        done
-    fi
 }

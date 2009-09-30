@@ -6,11 +6,26 @@
 ##	@License	Apache
 #--------------------------
 
+unset vps_variables
+vps_variables+=("name")
+vps_variables+=("root")
+vps_variables+=("id")
+vps_variables+=("packages_dir")
+vps_variables+=("master")
+vps_variables+=("mailer")
+vps_variables+=("stage_name")
+vps_variables+=("stage_url")
+vps_variables+=("admin")
+vps_variables+=("ip")
+vps_variables+=("host_ip")
+# prefix variable names
+vps_variables=("${vps_variables[@]/#/vps_}")
+
 #--------------------------
 ## Save your vps configuration
 #--------------------------
 function vps_conf_save() {
-    conf_save vps
+    conf_save $VPS_ETC_DIR/${vps_name}.config $vps_variables
 }
 
 #--------------------------
@@ -18,20 +33,12 @@ function vps_conf_save() {
 ## @param Project name
 #--------------------------
 function vps_conf_load() {
-    conf_load vps
-}
-
-#--------------------------
-## Set the configuration path relative to the sources path
-#--------------------------
-function vps_conf_path_setter() {
-    vps_conf_path="${vps_root}/vps.sh"
+    conf_load $VPS_ETC_DIR/${vps_name}.config
 }
 
 #--------------------------
 ## Interactive module configuration
 #--------------------------
 function vps_conf_interactive() {
-    conf_interactive vps
+    conf_interactive $vps_variables
 }
-
