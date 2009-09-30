@@ -7,24 +7,27 @@
 #--------------------------
 
 #--------------------------
-## Start music player
+## This starts or reattach a screen session with both the player and the
+## remote controll in its windows.
+#--------------------------
+function mpd_screen() {
+    screen -S music -c $mpd_screenrc -D -R
+}
+
+#--------------------------
+## Starts your player command in a loop.
+##
+## Press Ctrl+C a few times to stop it.
 #--------------------------
 function mpd_play() {
     while true;
-        do mplayer $mpd_url
+        do $mpd_player $mpd_url
     done
 }
 
 #--------------------------
-## Start remote control
+## Starts ncmpc to remote controll mpd.
 #--------------------------
 function mpd_control() {
     ncmpc --host=$mpd_host --password=$mpd_password --port=$mpd_port
-}
-
-#--------------------------
-## Start or reattach screen
-#--------------------------
-function mpd_screen() {
-    screen -S music -c $mpd_screenrc -D -R
 }
