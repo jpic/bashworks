@@ -4,36 +4,40 @@
 ##	@Synopsis	Sound volume management module
 ##	@Copyright	Copyright 2009, James Pic
 ##	@License	Apache
+##
+## This module provides a simple way to deal with volume management
+## under both bsd and linux systems.
+##
+## Volume incrementation and decrementation interval is saveable as well
+## as current volume.
+##
+## This can easely be used in scripts which your favourite window manager
+## can call.
 #--------------------------
 
 #--------------------------
-## Declares module configuration variable names.
+## Module source callback
+##
+## This function should be called when the module is loaded, it will
+## take care of loading the conf and function submodules.
 #--------------------------
 function volume_source() {
-    unset volume_variables
-    volume_variables+=("interval")
-    volume_variables+=("current")
-    # prefix variable names
-    volume_variables=("${volume_variables[@]/#/volume_}")
-
-    jpic_module_source volume functions.sh
-    jpic_module_source volume conf.sh
-
-    volume_defaults_setter
+    source $(module_get_path volume)/functions.sh
+    source $(module_get_path volume)/conf.sh
 }
 
 #--------------------------
-## Sets the default volume interval to 7200 and conf path to ~/.volume
+## Module initialization callback.
+##
+## This function is responsible of preparing the module in a useable state
+## by setting a default volume interval and getting the current volume.
+##
+## It also attemps to load the user conf.
 #--------------------------
-function volume_defaults_setter() {
+function volume_init() {
     volume_interval=5
     volume_current=$(volume_get_current)
     volume_conf_path=${HOME}/.volume
-}
 
-#--------------------------
-## Load configuration on init
-#--------------------------
-function volume_init() {
     volume_conf_load
 }
