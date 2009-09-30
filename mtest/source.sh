@@ -11,9 +11,8 @@
 #--------------------------
 #--------------------------
 function mtest_source() {
-#    source $(module_get_path mtest)/functions.sh
-    source $(module_get_path mtest)/runner.sh
-    source $(module_get_path mtest)/assertions.sh
+    source $(module_get_path mtest)/bashunit/runner.sh
+    source $(module_get_path mtest)/bashunit/assertions.sh
 }
 
 #--------------------------
@@ -31,15 +30,15 @@ function mtest_init() {
 #--------------------------
 #--------------------------
 function mtest() {
-    local bashunit_dir=$(module_get_path mtest)/bashunit
+    local bashunit_dir=$(module_get_path mtest)/bashunit/current
     local module_name=$1
     local module_path=$(module_get_path $module_name)
 
-    if [[ -f $module_path/tests.sh ]]; then
-        source $module_path/tests.sh
+    if [[ -f $module_path/bashunit/tests.sh ]]; then
+        source $module_path/bashunit/tests.sh
     fi
 
-    source $bashunit_dir/bashunit_impl $bashunit_dir/resultcollector $module_path/tests/*.sh
+    source $bashunit_dir/bashunit_impl $bashunit_dir/resultcollector $module_path/bashunit/*.sh
 
     ResultCollector Init
     if test -z "$testCase"; then
