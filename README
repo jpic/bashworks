@@ -21,6 +21,15 @@ Versions
 0.2_alpha5: convenient interactive module configuration UI: conf_module()
 0.3_alpha0: major refactor
 0.4_alpha0: "remove 50% of code" refactor
+0.4_alpha1: Test break
+0.4_alpha2: Test conf
+0.4_alpha3: Test hack
+0.4_alpha4: Test mpd
+0.4_alpha5: Test os
+0.4_alpha6: Test todo
+0.4_alpha7: Test tpl
+0.4_alpha8: Test vcs
+0.4_alpha9: Test vps
 
 Roadmap
 ```````
