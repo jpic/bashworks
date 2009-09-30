@@ -62,7 +62,7 @@ function conf_load() {
     if [[ -f $conf_path ]]; then
         source $conf_path
     else
-        jpic_print_error "$conf_path does not exist, not loaded"
+        print_error "$conf_path does not exist, not loaded"
         return 2
     fi
 }

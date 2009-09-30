@@ -16,13 +16,13 @@ function todo_add() {
     local todo_name="$*"
 
     if [[ -z $todo_name ]]; then
-        jpic_print_error "Usage: $usage"
+        print_error "Usage: $usage"
         return 2
     fi
 
     todo_list+=("$todo_name")
 
-    jpic_print_info "Added: $todo_name"
+    print_info "Added: $todo_name"
 }
 
 #--------------------------
@@ -47,15 +47,15 @@ function todo_delete() {
 
     # BUG: can't remove todo indexed "0"
     if [[ -z $todo_id ]]; then
-        jpic_print_error "Usage: $usage"
+        print_error "Usage: $usage"
         return 2
     fi
 
     unset todo_list[$todo_id]
 
     if [[ -z $todo_name ]]; then
-        jpic_print_warn "#$todo_id: empty name"
+        print_warn "#$todo_id: empty name"
     fi
 
-    jpic_print_info "Removed #$todo_id: $todo_name"
+    print_info "Removed #$todo_id: $todo_name"
 }

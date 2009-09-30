@@ -55,9 +55,9 @@ function vcs() {
 
     if [[ -z $vcs_type ]]; then
         for vcs_type in git hg svn; do
-            jpic_print_debug "Checking for $vcs_type in $vcs_src_path"
+            print_debug "Checking for $vcs_type in $vcs_src_path"
             if [[ -d ".$vcs_type" ]]; then
-                jpic_print_debug "Found $vcs_type in $vcs_src_path"
+                print_debug "Found $vcs_type in $vcs_src_path"
                 jpic_module_source vcs "${vcs_type}.sh"
             fi
         done

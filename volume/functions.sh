@@ -15,7 +15,7 @@ function volume_get_current() {
             mixer vol | grep -o ':[0-9]*' | cut -c 2-5
             ;;
         linux)
-            jpic_print_error TODO: implement Linux support? But linux has mute support so ...
+            print_error TODO: implement Linux support? But linux has mute support so ...
             ;;
     esac
 }
