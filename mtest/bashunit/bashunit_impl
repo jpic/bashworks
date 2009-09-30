@@ -1,0 +1,395 @@
+#!/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+declare __bashunit_g_suiteRunList
+declare __bashunit_g_testSuite
+declare __bashunit_g_testFileName
+declare __bashunit_g_testLineNumber
+declare __bashunit_g_testMessage
+
+__bashunit_errorExit()
+{
+	echo "$1" 2>&1
+}
+
+__bashunit_basename()
+{
+	local basedName=`basename $1`
+	local strippedDot
+	read -d. strippedDot<<eof
+$basedName
+eof
+	echo $strippedDot
+}
+
+__bashunit_renameFunction()
+{
+	local TEMPFILE=`mktemp -q /tmp/bashunit.XXXXXX`
+	local line=""
+	local firstLine=1
+	declare -f $1 | \
+		while read line; do
+			if test $firstLine = 1; then
+				echo "$2 ()"
+				firstLine=0
+			else
+				echo "$line"
+			fi
+		done > $TEMPFILE
+	unset $1
+	source $TEMPFILE
+	rm -f $TEMPFILE
+}
+
+__bashunit_mangle()
+{
+	echo _${1}_${2}
+}
+
+__bashunit_setSuiteRun()
+{
+	local suiteIndex=$1
+	local setupFunction=""
+	local teardownFunction=""
+	local testSuiteRun=""
+	local testList
+	local testName
+
+	if declare -fF Setup > /dev/null ; then
+		setupFunction=`__bashunit_mangle $suiteName Setup`
+		__bashunit_renameFunction Setup $setupFunction
+	fi
+	if declare -fF Teardown > /dev/null ; then
+		teardownFunction=`__bashunit_mangle $suiteName Teardown`
+		__bashunit_renameFunction Teardown $teardownFunction
+	fi
+	testList=`__bashunit_getTests`
+	for testName in $testList; do
+		 __bashunit_renameFunction $testName `__bashunit_mangle $suiteName $testName`
+		 testName=`__bashunit_mangle $suiteName $testName`
+		 testSuiteRun="$testSuiteRun $setupFunction $testName $teardownFunction"
+	done
+	__bashunit_g_suiteRunList[$suiteIndex]="$testSuiteRun"
+}
+
+__bashunit_source()
+{
+	local TEMPFILE=`mktemp -q /tmp/bashunit.XXXXXX`
+	awk -v __bashunit_test_sourceFile=$1 '
+		/assert/		{
+							printf ("__bashunit_g_testFileName=%s; __bashunit_g_testLineNumber=%d;", __bashunit_test_sourceFile, NR, $0);
+						}
+						{
+							printf ("%s\n", $0) ;
+						}
+	' $1 > $TEMPFILE
+	source $TEMPFILE
+    cp $TEMPFILE /tmp/bu
+	rm -f $TEMPFILE
+}
+
+__bashunit_getTests()
+{
+	local ignore1
+	local ignore2
+	local funcName
+	local prefix
+	declare -fF |
+		while read ignore1 ignore2 funcName; do
+			read -n 4 prefix <<<$funcName
+			if test "$prefix" = test; then
+				echo $funcName
+			fi
+		done
+}
+
+__bashunit_utSetup()
+{
+	local suiteIndex=$2
+	local suiteName=`__bashunit_basename $1`
+	if ! __bashunit_source $1 ; then
+		__bashunit_errorExit "Cannot source $1 -- Can't proceed"
+		exit 1 ;
+	fi
+	local testList=`__bashunit_getTests`
+
+	if test -z "$testList"; then
+		return 1
+	fi
+	__bashunit_g_testSuite[$suiteIndex]=$suiteName
+	__bashunit_setSuiteRun $suiteIndex
+	return 0
+}
+
+__bashunit_getTestList()
+{
+	local suiteList=`GetSuiteList`
+	local suiteIndex=0
+	for i in $suiteList; do
+		if test "$1" = $i; then
+			break ;
+		fi
+		let suiteIndex++
+	done
+	if test $suiteIndex  -lt ${#__bashunit_g_testSuite[*]}; then
+		echo ${__bashunit_g_suiteRunList[$suiteIndex]}
+		return
+	fi
+	local suiteName=`__bashunit_suiteName $1`
+	if test $1 = $suiteName; then
+		return
+	fi
+	testName=`__bashunit_testName $1`
+	local testList=""
+	if ! declare -f `__bashunit_mangle $suiteName $testName` > /dev/null; then
+		return
+	fi
+	if declare -f `__bashunit_mangle $suiteName Setup` > /dev/null; then
+		testList=`__bashunit_mangle $suiteName Setup`
+	fi
+	testList="$testList `__bashunit_mangle $suiteName $testName`"
+	if declare -f `__bashunit_mangle $suiteName Teardown`> /dev/null; then
+		testList="$testList `__bashunit_mangle $suiteName Teardown`"
+	fi
+	echo $testList
+}
+
+__bashunit_normalizeFunction()
+{
+	local aname
+	IFS=_ read -a aname <<eof
+$1
+eof
+	if test ${#aname[@]} = 3 && (test ${aname[2]} = Setup || test ${aname[2]} = Teardown); then
+			return ;
+	fi
+	echo -n ${aname[1]}::
+	for((i=2; i < ${#aname[@]} - 1; i++)); do
+		echo -n ${aname[i]}_
+	done
+	echo ${aname[i]}
+}
+
+__bashunit_suiteName()
+{
+	local aname
+	IFS=: read -a aname <<eof
+$1
+eof
+	echo ${aname[0]}
+}
+
+__bashunit_testName()
+{
+	local aname
+	IFS=: read -a aname <<eof
+$1
+eof
+	echo ${aname[2]}
+}
+
+__bashunit_callListeners()
+{
+	if test -z "$BASHUNIT_TESTLISTENERS" || test -z "$2"; then
+		return
+	fi
+	local i ;
+	for i in $BASHUNIT_TESTLISTENERS; do
+		$i $*
+	done
+}
+
+############## Public Interface #################
+### Interfaces available to Runners
+
+GetSuiteList()
+{
+	local suiteList=""
+	for ((i=0; i < ${#__bashunit_g_testSuite[*]}; i++)); do
+		suiteList="$suiteList ${__bashunit_g_testSuite[$i]}"
+	done
+	echo $suiteList
+}
+
+GetTestList()
+{
+	local testList=""
+	for ((i=0; i < ${#__bashunit_g_testSuite[*]}; i++)); do
+		testList="$testList ${__bashunit_g_testSuite[$i]}"
+		for testName in ${__bashunit_g_suiteRunList[$i]}; do
+			testList="$testList `__bashunit_normalizeFunction $testName`"
+		done
+	done
+	echo $testList
+}
+
+RunAll()
+{
+	local i;
+	local runList=""
+	for ((i=0; i < ${#__bashunit_g_testSuite[*]}; i++)); do
+		runList="$runList Run ${__bashunit_g_testSuite[$i]};"
+	done
+	eval $runList
+}
+
+Run()
+{
+	local i
+	local suiteName=`__bashunit_suiteName $1`
+	local testList=`__bashunit_getTestList $1` ;
+	local currentTest=""
+	local isFailed=1
+	local testName
+	trap "isFailed=0; continue 32000;" USR1
+	for testName in $testList; do
+		if test $isFailed = 0; then
+			isFailed=1
+			__bashunit_callListeners EndFailure $currentTest $__bashunit_g_testFileName \
+						$__bashunit_g_testLineNumber "$__bashunit_g_testMessage"
+		fi
+		currentTest=`__bashunit_normalizeFunction $testName`
+		__bashunit_callListeners Start $currentTest
+		eval $testName
+		__bashunit_callListeners EndSuccess $currentTest
+	done
+	if test $isFailed = 0; then
+		isFailed=1
+		__bashunit_callListeners EndFailure $currentTest $__bashunit_g_testFileName \
+							$__bashunit_g_testLineNumber "$__bashunit_g_testMessage"
+	fi
+	trap - USR1
+}
+
+### Interfaces available to writing TestCases
+
+assert_exitcode_message()
+{
+	__bashunit_g_testMessage="$1"
+	shift
+	local exitcode="$1"
+	shift
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	eval $commandString
+	if test $? != $exitcode ; then
+		kill -USR1 $$
+	fi
+}
+
+assert_exitcode()
+{
+	__bashunit_g_testMessage="Assertion Failed"
+	local exitcode="$1"
+	shift
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	eval $commandString
+	if test $? != $exitcode ; then
+		kill -USR1 $$
+	fi
+}
+
+assert_pass_message()
+{
+	__bashunit_g_testMessage="$1"
+	shift
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if ! eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+assert_pass()
+{
+	__bashunit_g_testMessage="Assertion Failed"
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if ! eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+assert_fail_message()
+{
+	__bashunit_g_testMessage="$1"
+	shift
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+assert_fail()
+{
+	__bashunit_g_testMessage="Assertion Failed"
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+assert_message()
+{
+	__bashunit_g_testMessage="$1"
+	shift
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if ! eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+assert()
+{
+	__bashunit_g_testMessage="Assertion Failed"
+	local commandString
+	local i
+	for ((i = 1; i <= $#; i++)); do
+		commandString="$commandString \"`eval echo \\\$$i`\""
+	done
+	if ! eval $commandString; then
+		kill -USR1 $$
+	fi
+}
+
+############# Execution starts here #############
+
+__bashunit_g_suiteIndex=0
+for i in $* ; do
+	if __bashunit_utSetup $i $__bashunit_g_suiteIndex; then
+		let __bashunit_g_suiteIndex++
+	fi
+done

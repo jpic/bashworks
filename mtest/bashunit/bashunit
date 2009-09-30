@@ -1,0 +1,98 @@
+#!/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+__which() 
+{ 
+    local pathElements;
+    IFS=':' read -a pathElements <<<$PATH
+
+    for (( i=0 ; i < ${#pathElements[@]} ; i++ ))
+    do
+        if test -x ${pathElements[i]}/$1; then
+            echo ${pathElements[i]}/$1;
+            return 0;
+        fi;
+    done;
+    return 1
+}
+
+TextDotListener()
+{
+	case $1 in
+		EndSuccess)
+			echo -n "."
+			;;
+		EndFailure)
+			echo -n "F"
+			;;
+	esac
+}
+
+TextOutputter()
+{
+	local failed=`ResultCollector GetFailure`
+	local run=`ResultCollector GetRun`
+	local success=`ResultCollector GetSuccess`
+	if test $failed != 0; then
+		echo "FAILURES!!!"
+	fi
+	echo "Runs = $run Success = $success Failures = $failed"
+	if test $failed == 0; then
+		return
+	fi
+	local failureList=`ResultCollector GetFailures`
+	local test
+	for test in $failureList; do
+		echo "`$test failedFileName`:`$test failedLineNumber`: `$test failedTest` (`$test failedMessage`)"
+	done
+}
+
+
+__bashunit_usage()
+{
+	echo bashunit [ --run testcase ] file...
+	exit 0
+}
+
+if test $# -eq 0; then
+	__bashunit_usage
+fi
+
+test $1 = "--run" && test $# -lt 2 && __bashunit_usage
+
+test $1 = "--run" && testCase=$2 && shift && shift
+
+bashunit_dir=`dirname $0`
+if ! test -x $bashunit_dir/bashunit; then
+	bashunit_dir=`__which bashunit`
+fi
+
+source $bashunit_dir/bashunit_impl $bashunit_dir/resultcollector $*
+
+if test -z "$BASHUNIT_OUTPUTTER"; then
+	BASHUNIT_OUTPUTTER="TextOutputter"
+fi
+
+if test -z "$BASHUNIT_TESTLISTENERS"; then
+	BASHUNIT_TESTLISTENERS="TextDotListener" ;
+fi
+
+BASHUNIT_TESTLISTENERS="$BASHUNIT_TESTLISTENERS ResultCollector"
+
+ResultCollector Init
+if test -z "$testCase"; then
+	RunAll
+else
+	Run $testCase
+fi
+
+echo
+$BASHUNIT_OUTPUTTER

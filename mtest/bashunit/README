@@ -1,0 +1,163 @@
+Introduction
+============
+
+bashunit is an XP style framework for bash scripting. We have successfully used during one of
+our projects where we developed a XSL using TDD (Test Driven Development). bashunit is released
+under LGPL and can be used for internal/external development.
+
+Files
+=====
+bashunit - a Text based runner
+bashunit_impl - The crux of bashunit implementation
+resultcollector - A test listener used by bashunit script
+
+README - This file
+LICENSE - Copy of LGPL V2
+
+Makefile - Simplification for running tests and installation
+
+The rest of the files in the distribution are UTs and examples for bashunit.
+
+Installing
+==========
+
+1. Doing make install installs the bashunit, bashunit_impl, resultcollector in /usr/local/bin and
+   README in /usr/share/doc/bashunit
+
+2. One can manually copy the files bashunit, bashunit_impl and resultcollector into a directory in
+   the path.
+
+3. Alternatively, use from the current directory invoking ./bashunit.
+
+Getting started
+===============
+
+1. Writing testcases and fixtures
+   In bashunit each testcase is a function whose name starts with "test". These testcases are
+   collected into a script file (eg. ExampleTest.sh). Each of the script file can optionally have
+   two functions Setup and Teardown, that are executed at the beginning and end of a testcase.
+   Please note that the Teardown function is called even when a test case fails. 
+   The basename of the script file is used as a suitename. Note that the basename is created by
+   removing everything past the first '.' and removing the directory name component.
+   For example:
+    Script Name: [ExampleTest1.sh] Suite Name: [ExampleTest1]
+	Script Name: [Scripts/ExampleTest.sh] Suite Name: [ExampleTest]
+	Script Name: [Scripts/ExampleTest.first.sh] Suite Name: [ExampleTest]
+	Script Name: [ExampleTest] Suite Name: [ExampleTest]
+
+   There is no other way to create suites of tests other than keeping all the tests in a single
+   script file.
+
+   Assertions
+   ----------
+   The testcases can make use of the following type of assertions:
+   assert
+   		usage: assert <command>
+		Passes only if the command exits with an exit code of 0.
+
+   assert_pass
+   		usage: assert_pass <command>
+		Passes only if the command exits with an exit code of 0.
+
+   assert_fail
+   		usage: assert_fail <command>
+		Passes only if the command exits with an exit code of non zero.
+
+   assert_exitcode
+   		usage: assert_exitcode <exitcode> <command>
+		Passes only if the command exits with an exit code of <exitcode>.
+
+   and their with-message counter-parts
+
+   assert_message
+   		usage: assert_message <command>
+		Passes only if the command exits with an exit code of 0.
+
+   assert_pass_message
+   		usage: assert_pass_message <command>
+		Passes only if the command exits with an exit code of 0.
+
+   assert_fail_message
+   		usage: assert_fail_message <command>
+		Passes only if the command exits with an exit code of non zero.
+
+   assert_exitcode_message
+   		usage: assert_exitcode_message <exitcode> <command>
+		Passes only if the command exits with an exit code of <exitcode>.
+
+
+2. Running tests
+	Now that the testsutes are created the tests can be run using bashunit command.
+
+	usage: bashunit [ --run testsuite/testcase ] script_file ...
+
+	Basically run bashunit by passing all the test script files on the command line. By default
+	bashunit runs all the tests it finds in all the script files - running Setup and Teardown
+	for each testcase (if needed) on the way. Non-test script files also on the command line to
+	bashunit.
+
+	Individual test case or a suite can be run by passing it on command line to bashunit
+	with --run option. A testcase is referred to as <SuiteName>::<TestName>.
+
+	For example, if ExampleTest.sh has testExample1 and testExample2: Then
+
+	Running
+		bashunit ExampleTest.sh
+
+		will run testExample1 and testExample2
+
+	Running
+		bashunit --run ExampleTest ExampleTest.sh
+
+		will run testExample1 and testExample2
+
+	Running
+		bashunit --run ExampleTest::testExample2
+
+		will run testExample2 only.
+
+	bashunit mangles the names of the Setup, Teardown and the testcases in each file, so one can
+	have testcases with the same names in different script files (not any other functions).
+
+Enhancing bashunit
+==================
+
+1. Adding a new listener
+   Create listener script/function. Pass the name in BASHUNIT_TESTLISTENERS environment
+   variable. Multiple listeners can also be created.
+   Each listener is called with the following arguments:
+   	<action> <testName> [ failedFilename failedLinenumber message...]
+	where
+		action is either Start, EndSuccess, EndFailure
+		testName is the name of the testcase
+		failedFilename is the name of the file where the assertion failed
+		failedLinenumber is the line number in the file
+		message... is the message associated with the assert
+
+   Note that the message can be multiple arguments and care should be taken.
+   Look at the code in resultcollector, bashunit to find how one can write new listeners.
+
+2. Creating new runners
+   A runner can be created (to replace bashunit command). Basically, bashunit_impl provides the
+   following commands:
+	GetSuiteList
+		usage: list=`GetSuiteList`
+		$list will have all the suites defined
+
+	GetTestList
+		usage: list=`GetTestList`
+		$list will have all the tests (including suites) defined
+
+	RunAll
+		usage: RunAll
+		Runs all the defined testcases in the scripts
+
+	Run
+		usage: Run <testcase/testsuite>
+		Runs the given testsuite/testcase, as the case may be.
+
+	Look at the code in bashunit to find how one can write new runners.
+
+Enjoy!!!
+-- KD
+(kd@subexgroup.com)

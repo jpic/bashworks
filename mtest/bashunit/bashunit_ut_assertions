@@ -1,0 +1,83 @@
+#/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+source ./bashunit_impl BashunitAssertions.sh
+
+bashunit_assertListener()
+{
+	case $1 in
+		EndFailure)
+			shift; shift; shift; shift
+			messageFailure="$*"
+			;;
+	esac
+}
+
+BASHUNIT_TESTLISTENERS=bashunit_assertListener
+
+bashunit_ut_assertSuccess()
+{
+	messageActual=""
+	messageExpected="No assertions failed"
+	Run BashunitAssertions::testAssertSuccess
+	if test "$messageExpected" = "$messageActual"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$messageExpected]"
+		echo "actual:   [$messageActual]"
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_evalFunction()
+{
+	if test "$messageFailureExpected" = "$messageFailure"; then
+		echo $1 OK
+	else
+		echo "expected: [$messageFailureExpected]"
+		echo "actual:   [$messageFailure]"
+		echo $1 Failed
+	fi
+}
+
+bashunit_ut_assertMessage()
+{
+	messageFailureExpected="testAssertMessage failed"
+	Run BashunitAssertions::testAssertMessage
+	bashunit_ut_evalFunction $FUNCNAME
+}
+
+bashunit_ut_assertFailMessage()
+{
+	messageFailureExpected="testAssertFailMessage failed"
+	Run BashunitAssertions::testAssertFailMessage
+	bashunit_ut_evalFunction $FUNCNAME
+}
+
+bashunit_ut_assertPassMessage()
+{
+	messageFailureExpected="testAssertPassMessage failed"
+	Run BashunitAssertions::testAssertPassMessage
+	bashunit_ut_evalFunction $FUNCNAME
+}
+
+bashunit_ut_assertExitCodeMessage()
+{
+	messageFailureExpected="testAssertExitCodeMessage failed"
+	Run BashunitAssertions::testAssertExitCodeMessage
+	bashunit_ut_evalFunction $FUNCNAME
+}
+
+bashunit_ut_assertSuccess
+bashunit_ut_assertMessage
+bashunit_ut_assertFailMessage
+bashunit_ut_assertPassMessage
+bashunit_ut_assertExitCodeMessage

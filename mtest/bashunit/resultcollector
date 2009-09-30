@@ -1,0 +1,85 @@
+#!/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+__newFailure()
+{
+	local TEMPFILE=`mktemp -q failureXXXXXX`
+	local testName="$2"
+	local testFile="$3"
+	local testLine="$4"
+	shift; shift; shift; shift;
+	local testMessage="$*"
+	cat > $TEMPFILE <<EOF
+	$TEMPFILE()
+	{
+		case \$1 in
+			failedTest)
+				echo $testName
+				;;
+			failedFileName)
+				echo $testFile
+				;;
+			failedLineNumber)
+				echo $testLine
+				;;
+			failedMessage)
+				echo "$testMessage"
+				;;
+		esac
+	}
+EOF
+	source $TEMPFILE
+	__resultcollector_failureList="$__resultcollector_failureList $TEMPFILE"
+	rm -f $TEMPFILE
+}
+
+ResultCollector()
+{
+	if test $# -eq 0; then
+		return 0
+	fi
+
+	case $1 in
+		Init)
+			let __resultcollector_run=0
+			let __resultcollector_success=0
+			let __resultcollector_failure=0
+			for i in "$__resultcollector_failureList"; do
+				unset $i
+			done
+			__resultcollector_failureList=""
+			;;
+		Start)
+			let __resultcollector_run++
+			;;
+		EndSuccess)
+			let __resultcollector_success++
+			;;
+		EndFailure)
+			__newFailure $*
+			let __resultcollector_failure++
+			;;
+		GetRun)
+			echo $__resultcollector_run
+			;;
+		GetFailure)
+			echo $__resultcollector_failure
+			;;
+		GetSuccess)
+			echo $__resultcollector_success
+			;;
+		GetFailures)
+			echo $__resultcollector_failureList
+			;;
+		*)
+			echo Unknown option
+	esac
+}

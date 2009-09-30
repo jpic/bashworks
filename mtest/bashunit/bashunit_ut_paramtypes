@@ -1,0 +1,26 @@
+#/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+source ./bashunit_impl
+
+checkNumberofParameters()
+{
+	if test $# -eq $PARAMS; then
+		echo $FUNCNAME OK
+	else
+		echo $FUNCNAME Failed
+	fi
+}
+
+PARAMS=1 assert_pass checkNumberofParameters 'Single Parameter'
+PARAMS=1 assert_pass checkNumberofParameters "Single Parameter"
+PARAMS=2 assert_pass checkNumberofParameters Single Parameter
+PARAMS=2 assert_pass checkNumberofParameters 'First word' 'Second word'

@@ -1,0 +1,30 @@
+#/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+source ./bashunit_impl Bashunit_Test4.sh
+
+bashunit_ut_testSuiteWith_()
+{
+	functionsCalled=""
+	functionsExpected=" _Bashunit_Test4_Setup _Bashunit_Test4_testFailure_4 _Bashunit_Test4_Teardown _Bashunit_Test4_Setup _Bashunit_Test4_testS__uccess4 _Bashunit_Test4_Teardown"
+
+	Run Bashunit_Test4
+
+	if test "$functionsExpected" = "$functionsCalled"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$functionsExpected]"
+		echo "actual:   [$functionsCalled]"
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_testSuiteWith_

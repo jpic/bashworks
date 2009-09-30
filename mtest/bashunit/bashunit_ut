@@ -1,0 +1,154 @@
+#/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+source ./bashunit_impl BashunitTest1.sh BashunitTest2.sh
+
+bashunit_ut_testGetSuiteList()
+{
+	local suiteListExpected='BashunitTest1 BashunitTest2'
+	local suiteList=`GetSuiteList`
+
+	if test "$suiteList" = "$suiteListExpected"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$suiteListExpected]"
+		echo "actual:   [$suiteList]"
+		echo $FUNCNAME Failure
+	fi
+}
+
+bashunit_ut_testGetTestList()
+{
+	local testListExpected='BashunitTest1 BashunitTest1::testFailure1 BashunitTest1::testSuccess1 BashunitTest2 BashunitTest2::testFailure2 BashunitTest2::testSuccess2'
+	local testList=`GetTestList`
+
+	if test "$testList" = "$testListExpected"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$testListExpected]"
+		echo "actual:   [$testList]"
+		echo $FUNCNAME Failure
+	fi
+}
+
+bashunit_ut_testRunAll()
+{
+	functionsCalled=""
+	functionsExpected=" _BashunitTest1_Setup _BashunitTest1_testFailure1 _BashunitTest1_Teardown _BashunitTest1_Setup _BashunitTest1_testSuccess1 _BashunitTest1_Teardown _BashunitTest2_testFailure2 _BashunitTest2_testSuccess2"
+
+	RunAll
+	if test "$functionsExpected" = "$functionsCalled"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$functionsExpected]"
+		echo "actual:   [$functionsCalled]"
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_testRunSuite()
+{
+	functionsCalled=""
+	functionsExpected=" _BashunitTest1_Setup _BashunitTest1_testFailure1 _BashunitTest1_Teardown _BashunitTest1_Setup _BashunitTest1_testSuccess1 _BashunitTest1_Teardown"
+
+	Run BashunitTest1
+
+	if test "$functionsExpected" = "$functionsCalled"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$functionsExpected]"
+		echo "actual:   [$functionsCalled]"
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_testRunTest()
+{
+	functionsCalled=""
+	functionsExpected=" _BashunitTest1_Setup _BashunitTest1_testFailure1 _BashunitTest1_Teardown"
+
+	Run BashunitTest1::testFailure1
+
+	if test "$functionsExpected" = "$functionsCalled"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$functionsExpected]"
+		echo "actual:   [$functionsCalled]"
+		echo $FUNCNAME Failed
+	fi
+
+	functionsCalled=""
+	functionsExpected=" _BashunitTest2_testFailure2"
+
+	Run BashunitTest2::testFailure2
+
+	if test "$functionsExpected" = "$functionsCalled"; then
+		echo $FUNCNAME OK
+	else
+		echo "expected: [$functionsExpected]"
+		echo "actual:   [$functionsCalled]"
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_testListener()
+{
+	unset BASHUNIT_TESTLISTENERS
+	BASHUNIT_TESTLISTENERS=$FUNCNAME
+	expected=" BashunitTest2::testFailure2:S BashunitTest2::testFailure2:EF(BashunitTest2.sh) BashunitTest2::testSuccess2:S BashunitTest2::testSuccess2:ES"
+	if test $# -eq 0; then
+		actual=""
+		Run BashunitTest2
+		if test "$actual" = "$expected"; then
+			echo $FUNCNAME OK
+		else
+			echo "expected: [$expected]"
+			echo "actual:   [$actual]"
+			echo $FUNCNAME Failed
+		fi
+	else
+		if test $1 = Start; then
+			actual="$actual $2:S"
+		fi
+		if test $1 = EndSuccess; then
+			actual="$actual $2:ES"
+		fi
+		if test $1 = EndFailure; then
+			actual="$actual $2:EF($3)"
+		fi
+	fi
+}
+
+bashunit_ut_testread_aOption()
+{
+	local aname
+	IFS=_ read -a aname <<EOF
+__This_is_a_test
+EOF
+	if test ${#aname[@]} = 6 && test "-${aname[0]}" = "-" && test "-${aname[1]}" = "-" &&
+		test ${aname[2]} = This && test ${aname[3]} = is && test ${aname[4]} = a &&
+		test ${aname[5]} = test; then
+		echo $FUNCNAME OK
+	else
+		echo ${#aname[@]} = 6 && echo "${aname[0]}" = "" && echo ${aname[1]} = "" &&
+		echo ${aname[2]} = This && echo ${aname[3]} = is && echo ${aname[4]} = a &&
+		echo ${aname[5]} = test
+		echo $FUNCNAME Failed
+	fi
+}
+
+bashunit_ut_testGetSuiteList
+bashunit_ut_testGetTestList
+bashunit_ut_testRunAll
+bashunit_ut_testRunSuite
+bashunit_ut_testRunTest
+bashunit_ut_testListener
+bashunit_ut_testread_aOption

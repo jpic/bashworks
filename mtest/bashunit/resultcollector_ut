@@ -1,0 +1,73 @@
+#!/bin/bash
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU Lesser General Public License as        *
+#  *   published by  the Free Software Foundation; either version 2 of the   *
+#  *   License, or (at your option) any later version.                       *
+#  *                                                                         *
+#  *   (C) 2002-2003 Dakshinamurthy K (kd@subexgroup.com)                    *
+#  ***************************************************************************/
+
+export BASHUNIT_TESTLISTENERS=ResultCollector
+
+source ./bashunit_impl  resultcollector BashunitTest1.sh BashunitTest2.sh
+
+result_collector_ut_testSummary()
+{
+	ResultCollector Init
+	runExpected=4
+	failureExpected=2
+	successExpected=2
+	RunAll
+	if test $runExpected = `ResultCollector GetRun` && \
+	   		test $failureExpected = `ResultCollector GetFailure` && \
+	   		test $successExpected = `ResultCollector GetSuccess`; then
+		echo $FUNCNAME OK
+	else
+		echo $FUNCNAME Failed
+	fi
+}
+
+result_collector_ut_testFailures()
+{
+	ResultCollector Init
+	RunAll
+	failedTestsExpected=" BashunitTest1::testFailure1 BashunitTest2::testFailure2"
+	failedFileNamesExpected=" BashunitTest1.sh BashunitTest2.sh"
+	failedLineNumbersExpected=" 12 13"
+	failedTestsActual=""
+	failedFileNamesActual=""
+	failedLineNumbersActual=""
+
+	failureList=`ResultCollector GetFailures`
+	for i in $failureList; do
+		failedTestsActual="$failedTestsActual `$i failedTest`"
+		failedFileNamesActual="$failedFileNamesActual `$i failedFileName`"
+		failedLineNumbersActual="$failedLineNumbersActual `$i failedLineNumber`"
+	done
+
+	if test "$failedTestsExpected" = "$failedTestsActual" && \
+			test "$failedFileNamesExpected" = "$failedFileNamesActual" && \
+			test "$failedLineNumbersExpected" = "$failedLineNumbersActual"; then
+		echo $FUNCNAME OK
+	else
+		echo $FUNCNAME Failed
+	fi
+}
+
+result_collector_ut_testReset()
+{
+	ResultCollector Init
+	failureList=`ResultCollector GetFailures`
+	if test -n "$failureList"; then
+		echo $FUNCNAME Failed
+		return
+	else
+		echo $FUNCNAME OK
+	fi
+}
+
+result_collector_ut_testSummary
+result_collector_ut_testFailures
+result_collector_ut_testReset
