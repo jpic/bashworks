@@ -1,0 +1,54 @@
+#
+# -----------------------------------------------------------------------
+#
+#    $Id: money,v 1.4 2006/01/23 04:45:49 bobbynations Exp $
+# 
+# -----------------------------------------------------------------------
+
+#
+# Regular Function definitions
+#
+money_equals() {
+    test "$1" = "$2"
+    return $?
+}
+money_get_amount() {
+    RET_money_get_amount=`expr "$1" : "\([0-9-]*\) *"`
+    test -z "$RET_money_get_amount" && RET_money_get_amount="ERROR: No amount found"
+    log DEBUG "RET_money_get_amountcurrency=[${RET_money_get_amount}]"
+}
+money_get_currency() {
+    RET_money_get_currency=`expr "$1" : "[0-9-]* *\([A-Z]\{3\}\)"`
+    test -z "$RET_money_get_currency" && RET_money_get_currency="ERROR: No currency found"
+    log DEBUG "RET_money_get_currency=[${RET_money_get_currency}]"
+}
+money_add() {
+    m1="$1"
+    m2="$2"
+
+    money_get_amount "${m1}"
+    a1="${RET_money_get_amount}"
+    money_get_currency "${m1}"
+    c1="${RET_money_get_currency}"
+
+    money_get_amount "${m2}"
+    a2="${RET_money_get_amount}"
+    money_get_currency "${m2}"
+    c2="${RET_money_get_currency}"
+
+    if test "${c1}" = "${c2}"
+    then
+        full_amount=`expr $a1 + $a2`
+        RET_money_add="$full_amount $c1"
+        return ${TRUE}
+    fi
+    RET_money_add="ERROR"
+    return ${FALSE}
+}
+
+# Local Variables:
+# mode: cperl
+# cperl-indent-level: 4
+# indent-tabs-mode: nil
+# End:
+# vim: ai et sw=4 syntax=sh:

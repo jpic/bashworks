@@ -1,0 +1,121 @@
+#! /usr/bin/env sh
+
+#
+# Test the test suite auto-detection feature.
+#
+
+#
+# find the shUnit file using the command as a reference
+#
+inherit() {
+    d=`expr ${0} : '\([a-zA-Z/._-]*\/\)'`
+    test `expr "$d" : '[./]'` -eq 0 && d="./$d"
+    . ../${d}${1}
+}
+
+inherit shUnit
+
+#
+# Test cases
+#
+
+TestGetDeclaredFunctionsWithBash_v3_2() {
+
+  declare() {
+    case "$1" in
+      -F)
+        echo "declare -f func1"
+        echo "declare -f func2"
+        ;;
+      +f)
+        echo "...something hard to parse..."
+        ;;
+      *)
+        echo "'$1' option not implemented in this mock function" >&2
+        ;;
+    esac
+  }
+  
+  typeset() {
+    declare "$@"
+  }
+  
+  tests="`shuGetDeclaredFunctions`"
+  
+  test "$tests" = "`echo "func1"; echo "func2"`"
+  shuAssert "shuGetDeclaredFunctions returns the two functions seen by 'declare -F'" $?
+}
+
+TestGetDeclaredFunctionsWithKsh93() {
+
+  declare() {
+    echo "declare: not found" >&2
+    return 127
+  }
+  
+  typeset() {
+    if [ "$1" = "+f" ]
+    then
+      echo "func3() #line 1 /path/to/script"
+      echo "func4() #line 2 /path/to/script"
+    fi
+  }
+  
+  tests="`shuGetDeclaredFunctions`"
+  
+  test "$tests" = "`echo "func3"; echo "func4"`"
+  shuAssert "shuGetDeclaredFunctions returns the two functions seen by 'typeset +f'" $?
+}
+
+TestGetDeclaredFunctionsWithPdksh_v5_2() {
+
+  declare() {
+    echo "declare: not found" >&2
+    return 127
+  }
+  
+  typeset() {
+    if [ "$1" = "+f" ]
+    then
+      echo "func5"
+      echo "func6"
+    fi
+  }
+  
+  tests="`shuGetDeclaredFunctions`"
+  
+  test "$tests" = "`echo "func5"; echo "func6"`"
+  shuAssert "shuGetDeclaredFunctions returns the two functions seen by 'typeset +f'" $?
+}
+
+TestGetDeclaredFunctionsWhenNeitherDeclareNorTypesetWorks() {
+
+  declare() {
+    echo "declare: not found" >&2
+    return 127
+  }
+  
+  typeset() {
+    echo "typeset: unknown option" >&2
+    return 1
+  }
+  
+  functions="`shuGetDeclaredFunctions 2>/dev/null`"
+  stderr="`shuGetDeclaredFunctions 2>&1 >/dev/null`"
+  
+  test -z "$functions"
+  shuAssert "shuGetDeclaredFunctions returns no functions" $?
+  test "ShUnit did not detect any function. Use the shuRegTest function to register all test functions." = "$stderr"
+  shuAssert "shuGetDeclaredFunctions returns a warning message" $?
+}
+
+Suite() {
+  shuRegTest TestGetDeclaredFunctionsWithBash_v3_2
+  shuRegTest TestGetDeclaredFunctionsWithKsh93
+  shuRegTest TestGetDeclaredFunctionsWithPdksh_v5_2
+  shuRegTest TestGetDeclaredFunctionsWhenNeitherDeclareNorTypesetWorks
+}
+
+### Main
+
+shuStart Suite

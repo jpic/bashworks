@@ -1,0 +1,34 @@
+#! /usr/bin/env bash
+
+#
+# Acceptance tests for ShUnit that should work with bash, but may not work with other Bourne derived shells.
+# A failing test here should be considered a defect only if it fails with bash.
+#
+
+#
+# Test Cases
+#
+
+Suite() {
+  shuRegTest TestAutoSuite
+}
+
+TestAutoSuite() {
+  stdout=`../fixtures/autoSuiteTest`
+  shuAssert "Expected successful exit code" $?
+  echo "$stdout" | grep -q 'Test1'
+  shuAssert "Expected 'Test1'" $?
+  echo "$stdout" | grep -q 'NotATest'
+  shuDeny "Expected 'NotATest' to be ignored" $?
+}
+
+#
+# Support Functions
+#
+
+#
+# Main
+#
+
+. "../shUnit"
+shuStart Suite

@@ -1,0 +1,178 @@
+#! /usr/bin/env sh
+
+################################################################################
+# $Id: shUnitTest,v 1.1 2008/11/02 17:22:58 lacton Exp $
+################################################################################
+
+#
+# Unit tests for ShUnit that should work with all Bourne derived shells.
+#
+
+#
+# find the shUnit file using the command as a reference
+#
+inherit() {
+    d=`expr ${0} : '\([a-zA-Z/._-]*\/\)'`
+    [ `expr "$d" : '[./]'` -eq 0 ] && d="./$d"
+    . ../${d}${1}
+}
+
+inherit shUnit
+
+dummyTest() {
+    :
+}
+
+TestShuRegTest() {
+    orig="${SHU_STR_ALL_TESTS}"
+
+    return=`expr "${SHU_STR_ALL_TESTS}" : ".* dummyTest"`
+    shuDeny "dummyTest already exists" $?
+
+    shuRegTest "dummyTest"
+    return=`expr "${SHU_STR_ALL_TESTS}" : ".* dummyTest"`
+    shuAssert "dummyTest didn't register" $?
+
+    SHU_STR_ALL_TESTS=${orig}
+}
+
+TestShuRunOneTest() {
+    orig_total_nr_run="${shuTestNbr}"
+    orig_total_nr_succeeded="${SHU_TOTAL_NR_SUCCEEDED}"
+
+    before="${shuTestNbr}"
+    shuRunOneTest "nonExistantFunction" > /dev/null 2>&1
+    after="${shuTestNbr}"
+    test_succeeded_flag_after="${SHU_TEST_SUCCEEDED}"
+    SHU_TEST_SUCCEEDED=${SHU_TRUE}
+
+    [ $before -eq $after ]
+    shuAssert "shuTestNbr increased after running non-existant test" $?
+
+    [ $test_succeeded_flag_after -eq ${SHU_FALSE} ]
+    shuAssert "SHU_TEST_SUCCEEDED not set to false after running non-existant test" $?
+
+    shuTestNbr=${orig_total_nr_run}
+    SHU_TOTAL_NR_SUCCEEDED=${orig_total_nr_succeeded}
+}
+
+shuSetUp() {
+    touch ./test.$$
+}
+
+shuTearDown() {
+    [ -f ./test.$$ ] && rm ./test.$$
+}
+
+TestSetupCalledCorrectly() {
+    [ -f ./test.$$ ]
+    shuAssert "test file not created: " $?
+}
+
+TestShuRegisterFailedTest() {
+    orig="$SHU_STR_FAILED"
+
+    unset SHU_STR_FAILED
+    shuRegisterFailedTest "message1"
+    SHU_TEST_SUCCEEDED=${SHU_TRUE}
+    [ "$SHU_STR_FAILED" = "message1" ]
+    shuAssert "expected 'message1' but got $SHU_STR_FAILED" $?
+
+    shuRegisterFailedTest "message2"
+    SHU_TEST_SUCCEEDED=${SHU_TRUE}
+    [ "$SHU_STR_FAILED" = "message1^message2" ]
+    shuAssert "expected 'message1' but got $SHU_STR_FAILED" $?
+
+    shuRegisterFailedTest "message3"
+    SHU_TEST_SUCCEEDED=${SHU_TRUE}
+    [ "$SHU_STR_FAILED" = "message1^message2^message3" ]
+    shuAssert "expected 'message1^message2' but got $SHU_STR_FAILED" $?
+
+    SHU_STR_FAILED="$orig"
+}
+
+TestIntentionalFailure() {
+    shuAssert "This test failed intentionally" ${SHU_FALSE}
+    [ ${SHU_TEST_SUCCEEDED} -eq ${SHU_FALSE} ]
+    shuAssert "Failed test didn't set SHU_TEST_SUCCEEDED to false" $?
+
+    shuAssert "This is another test that failed intentionally" ${SHU_FALSE}
+    [ ${SHU_TEST_SUCCEEDED} -eq ${SHU_FALSE} ]
+    shuAssert "Failed test didn't set SHU_TEST_SUCCEEDED to false" $?
+
+    SHU_TEST_SUCCEEDED=${SHU_TRUE}
+}
+
+TestShuAssert() {
+    shuAssert "" "${SHU_TRUE}"
+    shuAssert "Test case ${SHU_TRUE} failed" "${SHU_TRUE}"
+}
+
+TestShuDeny() {
+    shuDeny "" "${SHU_FALSE}"
+    shuDeny "return code ${SHU_FALSE} failed" "${SHU_FALSE}"
+    shuDeny "return code -1 failed" -1
+    shuDeny "return code 222 failed" 222
+}
+
+TestShuFmtNbrTests() {
+    shuFmtNbrTests 0
+    [ "No tests" = "${shuRetFmtNbrTests}" ]
+    shuAssert "Failed test case 0 returned [$shuRetFmtNbrTests]" $?
+
+    shuFmtNbrTests 1
+    [ "1 test" = "${shuRetFmtNbrTests}" ]
+    shuAssert "Failed test case 1 returned [$shuRetFmtNbrTests]" $?
+
+    shuFmtNbrTests 2
+    [ "2 tests" = "${shuRetFmtNbrTests}" ]
+    shuAssert "Failed test case 2 returned [$shuRetFmtNbrTests]" $?
+
+    shuFmtNbrTests 100
+    [ "100 tests" = "${shuRetFmtNbrTests}" ]
+    shuAssert "Failed test case 100 returned [$shuRetFmtNbrTests]" $?
+}
+
+TestOneAssertFailureAndOneAssertSuccessMeanFailure() {
+    shuAssert "This test failed intentionally" ${SHU_FALSE}
+    shuAssert "This test succeeded intentionally" ${SHU_TRUE}
+
+    if [ ${SHU_TEST_SUCCEEDED} -eq ${SHU_FALSE} ]
+    then
+      SHU_TEST_SUCCEEDED=${SHU_TRUE}
+    else
+      SHU_TEST_SUCCEEDED=${SHU_FALSE}
+    fi
+    shuAssert "1 assertion failure + 1 assertion success => test failure" ${SHU_TEST_SUCCEEDED}
+}
+
+TestOneDenyFailureAndOneDenySuccessMeanFailure() {
+    shuDeny "This test failed intentionally" ${SHU_TRUE}
+    shuDeny "This test succeeded intentionally" ${SHU_FALSE}
+
+    if [ ${SHU_TEST_SUCCEEDED} -eq ${SHU_FALSE} ]
+    then
+      SHU_TEST_SUCCEEDED=${SHU_TRUE}
+    else
+      SHU_TEST_SUCCEEDED=${SHU_FALSE}
+    fi
+    shuAssert "1 deny failure + 1 deny success => test failure" ${SHU_TEST_SUCCEEDED}
+}
+
+Suite() {
+  shuRegTest TestIntentionalFailure
+  shuRegTest TestShuRegisterFailedTest
+  shuRegTest TestShuAssert
+  shuRegTest TestShuDeny
+  shuRegTest TestShuRegTest
+  shuRegTest TestShuRunOneTest
+  shuRegTest TestSetupCalledCorrectly
+  shuRegTest TestShuFmtNbrTests
+  shuRegTest TestOneAssertFailureAndOneAssertSuccessMeanFailure
+  shuRegTest TestOneDenyFailureAndOneDenySuccessMeanFailure
+} 
+
+
+### Main
+
+shuStart Suite

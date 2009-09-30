@@ -1,0 +1,63 @@
+#!/bin/sh 
+################################################################################
+# shUnitPlus
+# shUnit helpers
+# $Id: shUnitPlus,v 1.9 2008/10/31 13:03:50 lacton Exp $
+################################################################################
+
+. ${SHUNIT_HOME}/shUnit
+
+shuNonZeroFile() {
+  strFile=${1}
+  [ -s ${strFile} ]
+  shuAssert "NonZeroFile: "${strFile} $?
+}
+
+shuEnsureDirectoryExists() {
+  strFile=${1}
+  [ -d ${strFile} ]
+  shuAssert "DirectoryExists: "${strFile} $?
+}
+
+shuNoFile() {
+  strFile=${1}
+  [ -r ${strFile} ] || [ -w ${strFile} ] || [ -x ${strFile} ]
+  shuDeny "NoFile: "${strFile} $?
+}
+
+shuMatchFiles() {
+  testFile=${1}
+  baselineFile=${2}
+  `diff $testFile $baselineFile`
+  shuAssert "MatchFiles: TestFile: "${testFile}" vs. Baseline: "${baselineFile} $?
+}
+
+shuStringEqual() {
+  [ x"${1}" = x"${2}" ]
+  shuAssert "StringEquals: ${1} vs. ${2}" $?
+}
+
+shuIntegerEqual() {
+  one=${1}
+  two=${2}
+  [ ${one} -eq ${two} ]
+  shuAssert "IntegerEquals: "${one}" vs. "${two} $?
+}
+
+shuFileLineCount() {
+  fileName=${1}
+  count=${2}
+  tmpVar=`cat $fileName | wc -l`
+  [ ${tmpVar} -eq ${count} ] 
+  shuAssert "File "${fileName}" line count = "${count} $?
+}
+
+shuFileOlderThan() {
+  olderFile=${1}
+  youngerFile=${2}
+  tmp=`ls -t $olderFile $youngerFile`
+  youngest_file=`expr "$tmp" : '\([a-zA-Z0-9_./-]*\)'`
+  test "x${youngerFile}" = "x${youngest_file}"
+  shuAssert ${olderFile}" should be older than: "${youngerFile} $?
+}
+

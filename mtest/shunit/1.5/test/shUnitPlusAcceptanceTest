@@ -1,0 +1,63 @@
+#! /usr/bin/env sh
+
+#
+# Acceptance tests for ShUnitPlus that should work with all Bourne derived shells.
+# Any failing test here should be considered a portability defect.
+#
+
+#
+# Test Cases
+#
+
+Suite() {
+  shuRegTest TestCanRunATestAfterLoadingShUnitPlusOnly
+}
+
+TestCanRunATestAfterLoadingShUnitPlusOnly() {
+  for shell in $available_shells
+  do
+    stdout=`runEmbeddedTest $shell "
+      export SHUNIT_HOME=..
+      FailingTest() { shuAssert 'Always wrong' 1; }
+      Suite() { shuRegTest FailingTest; }
+      . ../shUnitPlus
+      shuStart Suite"`
+    echo "$stdout" | grep -q '1 test failed.'
+    shuAssert "FailingTest should return '1 test failed.'" $?
+  done
+}
+
+#
+# Support Functions
+#
+
+getAvailableShellsAmong() {
+  known_shells="$1"
+  for shell in $known_shells
+  do
+    if (exec $shell -c exit 2>/dev/null)
+    then
+      echo -n "$shell "
+    fi
+  done
+}
+
+runEmbeddedTest() {
+  shell="$1"
+  embedded_script="$2"
+  
+  $shell <<-EOF
+    $embedded_script
+EOF
+}
+
+#
+# Main
+#
+
+available_shells=`getAvailableShellsAmong "sh bash ksh93 pdksh ash dash"`
+echo "Available shells: $available_shells" >&2
+
+. "../shUnit"
+. "../shUnitPlus"
+shuStart Suite

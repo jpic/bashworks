@@ -1,0 +1,87 @@
+#! /usr/bin/env sh
+
+################################################################################
+# shUnitPlusTest
+# 2004-01-28 Steve Cline
+# $Id: shUnitPlusTest,v 1.1 2008/11/02 17:22:58 lacton Exp $
+################################################################################
+
+#
+# find the shUnit file using the command as a reference
+#
+inherit() {
+    d=`expr "${0}" : '\([a-zA-Z/._-]*\/\)'`
+    test `expr "$d" : '[./]'` -eq 0 && d="./$d"
+    . ../${d}${1}
+}
+
+inherit shUnitPlus
+
+tmpDir=`basename ${0}`.$$
+inputDir=${tmpDir}/tmp/currentInput
+outputDir=${tmpDir}/tmp/currentOutput
+testData=${tmpDir}/tmp/tOnly/data
+testFile=${testData}/test.txt
+logsDir=${tmpDir}/logs
+
+shuSetUp() {
+  test ! -d $inputDir  && mkdir -p $inputDir
+  test ! -d $outputDir && mkdir -p $outputDir
+  test ! -d $testData  && mkdir -p $testData
+  test ! -d $logsDir  && mkdir -p $logsDir
+
+  echo "OK">$testFile
+  cp $testFile $inputDir
+}
+
+shuTearDown() {
+  test -d "$tmpDir" && rm -rf "$tmpDir"
+}
+
+TestEnvironmentVars() {
+  shuStringEqual "My String" "My String"
+  [ -n "$testData" ]
+  shuAssert "testData set:" $?
+}
+
+TestDirectoriesExist() {
+  shuEnsureDirectoryExists $inputDir
+  shuEnsureDirectoryExists $outputDir
+  shuEnsureDirectoryExists $testData
+}
+
+TestSetup() {
+  shuNonZeroFile $inputDir/test.txt
+  shuNoFile $/non/existant/file
+}
+
+TestIntegerEqual() {
+  shuIntegerEqual 1 1
+}
+
+TestOutputFiles() {
+  cp $inputDir/test.txt $outputDir
+  shuFileLineCount $outputDir/test.txt 1
+  shuMatchFiles $outputDir/test.txt $testData/test.txt
+}
+
+TestFileAge() {
+  cp $inputDir/test.txt $testData
+  shuFileOlderThan /bin/ls $testData/test.txt 
+}
+
+
+TestAll() {
+  shuRegTest TestEnvironmentVars
+  shuRegTest TestDirectoriesExist
+  shuRegTest TestSetup
+  shuRegTest TestIntegerEqual
+  shuRegTest TestOutputFiles
+  shuRegTest TestFileAge
+} 
+
+
+### Main
+
+shuStart TestAll
+

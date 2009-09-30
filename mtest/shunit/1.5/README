@@ -1,0 +1,104 @@
+   ===   ShUnit   ===
+
+ShUnit is a xUnit-family testing framework for Bourne derived shells.
+
+http://shunit.sourceforge.net/
+
+ShUnit is meant to run on all Bourne derived shells, but it has been tested
+mainly on bash 3.2, ksh93 and pdksh 5.2.  If you find a portability issue,
+please open a bug on sourceforge.
+
+Note that this is a very basic implementation of the Unit Framework: no Suites.
+
+For more information about Unit Testing Frameworks:
+see http://www.xprogramming.com.
+
+Questions or request concerning shUnit:
+see http://sourceforge.net/projects/shunit
+
+
+Main Files
+----------
+
+shUnit				        the ShUnit core
+shUnitPlus		        an optional extension to the core
+test/shUnitTestSuite  all tests for the ShUnit core, using ShUnit itself (!)
+
+
+Install
+-------
+
+1. Uncompress the distribution somewhere convenient.
+       E.g., /usr/local/bin/shunit.
+2. Set a variable SHUNIT_HOME that points to the directory where ShUnit's
+       files are. E.g., add 'export SHUNIT_HOME=/usr/local/bin/shunit'
+       in ~/.bash_profile.
+3. To make sure ShUnit works in your environment, you can call the shUnitTest
+       script.  It should end with a 'No tests failed' message.
+4. In your test script, write the following lines at the end:
+
+. "$SHUNIT_HOME/shUnit"
+shuStart
+
+
+How to use shUnit
+-----------------
+
+See the shUnitAcceptanceTest file for simple straightforward examples of how to
+use the shUnit Unit Test Framework.
+
+What you need to do to create your own shUnit Tests:
+
+1. Write a script.
+2. In the 'main' of the script, the shUnit functions have to be
+   sourced in ( . "$SHUNIT_HOME/shUnit")
+3. In the 'main', call the shuStart function.
+3. For each test function, create a function TestSomething that
+      3.1. Executes whatever you wish to test
+      3.2. Checks the result of what you've just tested
+      3.3. Calls the shuAssert function to assert that the result is as expected
+      3.4. You can put as many asserts as you wish in each testfunction.
+4. Run your testscript
+
+You can of course repeat step 3 as much as you like (many test functions).
+
+If the test function auto-detection does not work in your environment, or if you
+want test functions that do not start with 'Test', you need to add some more
+steps.
+a. Create an initialization function (e.g., Suite() {  } )
+b. Register each test function by adding a line to this initialization function.
+       This will look like: shuRegTest TestSomething
+c. Call the shuStart function with the name of the initialization function as an
+       argument (e.g., shuStart Suite)
+
+
+News
+----
+
+What's new in version 1.5?
+
+* ShUnitPlus uses the $SHUNIT_HOME environment variable to locate the ShUnit
+      core framework, instead of trying to guess its location.
+      (Fixes bug 2052932)
+* shuStart returns an informative exit code.  A value of 0 means all tests were
+      successful.  A value between 1 and 125 means there were that many failures
+      during the test run.  A value of 126 means there were 126 failures or
+      more.  A value of 127 means ShUnit was unable to run the tests.  With
+      this exit code, you can easily integrate you test execution in a larger
+      build script.
+
+What's new in version 1.4?
+
+* Added automatic detection of test functions.  You no longer need to call
+      shuRegTest for each test function.  Just call shuStart with no argument,
+      and ShUnit will automatically register all functions that start with
+      'Test'.
+* Added a LICENCE file.
+* Added an error message if shuStart is called with more than one argument.
+* Fixed failure handling.  If a test function contained both successes and
+      failures, it would fail or succeed depending on the assertions' positions
+      in the test.  Now, ShUnit honors the xUnit convention that any assertion
+      failure should make the whole test fail.
+
+
+Happy testing!

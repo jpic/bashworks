@@ -1,0 +1,10 @@
+#! /usr/bin/env sh
+
+./shUnitTest &&
+./shUnitPlusTest &&
+./autoSuiteUnitTest &&
+./shUnitAcceptanceTest &&
+./bashUnitAcceptanceTest &&
+(cd .. && ./moneyTest -t) &&
+echo "Test suite run successful" || echo "Test suite run FAILED!"
+

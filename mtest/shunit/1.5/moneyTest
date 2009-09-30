@@ -1,0 +1,334 @@
+#
+# -----------------------------------------------------------------------
+#
+#    $Id: moneyTest,v 1.1 2006/01/23 04:45:49 bobbynations Exp $
+# 
+# -----------------------------------------------------------------------
+
+#
+# make sure that everything gets cleaned up if we get interrupted
+#
+trap premature_end 1 2 15
+
+############################################################################
+#
+# Framework Function definitions
+#
+############################################################################
+show_help() {
+    HELP_PROG=${1:-pod2usage}
+    log DEBUG "HELP_PROG=[$HELP_PROG]"
+    if type ${HELP_PROG} > /dev/null 2>&1
+    then
+        ${HELP_PROG} ${PROGNAME}
+        exit
+    else
+        echo "unable to find ${HELP_PROG} in the PATH"
+        exit 1
+    fi
+}
+show_usage() {
+    show_help
+}
+show_man() {
+    show_help pod2text
+}
+log() {
+    level_as_string="$1"
+    level_as_nbr=`eval echo "$"$1""`
+    test ${VERBOSITY} -ge ${level_as_nbr} && echo "[$level_as_string] $2"
+}
+clean_up() {
+    log TRACE "cleaning up after myself"
+
+    if [ -n "${LITTER}" ] 
+    then
+        log DEBUG "LITTER=[${LITTER}]"
+
+        for file_or_dir in ${LITTER}
+        do
+            log DEBUG "removing [${file_or_dir}]"
+            rm -rf ${file_or_dir}
+        done
+    fi
+}
+premature_end() {
+    echo "hold your horses while I clean up after myself"
+    clean_up
+    exit
+}
+show_version() {
+    echo "${PROGNAME} v$VERSION"
+    exit
+}
+set_globals() {
+    TRUE=0
+    FALSE=1
+    EXECUTE=${TRUE}
+    CONFIG_FILE_NAME="${PROGNAME}.cfg"
+    REVISION='$Revision: 1.1 $'
+    VERSION=`echo $REVISION | sed -e 's/[A-Za-z: $]//g'`
+    KEEP_DOWNLOADS=${FALSE}
+
+    #
+    # the user can adjust the level of output by specifying multiple 'v' 
+    # command line arguments with the level equal to the number given.  
+    #
+    SILENT=0
+    TRACE=1
+    DEBUG=2
+    REALLYDEBUG=3
+    VERBOSITY=${SILENT}
+}
+
+
+############################################################################
+#
+# Unit Test Function Definitions
+#
+############################################################################
+performUnitTests() {
+    setUpUnitTests
+    shuStart unitTestSuite
+    exit
+}
+unitTestSuite() {
+    shuRegTest TestEquals
+    shuRegTest TestGetAmount
+    shuRegTest TestGetCurrency
+    shuRegTest TestSimpleAdd
+}
+setUpUnitTests() {
+    #
+    # find the shUnit script we'll use for testing
+    #
+    FOUND_SHUNIT="${FALSE}"
+    CANDIDATES="${SHUNIT_HOME} . /usr/local/ShUnit /opt/ShUnit"
+    log DEBUG "CANDIDATES=[${CANDIDATES}]"
+    for c in $CANDIDATES
+    do
+        log DEBUG "c=[$c]"
+        if [ -r "${c}/shUnit" ]
+        then
+            . "${c}/shUnit"
+            FOUND_SHUNIT="${TRUE}"
+            break
+        fi
+    done
+  
+    if [ "${FOUND_SHUNIT}" -eq "${FALSE}" ]
+    then
+        echo "unable to source the shUnit file, and so will be not proceed"
+        echo "Try setting SHUNIT_HOME to point to the directory containing it"
+        exit 1
+    fi
+
+    if [ -r "./money" ]
+    then
+        . "./money"
+    else
+        echo "unable to source the money file, and so will be not proceed"
+        exit 1
+    fi
+}
+shuSetUp() {
+    m2CHF="2 CHF"
+    m12CHF="12 CHF"
+    m14CHF="14 CHF"
+    m20USD="20 USD"
+    mm2CHF="-2 CHF"
+}
+TestEquals() {
+    money_equals "${m12CHF}" "${m14CHF}"
+    test $? -eq 0
+    shuDeny "'${m12CHF}' == '${m14CHF}'" $?
+
+    money_equals "${m12CHF}" "${m12CHF}"
+    test $? -eq 0
+    shuAssert "'${m12CHF}' == '${m12CHF}'" $?
+
+    money_equals "${m12CHF}" "12 CHF"
+    test $? -eq 0
+    shuAssert "'${m12CHF}' == '12 CHF'" $?
+}
+TestGetAmount() {
+    money_get_amount "$m12CHF"
+    test "${RET_money_get_amount}" -eq "12"
+    shuAssert "expected '12' but got '$RET_money_get_amount'" $?
+
+    money_get_amount "$m20USD"
+    test "${RET_money_get_amount}" -eq "20"
+    shuAssert "expected '20' but got '$RET_money_get_amount'" $?
+
+    money_get_amount "$mm2CHF"
+    test "${RET_money_get_amount}" -eq "-2"
+    shuAssert "expected '-2' but got '$RET_money_get_amount'" $?
+
+    money_get_amount "12"
+    test "${RET_money_get_amount}" -eq "12"
+    shuAssert "expected '12' but got '$RET_money_get_amount'" $?
+
+    money_get_amount "USD"
+    test "${RET_money_get_amount}" = "ERROR: No amount found"
+    shuAssert "testing money value with no amount" $?
+
+}
+TestGetCurrency() {
+    money_get_currency "$m12CHF"
+    test "${RET_money_get_currency}" = "CHF"
+    shuAssert "expected 'CHF' but got '$RET_money_get_currency'" $?
+
+    money_get_currency "$m20USD"
+    test "${RET_money_get_currency}" = "USD"
+    shuAssert "expected 'USD' but got '$RET_money_get_currency'" $?
+
+    money_get_currency "USD"
+    test "${RET_money_get_currency}" = "USD"
+    shuAssert "testing money value with no amount" $?
+
+    money_get_currency "12"
+    test "${RET_money_get_currency}" = "ERROR: No currency found"
+    shuAssert "testing money value with no currency" $?
+
+    money_get_currency "$mm2CHF"
+    test "${RET_money_get_currency}" = "CHF"
+    shuAssert "expected 'CHF' but got '$RET_money_get_currency'" $?
+}
+TestSimpleAdd() {
+    expected="16 CHF"
+    money_add "$m2CHF" "$m14CHF"
+    test "${RET_money_add}" = "${expected}"
+    shuAssert "'${m2CHF}' + '${m14CHF}' didn't equeal '${expected}'" $?
+
+    expected="26 CHF"
+    money_add "$m12CHF" "$m14CHF"
+    test "${RET_money_add}" = "${expected}"
+    shuAssert "'${m12CHF}' + '${m14CHF}' didn't equeal '${expected}'" $?
+
+    expected="ERROR"
+    money_add "$m12CHF" "$m20USD"
+    test "${RET_money_add}" = "${expected}"
+    shuAssert "'${m12CHF}' + '${m20USD}' didn't equeal '${expected}'" $?
+
+    expected="10 CHF"
+    money_add "$m12CHF" "$mm2CHF"
+    test "${RET_money_add}" = "${expected}"
+    shuAssert "'${m12CHF}' + '${mm2CHF}' didn't equeal '${expected}'" $?
+}
+
+
+############################################################################
+#
+# Main program
+#
+############################################################################
+
+#
+# we'll need this from some of our functions ... therefore must save it 
+# out before calling any of them otherwise it will get set to the function
+# name itself, which would hose things up.
+#
+PROGNAME=${0}
+set_globals
+
+#
+# handle any command line arguments
+#
+
+while getopts "tnvVmhQ" OPTION
+do
+    case "$OPTION" in
+        t)  performUnitTests;;   
+        n)  EXECUTE=${FALSE};;     # Don't actually execute any commands
+        Q)  exec 1>/dev/null;;
+        v)  VERBOSITY=`expr $VERBOSITY + 1`;;
+        V)  show_version;;         # User asked for version information
+        h)  show_usage;;           # User asked for help
+        m)  show_man;;             # User asked for lots of help
+        \?) show_usage;;           # Unknown argument ... show usage and exit
+    esac
+done
+shift `expr $OPTIND - 1`
+
+clean_up
+
+exit
+ 
+############################################################################
+#
+# Man page section in Perl's POD format
+#
+############################################################################
+
+=pod
+
+=head1 NAME 
+
+moneyTest - moneyTest 
+
+=head1 SYNOPSIS
+
+% ./moneyTest [-h] [-m] [-n] [-v] [-V] [-Q] [-t]
+
+=head1 DESCRIPTION
+
+
+=head1 OPTIONS
+
+=over
+
+=item B<-h> 
+
+help: get usage information (this man page, actually)
+
+=item B<-n> 
+
+dry-run: don't actually change anything except log messages to STDOUT
+
+=item B<-Q> 
+
+Be very quiet indeed.  When this option is invoked, STDOUT gets redirected
+to /dev/null.
+
+=item B<-v> 
+
+produce verbose output.  I<NOTE:> Using multiple '-v' options will increase 
+the verbosity of the the output
+
+=item B<-V> 
+
+show the script's version number and exit
+
+=item B<-m> 
+
+show the script's man page and exit
+
+=back
+
+=head1 ENVIRONMENT
+
+=over
+
+=item SHUNIT_HOME
+
+The directory containing the shUnit unit-testing framework script.  It's needed
+if you want to run the unit tests.
+
+=head1 BUGS
+
+But of course not!
+
+=head1 AUTHOR
+
+Bobby Nations <BobbyNations@users.sourceforge.net>
+
+=cut
+
+############################################################################
+# Local Variables:
+# mode: cperl
+# cperl-indent-level: 4
+# indent-tabs-mode: nil
+# End:
+# vim: ai et sw=4 syntax=sh:
+############################################################################

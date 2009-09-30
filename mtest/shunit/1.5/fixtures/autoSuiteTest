@@ -1,0 +1,17 @@
+#
+# This dummy test script illustrates how to use the test suite auto-detection features.
+# It is called as part of the framework's acceptance tests.
+#
+
+NotATest() {
+  shuDeny "Never executed" 0
+}
+
+Test1() {
+  shuAssert "Always true" 0
+}
+
+### Main
+
+. "../shUnit"
+shuStart

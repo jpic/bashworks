@@ -1,0 +1,10 @@
+function mtest_shunit_source() {
+    source $(module_get_path mtest)/shunit/current/shUnitPlus
+}
+function mtest_shunit_init() {
+    if [[ -z $SHUNIT_HOME ]]; then
+        SHUNIT_HOME=$(module_get_path mtest)/shunit/current
+    fi
+}
+function mtest_shunit() {
+}

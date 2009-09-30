@@ -4,49 +4,23 @@
 ##	@Synopsis	Break management module
 ##	@Copyright	Copyright 2009, James Pic
 ##	@License	Apache
-## This module wraps around Bashunit. Read mtest/bashunit/README for more
-## information about bashunit. 
+## This module wraps around bashunit and shunit frameworks.
 #--------------------------
 
-#--------------------------
-#--------------------------
 function mtest_source() {
-    source $(module_get_path mtest)/bashunit/runner.sh
-    source $(module_get_path mtest)/bashunit/assertions.sh
+    source $(module_get_path mtest)/bashunit/source.sh
+    mtest_bashunit_source
+
+    source $(module_get_path mtest)/shunit/source.sh
+    mtest_shunit_source
 }
 
-#--------------------------
-#--------------------------
 function mtest_init() {
-    if test -z "$BASHUNIT_OUTPUTTER"; then
-	    BASHUNIT_OUTPUTTER="TextOutputter"
-    fi
-
-    if test -z "$BASHUNIT_TESTLISTENERS"; then
-	    BASHUNIT_TESTLISTENERS="TextDotListener ResultCollector";
-    fi
+    mtest_bashunit_init
+    mtest_shunit_init
 }
 
-#--------------------------
-#--------------------------
 function mtest() {
-    local bashunit_dir=$(module_get_path mtest)/bashunit/current
-    local module_name=$1
-    local module_path=$(module_get_path $module_name)
-
-    if [[ -f $module_path/bashunit/tests.sh ]]; then
-        source $module_path/bashunit/tests.sh
-    fi
-
-    source $bashunit_dir/bashunit_impl $bashunit_dir/resultcollector $module_path/bashunit/*.sh
-
-    ResultCollector Init
-    if test -z "$testCase"; then
-    	RunAll
-    else
-    	Run $testCase
-    fi
-    
-    echo
-    $BASHUNIT_OUTPUTTER
+    mtest_bashunit $*
+    mtest_shunit_init $*
 }
