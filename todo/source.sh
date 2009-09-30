@@ -10,10 +10,5 @@
 ## Declares module configuration variable names.
 #--------------------------
 function todo_source() {
-    unset todo_variables
-    todo_variables+=("list")
-    # prefix variable names
-    todo_variables=("${todo_variables[@]/#/todo_}")
-
-    jpic_module_source todo functions.sh
+    source $(module_get_path todo)/functions.sh
 }
