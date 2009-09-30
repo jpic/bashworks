@@ -51,6 +51,11 @@ if [[ -z $MODULES_PATH ]]; then # {{{ return if $MODULES_PATH is not defined
 fi
 # }}}
 
+# string module name => string module absolute patH
+declare -A module_paths
+# list of module names
+declare -a module_blacklist
+
 #--------------------------
 ## Resets module variables (ie. $module_paths and $module_blacklist).
 ## Traverses $MODULES_PATH searching for modules (directories with source.sh)
@@ -60,14 +65,6 @@ fi
 ## @Globals  module_paths, module_blacklist
 #--------------------------
 function module_source() {
-    # string module name => string module absolute path
-    unset module_paths
-    declare -A module_paths
-    
-    # list of module names
-    unset module_blacklist    
-    declare -a module_blacklist
-
     # make an array of MODULES_PATH
     declare -a paths=($(echo $MODULES_PATH | tr : " "))
 
