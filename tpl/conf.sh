@@ -6,11 +6,18 @@
 ##	@License	Apache
 #--------------------------
 
+unset tpl_variables
+tpl_variables+=("type")
+tpl_variables+=("dest_path")
+tpl_variables+=("src_path")
+# prefix variable names
+tpl_variables=("${tpl_variables[@]/#/tpl_}")
+
 #--------------------------
 ## Save your tpl configuration
 #--------------------------
 function tpl_conf_save() {
-    conf_save tpl
+    conf_save ${tpl_dest_path}/.tpl.sh $tpl_variables
 }
 
 #--------------------------
@@ -18,20 +25,13 @@ function tpl_conf_save() {
 ## @param Project name
 #--------------------------
 function tpl_conf_load() {
-    conf_load tpl
-}
-
-#--------------------------
-## Set the configuration path relative to the sources path
-#--------------------------
-function tpl_conf_path_setter() {
-    tpl_conf_path="${tpl_dest_path}/.tpl.${tpl_type}.sh"
+    conf_load ${tpl_dest_path}/.tpl.sh
 }
 
 #--------------------------
 ## Interactive module configuration
 #--------------------------
 function tpl_conf_interactive() {
-    conf_interactive tpl
+    conf_interactive $tpl_variables
 }
 
