@@ -31,5 +31,5 @@ function break_request() {
 #--------------------------
 function break_do() {
     break_previous=$(date +%s)
-    break_conf_save
+    conf_save break
 }
