@@ -15,12 +15,11 @@ function mtest_source() {
     mtest_shunit_source
 }
 
-function mtest_init() {
-    mtest_bashunit_init
-    mtest_shunit_init
-}
+    if [[ -d $module_path/shunit ]]; then
+        mtest_shunit $module_name
+    fi
 
-function mtest() {
-    mtest_bashunit $*
-    mtest_shunit_init $*
+    if [[ -d $module_path/shunit2 ]]; then
+        mtest_shunit2 $module_name
+    fi
 }

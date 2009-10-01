@@ -9,8 +9,9 @@
 ## and try to load modules. Loading a module consist of:
 ## - finding source.sh,
 ## - sourcing source.sh,
+## - running yourmodule_pre_source()
 ## - running yourmodule_source()
-## - running yourmodule_init()
+## - running yourmodule_post_source()
 ##
 ## Modules are also able to blacklist themselves.
 ##
@@ -18,15 +19,17 @@
 ## $MODULES_PATH to be set just like $PATH.
 ##
 ## Role of source.sh:
-## Each module should have a source.sh file which may contain two functions:
-## - yourmodule_source(),
-## - yourmodule_init()
+## Each module should have a source.sh file which may contain this functions:
+## - yourmodule_pre_source(): basically set up variables needed by _source()
+## - yourmodule_source(): include all dependencies
+## - yourmodule_post_source(): initialise the module, ie. default variables,
+##   conf path, whatever...
 ##
-## Role of yourmodule_source():
-## This function should only import the submodules it needs with module_local_source().
+## Eventually, your module can have a yourmodule() function defined in source.sh
+## to something meaningful. Think of it as an object constructor.
 ##
-## Role of yourmodule_init():
-## This function is free to do whatever it should to make the module ready for usage.
+## Submodules are simply subdirectories of modules which contain source.sh. See
+## module_pre_source() for more info.
 #--------------------------
 
 # Check bash version. We need at least 4.0.x {{{
@@ -56,60 +59,10 @@ declare -A module_paths
 # list of module names
 declare -a module_blacklist
 
-#--------------------------
-## Resets module variables (ie. $module_paths and $module_blacklist).
-## Traverses $MODULES_PATH searching for modules (directories with source.sh)
-## Runs modulename_source() if it exists.
-## Addes module names and paths to $module_paths.
-## This function checks if the module was blacklisted at each step.
-## @Param   Modules paths, default is $MODULES_PATH
-## @Globals module_paths, module_blacklist
-#--------------------------
-function module_source() {
-    if [[ -z $1 ]]; then
-        # make an array of MODULES_PATH
-        declare -a paths=($(echo $MODULES_PATH | tr : " "))
-    else
-        declare -a paths+=()
-
-        for path in $*; do
-            paths+=("$path")
-        done
-    fi
-
-    local module_name=""
-    local module_path=""
-    local module_source_path=""
-    local module_source=""
-
-    # register modules and paths for each path
-    for path in ${paths[@]}; do        
-        module_find $path
-    done
-
-    for module_name in ${!module_paths[@]}; do
-        module_path="${module_paths[$module_name]}"
-        module_source_path="${module_path}/source.sh"
-        module_source_function="${module_name}_source"
-
-        # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
-            continue
-        fi
-
-        # source module source path
-        source $module_source_path
-        
-        # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
-            continue
-        fi
-        
-        # run module source function if it is declared
-        if [[ $(declare -f $module_source_function) ]]; then
-            $module_source_function
-        fi
-    done
+function module() {
+    module_pre_source $*
+    module_source
+    module_post_source
 }
 
 #--------------------------
@@ -126,36 +79,104 @@ function module_source() {
 ## module "foo" with path "/yourpath/foo"
 ## module "foo_bar" with path "/yourpath/foo/bar"
 ##
+## It that example case, foo_bar functions should be prefixed by foo_bar_
+## instead of just foo_.
 ## @Param   Path to find modules in.
 #--------------------------
-function module_find() {
-    local path="$1"
+function module_pre_source() {
+    if [[ -z $1 ]]; then
+        # make an array of MODULES_PATH
+        declare -a paths=($(echo $MODULES_PATH | tr : " "))
+    else
+        declare -a paths+=()
+
+        for path in $*; do
+            paths+=("$path")
+        done
+    fi
+
+    local module_name=""
     local relative_path=""
 
-    for module_path in `find $path -name source.sh -exec dirname {} \;`; do
-        relative_path="${module_path#*$path/}"
-        module_name="${relative_path//\//_}"
+    # register modules and paths for each path
+    for path in ${paths[@]}; do        
+    
+        for module_path in `find $path -name source.sh -exec dirname {} \;`; do
+            relative_path="${module_path#*$path/}"
+            module_name="${relative_path//\//_}"
+            
+            # blacklist check
+            if [[ $(module_blacklist_check $module_name) ]]; then
+                continue
+            fi
+            
+            # add to module_path
+            module_paths[$module_name]=$module_path
+    
+        done
+    done
+}
+
+#--------------------------
+## Resets module variables (ie. $module_paths and $module_blacklist).
+## Traverses $MODULES_PATH searching for modules (directories with source.sh)
+## Runs modulename_source() if it exists.
+## Addes module names and paths to $module_paths.
+## This function checks if the module was blacklisted at each step.
+## @Param   Modules paths, default is $MODULES_PATH
+## @Globals module_paths, module_blacklist
+#--------------------------
+function module_source() {
+    local module_name=""
+    local module_path=""
+    local module_source_path=""
+    local module_source=""
+
+    for module_name in ${!module_paths[@]}; do
+        module_path="${module_paths[$module_name]}"
+        module_source_path="${module_path}/source.sh"
+        module_pre_source_function="${module_name}_pre_source"
+        module_source_function="${module_name}_source"
+
+        # blacklist check
+        if [[ $(module_blacklist_check $module_name) ]]; then
+            continue
+        fi
+
+        # source module source path
+        source $module_source_path
         
         # blacklist check
         if [[ $(module_blacklist_check $module_name) ]]; then
             continue
         fi
         
-        # add to module_path
-        module_paths[$module_name]=$module_path
-
+        # run module pre_source function if it is declared
+        if [[ $(declare -f $module_pre_source_function) ]]; then
+            $module_pre_source_function
+        fi
+        
+        # blacklist check
+        if [[ $(module_blacklist_check $module_name) ]]; then
+            continue
+        fi
+        
+        # run module source function if it is declared
+        if [[ $(declare -f $module_source_function) ]]; then
+            $module_source_function
+        fi
     done
 }
 
 #--------------------------
 ## This function iterates over the installed modules list and tryes to run
-## modulename_init() function, if it exists.
+## modulename_post_source() function, if it exists.
 ## Blacklist is checked at each step.
 ##
 ## This method should be called *after* module_source().
 #--------------------------
-function module_init() {    
-    local module_init_function=""
+function module_post_source() {    
+    local module_post_source_function=""
 
     for module_name in ${!module_paths[@]}; do
                 
@@ -164,10 +185,10 @@ function module_init() {
             continue
         fi
 
-        module_init_function="${module_name}_init"
+        module_post_source_function="${module_name}_post_source"
 
-        if [[ $(declare -f $module_init_function) ]]; then
-            $module_init_function
+        if [[ $(declare -f $module_post_source_function) ]]; then
+            $module_post_source_function
         fi
 
     done
@@ -260,7 +281,7 @@ function module_debug() {
 
     echo "List of blacklisted modules:"
 
-    for module_name in ${!module_paths[@]}; do
+    for module_name in ${!module_blacklist[@]}; do
         echo " - ${module_name}"
     done
 }
@@ -309,5 +330,4 @@ print_debug () {
 }
 # }}}
 
-module_source
-module_init
+module

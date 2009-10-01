@@ -8,7 +8,7 @@ function mtest_shunit_source() {
     fi
 }
 
-function mtest_shunit_init() {
+function mtest_shunit_post_source() {
     if [[ -z $SHUNIT_HOME ]]; then
         SHUNIT_HOME=$(module_get_path mtest)/shunit/current
     fi    

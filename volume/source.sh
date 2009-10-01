@@ -34,7 +34,7 @@ function volume_source() {
 ##
 ## It also attemps to load the user conf.
 #--------------------------
-function volume_init() {
+function volume_post_source() {
     volume_interval=5
     volume_current=$(volume_get_current)
     volume_conf_path=${HOME}/.volume

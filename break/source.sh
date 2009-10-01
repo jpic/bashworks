@@ -51,7 +51,7 @@ function break_source() {
 ##
 ## It tryes to set some defaults.
 #--------------------------
-function break_init() {
+function break_post_source() {
     break_interval=7200
     break_conf_path=${HOME}/.break
 }

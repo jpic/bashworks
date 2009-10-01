@@ -23,7 +23,7 @@ function mtest_bashunit_source() {
 ##
 ## Read bashunit/runner.sh for more information.
 #--------------------------
-function mtest_bashunit_init() {
+function mtest_bashunit_post_source() {
     if test -z "$BASHUNIT_OUTPUTTER"; then
 	    BASHUNIT_OUTPUTTER="TextOutputter"
     fi

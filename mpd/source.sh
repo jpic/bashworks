@@ -26,7 +26,7 @@ function mpd_source() {
 ##
 ## It sets some defaults and load the user configuration data.
 #--------------------------
-function mpd_init() {
+function mpd_post_source() {
     mpd_player=mplayer
     mpd_client=ncmpc
     mpd_screenrc=${HOME}/include/shell/mpd/etc/screenrc

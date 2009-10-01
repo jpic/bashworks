@@ -1,6 +1,6 @@
 #!/bin/bash
 function Setup() {
-    break_init
+    break_post_source
     
     break_conf_path=/tmp/break.test
     break_interval=3
