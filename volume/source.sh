@@ -43,6 +43,4 @@ function volume_post_source() {
     volume_interval=5
     volume_current=$(volume_get_current)
     volume_conf_path=${HOME}/.volume
-
-    volume_conf_load
 }
