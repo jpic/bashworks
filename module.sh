@@ -329,5 +329,3 @@ print_debug () {
     fi
 }
 # }}}
-
-module
