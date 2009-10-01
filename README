@@ -19,31 +19,44 @@ Usage
 Standards
 ---------
 
-Each module declare functions and variables which name are prefixed with the module name and an underscore. For example, all variable and function names of the "volume" module are prefixed by "volume_".
+Each module declare functions and variables which name are prefixed with the
+module name and an underscore. For example, all variable and function names of
+the "volume" module are prefixed by "volume_".
 
-Optionnaly, a module may have a function which name is the same as the module. For example the "mtest" module declare- a "mtest()" convenience function which takes a module name as parameter and run all tests in the given module.
+Optionnaly, a module may have a function which name is the same as the module.
+For example the "mtest" module declare- a "mtest()" convenience function which
+takes a module name as parameter and run all tests in the given module.
 
 Configuration module
 --------------------
 
-The configuration module declares functions to update, save and load variables. The functions that take a module name as argument are in conf/module.sh, which basically wraps around the actual functions in conf/functions.sh. Functions you want to use are most likely defined and documented in conf/module.sh.
+The configuration module declares functions to update, save and load variables.
+The functions that take a module name as argument are in conf/module.sh, which
+basically wraps around the actual functions in conf/functions.sh. Functions you
+want to use are most likely defined and documented in conf/module.sh.
 
 Polite functions
 ----------------
 
-Generic reuseable functions usually take a module name string argument. It should let the actual module to overload what is it about to process.
+Generic reuseable functions usually take a module name string argument. It
+should let the actual module to overload what is it about to process.
 
-conf_save() is polite because for example `conf_save yourmodule` will call yourmodule_conf_save() and return directly afterward; if yourmodule_conf_save() exists which is of course optionnal.
+conf_save() is polite because for example `conf_save yourmodule` will call
+yourmodule_conf_save() and return directly afterward; if yourmodule_conf_save()
+exists which is of course optionnal.
 
 Configuration automagic loading
 -------------------------------
 
-No "automagic" configuration loading should be done for anymodule. The role of the conf_auto module is to handle configuration autoloading during post source phase.
+No "automagic" configuration loading should be done for anymodule. The role of
+the conf_auto module is to handle configuration autoloading during post source
+phase.
 
 Test module
 -----------
 
-The test module declares a function taking a module name as parameter: mtest(). This function runs all tests of a module. All frameworks are supported:
+The test module declares a function taking a module name as parameter: mtest().
+This function runs all tests of a module. All frameworks are supported:
 
 - bashunit,
 - shunit,
@@ -52,19 +65,25 @@ The test module declares a function taking a module name as parameter: mtest(). 
 Module loading
 --------------
 
-The module.sh script takes care of managing modules loading, and defines utility functions concerning those loaded modules, ie. module_blacklist_add(), module_blacklist_check(), module_get_path().
+The module.sh script takes care of managing modules loading, and defines
+utility functions concerning those loaded modules, ie. module_blacklist_add(),
+module_blacklist_check(), module_get_path().
 
 It supports several modules repository as well as submodules.
 
 Module repositories
 -------------------
 
-A module repository is a directory which contains one or several module directories. It can be specified in the MODULE_PATH environment variable, just the same way the PATH variable is defined: with a list of paths separated by :.
+A module repository is a directory which contains one or several module
+directories. It can be specified in the MODULE_PATH environment variable, just
+the same way the PATH variable is defined: with a list of paths separated by :.
 
 Submodules
 ----------
 
-A submodule is a module located inside another module that depends on it. There is no submodule nesting level restriction, but the namming standard is *slightly* different, consider the following example table:
+A submodule is a module located inside another module that depends on it. There
+is no submodule nesting level restriction, but the namming standard is
+*slightly* different, consider the following example table:
 
 =========== =========== =========
 Module      Path        Prefix
@@ -88,7 +107,8 @@ Versions
 0.1_alpha3: vps.sh: portage shortcuts
 0.1_beta0:  vps.sh: everything seems to work, freezing vps_ api
 0.2_alpha0: bootstrap script
-0.2_alpha1: configuration module (part that was decoupled) with a simple demonstration break module
+0.2_alpha1: configuration module (part that was decoupled) with a simple
+            demonstration break module
 0.2_alpha2: os management module basics
 0.2_alpha3: simple demonstration volume control module
 0.2_alpha4: simple demonstration music module
