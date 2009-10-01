@@ -16,7 +16,6 @@
 #--------------------------
 function mpd_source() {
     source $(module_get_path mpd)/functions.sh
-    source $(module_get_path mpd)/conf.sh
 }
 
 #--------------------------

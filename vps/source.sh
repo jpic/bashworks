@@ -18,7 +18,6 @@ fi
 #--------------------------
 function vps_source() {
     source $(module_get_path vps)/functions.sh
-    source $(module_get_path vps)/conf.sh
 }
 
 function vps_post_source() {

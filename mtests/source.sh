@@ -10,7 +10,7 @@
 ## - shunit2: untested
 #--------------------------
 
-function mtest() {
+function mtests() {
     local module_name="$1"
     local module_path="$(module_get_path $1)"
     local module_test_function="${module_name}_test"

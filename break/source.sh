@@ -41,7 +41,6 @@
 #--------------------------
 function break_source() {
     source $(module_get_path break)/functions.sh
-    source $(module_get_path break)/conf.sh
 }
 
 #--------------------------

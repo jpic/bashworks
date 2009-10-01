@@ -11,7 +11,6 @@
 #--------------------------
 function vcs_source() {
     source $(module_get_path vcs)/functions.sh
-    source $(module_get_path vcs)/conf.sh
     source $(module_get_path vcs)/aliases.sh
 }
 

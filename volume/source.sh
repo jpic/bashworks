@@ -23,7 +23,6 @@
 #--------------------------
 function volume_source() {
     source $(module_get_path volume)/functions.sh
-    source $(module_get_path volume)/conf.sh
 }
 
 function volume_post_source() {

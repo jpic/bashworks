@@ -13,7 +13,6 @@
 #--------------------------
 function tpl_source() {
     source $(module_get_path tpl)/functions.sh
-    source $(module_get_path tpl)/conf.sh
 }
 
 function tpl_post_source() {
