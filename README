@@ -1,5 +1,79 @@
 Who said "temporary (bash) scripts"? Not me.
 
+0.4 beta 0 documentation
+````````````````````````
+
+Bash 4.x is required.
+
+Installation
+============
+
+- run: git clone git://github.com/jpic/bash-framework.git
+- add to .bashrc: MODULES_PATH="/path/to/your/clone"
+- add to .bashrc: source /path/to/your/clone/modules.sh
+- add to .bashrc: module
+
+Usage
+=====
+
+Standards
+---------
+
+Each module declare functions and variables which name are prefixed with the module name and an underscore. For example, all variable and function names of the "volume" module are prefixed by "volume_".
+
+Optionnaly, a module may have a function which name is the same as the module. For example the "mtest" module declare- a "mtest()" convenience function which takes a module name as parameter and run all tests in the given module.
+
+Configuration module
+--------------------
+
+The configuration module declares functions to update, save and load variables. The functions that take a module name as argument are in conf/module.sh, which basically wraps around the actual functions in conf/functions.sh. Functions you want to use are most likely defined and documented in conf/module.sh.
+
+Polite functions
+----------------
+
+Generic reuseable functions usually take a module name string argument. It should let the actual module to overload what is it about to process.
+
+conf_save() is polite because for example `conf_save yourmodule` will call yourmodule_conf_save() and return directly afterward; if yourmodule_conf_save() exists which is of course optionnal.
+
+Configuration automagic loading
+-------------------------------
+
+No "automagic" configuration loading should be done for anymodule. The role of the conf_auto module is to handle configuration autoloading during post source phase.
+
+Test module
+-----------
+
+The test module declares a function taking a module name as parameter: mtest(). This function runs all tests of a module. All frameworks are supported:
+
+- bashunit,
+- shunit,
+- shunit2.
+
+Module loading
+--------------
+
+The module.sh script takes care of managing modules loading, and defines utility functions concerning those loaded modules, ie. module_blacklist_add(), module_blacklist_check(), module_get_path().
+
+It supports several modules repository as well as submodules.
+
+Module repositories
+-------------------
+
+A module repository is a directory which contains one or several module directories. It can be specified in the MODULE_PATH environment variable, just the same way the PATH variable is defined: with a list of paths separated by :.
+
+Submodules
+----------
+
+A submodule is a module located inside another module that depends on it. There is no submodule nesting level restriction, but the namming standard is *slightly* different, consider the following example table:
+
+=========== =========== =========
+Module      Path        Prefix
+=========== =========== =========
+vcs         /vcs        vcs_
+vcs_git     /vcs/git    vcs_git_
+vcs_svn     /vcs/svn    vcs_svn_
+=========== =========== =========
+
 Versions
 ````````
 
@@ -22,43 +96,14 @@ Versions
 0.3_alpha0: major refactor
 0.4_alpha0: "remove 50% of code" refactor
 0.4_alpha1: Test break
-0.4_alpha2: Test conf
-0.4_alpha3: Test hack
-0.4_alpha4: Test mpd
-0.4_alpha5: Test os
-0.4_alpha6: Test todo
-0.4_alpha7: Test tpl
-0.4_alpha8: Test vcs
-0.4_alpha9: Test vps
-
-Roadmap
-```````
-
-Skipping directly to 0.2 without 0.1 release.
-
-The 0.2 version aims toward modularity, ease of initial development and refactoring, even more documented API with bashdoc, and lots of fun playing around with bash with the help of #bash@irc.freenode.net.
-
-The 0.3 version aims toward a better module layout:
-
-- functions go in yourmodule/functions.sh
-- tiein functions like if yourmodule uses conf then it goes in yourmodule/conf.sh
-- yourmodule/source.sh should only define runtime critical stuff ie. variables, init() start() stop() etc ..
-
-The 0.4 version aims toward a better design:
-
-- conf does not do any magic and is driven by yourmodule/conf.sh submodule,
-- jpic does less magic and just takes cares of sourcing, initializing and blacklisting modules,
-- jpic is renamed to "module" and most functions are renamed for better consistency,
-
-Bootstrap script
-````````````````
-
-The bootstrap script "jpic.sh" will initiate any avalaible modules, refer to API documentation for more information.
+0.4_beta0:  Finnaly sorted the general architecture.
+0.4_beta1:  Conf_auto module.
 
 Credit
 ``````
 
 #bash@irc.freenode.net: very very nice and knowledgeable users...
+
 All Open Source hackers. Thanks a bunch for your involvement!
 
 Author
