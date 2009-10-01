@@ -6,10 +6,10 @@
 ##	@License	Apache
 #--------------------------
 
-#--------------------------
-## Output something if a variable is a non empty array.
-## @param Variable name
-#--------------------------
-function hack_is_non_empty_array() {
-    declare -a | grep $1=\'\(\\[;
+function hack_source() {
+    source $(module_get_path hack)/functions.sh
+}
+
+function hack_post_source() {
+    hack_cdpath
 }
