@@ -21,14 +21,14 @@ function mtests() {
     fi
     
     if [[ -d $module_path/bashunit ]]; then
-        mtest_bashunit $module_name
+        mtests_bashunit $module_name
     fi
 
     if [[ -d $module_path/shunit ]]; then
-        mtest_shunit $module_name
+        mtests_shunit $module_name
     fi
 
     if [[ -d $module_path/shunit2 ]]; then
-        mtest_shunit2 $module_name
+        mtests_shunit2 $module_name
     fi
 }

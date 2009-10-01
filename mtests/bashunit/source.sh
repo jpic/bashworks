@@ -11,9 +11,9 @@
 #--------------------------
 ## Sources mtest addons for bashunit.
 #--------------------------
-function mtest_bashunit_source() {
-    source $(module_get_path mtest)/bashunit/runner.sh
-    source $(module_get_path mtest)/bashunit/assertions.sh
+function mtests_bashunit_source() {
+    source $(module_get_path mtests)/bashunit/runner.sh
+    source $(module_get_path mtests)/bashunit/assertions.sh
 }
 
 #--------------------------
@@ -23,7 +23,7 @@ function mtest_bashunit_source() {
 ##
 ## Read bashunit/runner.sh for more information.
 #--------------------------
-function mtest_bashunit_post_source() {
+function mtests_bashunit_post_source() {
     if test -z "$BASHUNIT_OUTPUTTER"; then
 	    BASHUNIT_OUTPUTTER="TextOutputter"
     fi
@@ -36,8 +36,8 @@ function mtest_bashunit_post_source() {
 #--------------------------
 ## Runs bashunit tests of a module.
 #--------------------------
-function mtest_bashunit() {
-    local bashunit_dir=$(module_get_path mtest)/bashunit/current
+function mtests_bashunit() {
+    local bashunit_dir=$(module_get_path mtests)/bashunit/current
     local module_name=$1
     local module_path=$(module_get_path $module_name)
 
