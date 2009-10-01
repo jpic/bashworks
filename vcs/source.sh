@@ -15,6 +15,16 @@ function vcs_source() {
     source $(module_get_path vcs)/aliases.sh
 }
 
+function vcs_post_source() {
+    vcs_src_path=""
+    vcs_type=""
+    vps_conf_path=$(vcs_get_conf_path)
+}
+
+function vcs_get_conf_path() {
+    echo ${vcs_src_path}/.vcs.sh
+}
+
 #--------------------------
 ## Initialises the vcs module in a given sources path.
 ## @param Path to sources root

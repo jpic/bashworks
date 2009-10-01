@@ -16,6 +16,11 @@ function tpl_source() {
     source $(module_get_path tpl)/conf.sh
 }
 
+function tpl_post_source() {
+    tpl_template_path=""
+    tpl_src_path=""
+}
+
 function tpl() {
     local usage="tpl /path/to/source /path/to/destination"
     tpl_src_path="$1"

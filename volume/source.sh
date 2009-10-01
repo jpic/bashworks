@@ -26,6 +26,12 @@ function volume_source() {
     source $(module_get_path volume)/conf.sh
 }
 
+function volume_post_source() {
+    volume_interval=10
+    volume_current=$(volume_get_current)
+    volume_conf_path=$HOME/.volume
+}
+
 #--------------------------
 ## Module initialization callback.
 ##

@@ -25,4 +25,5 @@
 #--------------------------
 function conf_source() {
     source $(module_get_path conf)/functions.sh
+    source $(module_get_path conf)/module.sh
 }

@@ -21,6 +21,25 @@ function vps_source() {
     source $(module_get_path vps)/conf.sh
 }
 
+function vps_post_source() {
+    vps_name=""
+    vps_root=""
+    vps_id=""
+    vps_packages_dir=""
+    vps_master=""
+    vps_mailer=""
+    vps_stage_name=""
+    vps_stage_url=""
+    vps_admin=""
+    vps_ip=""
+    vps_host_ip=""
+    vps_conf_path=$(vps_get_conf_path)
+}
+
+function vps_get_conf_path() {
+    echo $VPS_ETC_DIR/${vps_name}.config
+}
+
 #--------------------------
 ## Prompts the admin for the host ip to use
 #--------------------------

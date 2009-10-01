@@ -45,7 +45,7 @@ function conf_get_module_variables() {
 ## @Param   Path to configuration file
 ## @Param   List of variable names
 #-------------------------- 
-function conf_save() {
+function conf_save_to_path() {
     local conf_path="$1"
     local conf_variables="$*"
     # Skip the first parameter which is for $conf_path
@@ -87,7 +87,7 @@ function conf_save() {
 ## @Param   Configuration file path
 ## @Return  2 If the configuration file path does not exist or is not readable
 #-------------------------- 
-function conf_load() {
+function conf_load_from_path() {
     local conf_path="$1"
 
     if [[ -f $conf_path ]]; then
@@ -106,7 +106,7 @@ function conf_load() {
 ##
 ## @param List of variable names
 #-------------------------- 
-function conf_interactive() {
+function conf_interactive_variables() {
     local conf_variables="$*"
     local conf_value=""
 

@@ -27,10 +27,12 @@ function mpd_source() {
 ## It sets some defaults and load the user configuration data.
 #--------------------------
 function mpd_post_source() {
+    mpd_host=""
+    mpd_port=""
+    mpd_password=""
     mpd_player=mplayer
     mpd_client=ncmpc
     mpd_screenrc=${HOME}/include/shell/mpd/etc/screenrc
+    mpd_url=""
     mpd_conf_path=${HOME}/.mpd
-
-    mpd_conf_load
 }
