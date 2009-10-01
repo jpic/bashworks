@@ -62,11 +62,20 @@ declare -a module_blacklist
 ## Runs modulename_source() if it exists.
 ## Addes module names and paths to $module_paths.
 ## This function checks if the module was blacklisted at each step.
-## @Globals  module_paths, module_blacklist
+## @Param   Modules paths, default is $MODULES_PATH
+## @Globals module_paths, module_blacklist
 #--------------------------
 function module_source() {
-    # make an array of MODULES_PATH
-    declare -a paths=($(echo $MODULES_PATH | tr : " "))
+    if [[ -z $1 ]]; then
+        # make an array of MODULES_PATH
+        declare -a paths=($(echo $MODULES_PATH | tr : " "))
+    else
+        declare -a paths+=()
+
+        for path in $*; do
+            paths+=("$path")
+        done
+    fi
 
     local module_name=""
     local module_path=""
