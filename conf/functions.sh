@@ -6,6 +6,34 @@
 ##	@License	Apache
 #--------------------------
 
+#--------------------------
+## This functtion takes a module name as first parameter and outputs the
+## name of all declared variables prefixed by it, separated by spaces.
+##
+## WARNING: if the first element is a module name then eval will be used. If the
+##          eval string doesn't pass a regexp security test then 1 will be
+##          returned.
+## @Param   Module name
+#--------------------------
+function conf_get_module_variables() {
+    local -a conf_variables=()
+    local get_conf_variables='echo ${!'
+    get_conf_variables+=$1
+    get_conf_variables+='@}'
+
+    echo $get_conf_variables | grep -q '^echo \${\![a-zA-Z0-9_]*@}$'
+    if [[ $? != 0 ]]; then
+        print_error "Eval line may be unsecure, abording: $get_conf_variables"
+        return 1
+    fi
+
+    for variable in $(eval $get_conf_variables); do
+        conf_variables+="${variable} "
+    done
+
+    echo $conf_variables
+}
+
 #-------------------------- 
 ## This function saves given variables in a given configuration file.
 ##
@@ -23,7 +51,7 @@ function conf_save() {
     # Skip the first parameter which is for $conf_path
     conf_variables=${conf_variables#* }
     
-    print_debug Will save ${conf_variables[@]} to $conf_path
+    print_debug Will save ${conf_variables} to ${conf_path}
 
     local conf_value=""
 
