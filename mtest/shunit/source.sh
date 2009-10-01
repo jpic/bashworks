@@ -22,8 +22,8 @@ function mtest_shunit() {
         return 1
     fi
 
-    if [[ -f $module_path/shunit/tests.sh ]]; then
-        source $module_path/shunit/tests.sh
+    if [[ -f $module_path/shunit.sh ]]; then
+        source $module_path/shunit.sh
     fi
 
     source $module_path/shunit/*.sh
