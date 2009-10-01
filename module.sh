@@ -82,31 +82,15 @@ function module_source() {
     local module_source_path=""
     local module_source=""
 
-    # start registering to module_paths and sourcing
+    # register modules and paths for each path
     for path in ${paths[@]}; do        
-        for module_path in ${path}/*; do
-            
-            module_name="${module_path##*/}"
-            
-            # blacklist check
-            if [[ $(module_blacklist_check $module_name) ]]; then
-                continue
-            fi
-            
-            # add to module_path
-            module_paths[$module_name]=$module_path
-
-        done
+        module_find $path
     done
 
     for module_name in ${!module_paths[@]}; do
         module_path="${module_paths[$module_name]}"
         module_source_path="${module_path}/source.sh"
         module_source_function="${module_name}_source"
-
-        if [[ ! -f $module_source_path ]]; then
-            continue
-        fi
 
         # blacklist check
         if [[ $(module_blacklist_check $module_name) ]]; then
@@ -125,6 +109,41 @@ function module_source() {
         if [[ $(declare -f $module_source_function) ]]; then
             $module_source_function
         fi
+    done
+}
+
+#--------------------------
+## This function finds all modules and nested submodules in a given path and
+## registers it.
+##
+## With this example layout:
+## /yourpath/
+## /yourpath/foo/
+## /yourpath/foo/source.sh
+## /yourpath/foo/bar/source.sh
+##
+## It will register:
+## module "foo" with path "/yourpath/foo"
+## module "foo_bar" with path "/yourpath/foo/bar"
+##
+## @Param   Path to find modules in.
+#--------------------------
+function module_find() {
+    local path="$1"
+    local relative_path=""
+
+    for module_path in `find $path -name source.sh -exec dirname {} \;`; do
+        relative_path="${module_path#*$path/}"
+        module_name="${relative_path//\//_}"
+        
+        # blacklist check
+        if [[ $(module_blacklist_check $module_name) ]]; then
+            continue
+        fi
+        
+        # add to module_path
+        module_paths[$module_name]=$module_path
+
     done
 }
 
