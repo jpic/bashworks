@@ -47,6 +47,12 @@ function conf_get_module_variables() {
 #-------------------------- 
 function conf_save_to_path() {
     local conf_path="$1"
+
+    if [[ ! $conf_path =~ "/" ]]; then
+        print_error "Not saving to '$conf_path': not an absolute path"
+        return 1
+    fi
+
     local conf_variables="$*"
     # Skip the first parameter which is for $conf_path
     conf_variables=${conf_variables#* }
