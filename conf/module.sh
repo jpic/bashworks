@@ -13,8 +13,11 @@ function conf() {
     local module_overload="${module_name}_conf"
 
     if [[ $(declare -f $module_overload) ]]; then
-        $module_overload
-        return $?
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+           $module_overload
+           return $?
+        fi
+        echo lol
     fi
 
     conf_load $module_name
@@ -31,6 +34,8 @@ function conf() {
 ##
 ## Note: this function is polite, it will call yourmodule_conf_save() if it
 ## exists instead of doing the saving itself.
+## If yourmodule_conf_save() is actually the function calling conf_save() then
+## it will execute itself.
 ##
 ## @Param   Module name
 #--------------------------
@@ -39,8 +44,10 @@ function conf_save() {
     local module_overload="${module_name}_conf_save"
 
     if [[ $(declare -f $module_overload) ]]; then
-        $module_overload
-        return $?
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload
+            return $?
+        fi
     fi
 
     local module_variables=$(conf_get_module_variables $module_name)
@@ -57,6 +64,8 @@ function conf_save() {
 ##
 ## Note: this function is polite, it will call yourmodule_conf_load() if it
 ## exists instead of doing the loading itself.
+## If yourmodule_conf_load() is actually the function calling conf_load() then
+## it will execute itself.
 ##
 ## @Param   Module namme
 #--------------------------
@@ -65,8 +74,10 @@ function conf_load() {
     local module_overload="${module_name}_conf_load"
 
     if [[ $(declare -f $module_overload) ]]; then
-        $module_overload
-        return $?
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload
+            return $?
+        fi
     fi
 
     local module_save_path=${module_name}_conf_path
@@ -84,6 +95,8 @@ function conf_load() {
 ## 
 ## Note: this function is polite, it will call yourmodule_conf_interactive() if
 ## it exists instead of doing the loading itself.
+## If yourmodule_conf_interactive() is actually the function calling
+## conf_interactive() then it will execute itself.
 ## 
 ## Note that this method does not save the new values.
 ##
@@ -94,8 +107,10 @@ function conf_interactive() {
     local module_overload="${module_name}_conf_interactive"
 
     if [[ $(declare -f $module_overload) ]]; then
-        $module_overload
-        return $?
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload
+            return $?
+        fi
     fi
 
     conf_interactive_variables $(conf_get_module_variables $module_name)
