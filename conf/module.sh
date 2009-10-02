@@ -54,6 +54,8 @@ function conf_save() {
     local module_save_path=${module_name}_conf_path
 
     conf_save_to_path ${!module_save_path} $module_variables
+
+    print_debug "Saved configuration for $module_name"
 }
 
 #--------------------------
@@ -83,6 +85,8 @@ function conf_load() {
     local module_save_path=${module_name}_conf_path
 
     conf_load_from_path ${!module_save_path} $module_variables
+
+    print_debug "Loaded configuration for $module_name"
 }
 
 #--------------------------
@@ -114,4 +118,6 @@ function conf_interactive() {
     fi
 
     conf_interactive_variables $(conf_get_module_variables $module_name)
+    
+    print_debug "Done interactive configuration for $module_name"
 }
