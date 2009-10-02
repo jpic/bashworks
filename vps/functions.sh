@@ -11,7 +11,7 @@
 #--------------------------
 function vps_get_free_id() {
     for i in {100..240}; do
-        grep "vps_id=\"${i}\"" ${VPS_ETC_DIR}/*.config
+        grep -q "vps_id=\"${i}\"" ${VPS_ETC_DIR}/*.config
 
         if [[ $? != 0 ]]; then
             echo $i
@@ -24,7 +24,7 @@ function vps_get_property() {
     local name="$1"
     local property_name="vps_$2"
 
-    vps_conf_save
+    conf_save vps
     local current_vps_name=$vps_name
 
     vps $name 1
@@ -46,7 +46,7 @@ function vps_generate() {
     vps_configure_net
     vps_configure_root
     vps_configure_runlevels
-    vps_save_config
+    conf_save vps
     vps_start
 }
 
