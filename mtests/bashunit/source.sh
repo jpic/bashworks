@@ -12,8 +12,8 @@
 ## Sources mtest addons for bashunit.
 #--------------------------
 function mtests_bashunit_source() {
-    source $(module_get_path mtests)/bashunit/runner.sh
-    source $(module_get_path mtests)/bashunit/assertions.sh
+    source $(module_get_path mtests_bashunit)/runner.sh
+    source $(module_get_path mtests_bashunit)/assertions.sh
 }
 
 #--------------------------

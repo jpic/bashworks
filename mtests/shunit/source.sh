@@ -1,20 +1,18 @@
-function mtest_shunit_source() {
-    source $(module_get_path mtest)/shunit/current/shUnit
-    if [[ -n $MODULES_DEBUG ]]; then
-        source $(module_get_path mtest)/shunit/current/shUnitPlus
-    else
-        # workaround shUnitPlus depending on $SHUNIT_HOME
-        source $(module_get_path mtest)/shunit/current/shUnitPlus >/dev/null 2>&1
-    fi
+function mtests_shunit_pre_source() {
+    export SHUNIT_HOME="$(module_get_path mtests_shunit)/current"
 }
 
-function mtest_shunit_post_source() {
+function mtests_shunit_source() {
+    source $(module_get_path mtests_shunit)/current/shUnitPlus >/dev/null 2>&1
+}
+
+function mtests_shunit_post_source() {
     if [[ -z $SHUNIT_HOME ]]; then
-        SHUNIT_HOME=$(module_get_path mtest)/shunit/current
+        SHUNIT_HOME=$(module_get_path mtests_shunit)/current
     fi    
 }
 
-function mtest_shunit() {
+function mtests_shunit() {
     local module_name=$1
     local module_path=$(module_get_path $module_name)
 
