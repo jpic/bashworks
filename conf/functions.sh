@@ -23,7 +23,7 @@ function conf_get_module_variables() {
 
     echo $get_conf_variables | grep -q '^echo \${\![a-zA-Z0-9_]*@}$'
     if [[ $? != 0 ]]; then
-        print_error "Eval line may be unsecure, abording: $get_conf_variables"
+        mlog error "Eval line may be unsecure, abording: $get_conf_variables"
         return 1
     fi
 
@@ -49,7 +49,7 @@ function conf_save_to_path() {
     local conf_path="$1"
 
     if [[ ! $conf_path =~ "/" ]]; then
-        print_error "Not saving to '$conf_path': not an absolute path"
+        mlog error "Not saving to '$conf_path': not an absolute path"
         return 1
     fi
 
@@ -57,7 +57,7 @@ function conf_save_to_path() {
     # Skip the first parameter which is for $conf_path
     conf_variables=${conf_variables#* }
     
-    print_debug Will save ${conf_variables} to ${conf_path}
+    mlog debug Will save ${conf_variables} to ${conf_path}
 
     local conf_value=""
 
@@ -83,6 +83,8 @@ function conf_save_to_path() {
             echo "${variable}=\"${conf_value}\"" >> $conf_path
         fi
     done
+
+    mlog debug "Saved to $conf_path: ${conf_variables[@]}"
 }
 
 #-------------------------- 
@@ -99,9 +101,11 @@ function conf_load_from_path() {
     if [[ -f $conf_path ]]; then
         source $conf_path
     else
-        print_error "$conf_path does not exist, not loaded"
+        mlog debug "$conf_path does not exist, not loaded"
         return 2
     fi
+
+    mlog debug "Loaded $conf_path"
 }
 
 #-------------------------- 
@@ -126,4 +130,6 @@ function conf_interactive_variables() {
             echo "Changed $variable to $input"
         fi
     done
+
+    mlog debug "Configured $conf_variables interactively"
 }

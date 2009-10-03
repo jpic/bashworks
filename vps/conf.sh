@@ -2,15 +2,14 @@
 ## Prompts the admin for the host ip to use
 #--------------------------
 function vps_conf_interactive_network() {
-    if [[ -z $VPS_INTERNET_MAP ]] || [[ -z $VPS_INTRANET_MAP ]]; then
-        print_warning "VPS_INTERNET_MAP and VPS_INTRANET_MAP are not set, \
-                       cannot configure network"
+    if [[ -z $ROUTER_INTERNET_MAP ]] || [[ -z $ROUTER_INTRANET_MAP ]]; then
+        mlog warning "ROUTER_INTERNET_MAP and ROUTER_INTRANET_MAP are not set, cannot configure network"
     fi
 
     local choice=""
     local line=""
     
-    print_info "Please select the network for this VPS"
+    mlog info "Please select the network for this ROUTER"
 
     for index in ${!VPS_INTERNET_MAP[@]}; do
         line="${index}) "
