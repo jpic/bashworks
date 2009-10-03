@@ -11,24 +11,24 @@ function vps_conf_interactive_network() {
     
     mlog info "Please select the network for this ROUTER"
 
-    for index in ${!VPS_INTERNET_MAP[@]}; do
+    for index in ${!ROUTER_INTERNET_MAP[@]}; do
         line="${index}) "
         
-        if [[ -n $VPS_LABEL_MAP ]]; then
-            line+="${VPS_LABEL_MAP[$index]} "
+        if [[ -n $ROUTER_LABEL_MAP ]]; then
+            line+="${ROUTER_LABEL_MAP[$index]} "
         fi
 
-        line+="${VPS_INTERNET_MAP[$index]} "
-        line+="vps_ip: ${VPS_INTRANET_MAP[$index]}${vps_id}"
+        line+="${ROUTER_INTERNET_MAP[$index]} "
+        line+="vps_ip: ${ROUTER_INTRANET_MAP[$index]}${vps_id}"
 
         echo $line
     done
 
     read -p "Choice number> " choice
 
-    vps_intranet=${VPS_INTRANET_MAP[$choice]}
+    vps_intranet=${ROUTER_INTRANET_MAP[$choice]}
     vps_ip=${vps_intranet}${vps_id}
-    vps_host_ip=${VPS_INTERNET_MAP[$choice]}
+    vps_host_ip=${ROUTER_INTERNET_MAP[$choice]}
 }
 
 function vps_conf_interactive() {
