@@ -110,9 +110,11 @@ function module_pre_source() {
                 continue
             fi
             
-            # add to module_path
-            module_paths[$module_name]=$module_path
-    
+            # add to module_path if required
+            if [[ ! "${module_paths[@]}" =~ "$module_path" ]]; then
+                module_paths[$module_name]=$module_path
+            fi
+        
         done
     done
 }
