@@ -88,7 +88,7 @@ function module_pre_source() {
         # make an array of MODULES_PATH
         declare -a paths=($(echo $MODULES_PATH | tr : " "))
     else
-        declare -a paths+=()
+        declare -a paths=()
 
         for path in $*; do
             paths+=("$path")
