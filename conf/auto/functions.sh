@@ -18,3 +18,11 @@ function conf_auto_save_all() {
         conf_save $module_name
     done
 }
+
+function conf_auto_load_decorator() {
+    local module_name="$1"
+
+    if [[ "$(conf_auto_get_modules_to_autosave)" =~ "$module_name" ]]; then
+        conf_load $module_name
+    fi
+}

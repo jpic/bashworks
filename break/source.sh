@@ -53,4 +53,6 @@ function break_source() {
 function break_post_source() {
     break_interval=7200
     break_conf_path=${HOME}/.break
+
+    conf_auto_load_decorator break
 }
