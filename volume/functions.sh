@@ -15,7 +15,7 @@ function volume_get_current() {
             mixer vol | grep -o ':[0-9]*' | cut -c 2-5
             ;;
         linux)
-            print_error TODO: implement Linux support? But linux has mute support so ...
+            mlog error TODO: implement Linux support? But linux has mute support so ...
             ;;
     esac
 }

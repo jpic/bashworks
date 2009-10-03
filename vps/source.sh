@@ -61,13 +61,13 @@ function vps() {
     vps_name="$1"
 
     if [[ -z $vps_name ]]; then
-        print_error "Usage: $usage"
+        mlog error "Usage: $usage"
     fi
 
     vps_conf_path=$(vps_get_conf_path)
 
     if [[ ! -f $vps_conf_path ]]; then
-        print_info $vps_conf_path not found, configuring new vps
+        mlog info $vps_conf_path not found, configuring new vps
 
         vps_root=${VPS_DIR}/${vps_name}
         vps_id=$(vps_get_free_id)

@@ -33,7 +33,7 @@ function vcs() {
     vcs_src_path="$1"
 
     if [[ -z $vcs_src_path ]]; then
-        print_error "Usage: $usage"
+        mlog error "Usage: $usage"
         return 2
     fi
 
@@ -47,9 +47,9 @@ function vcs() {
 
     if [[ -z $vcs_type ]]; then
         for vcs_type in git hg svn; do
-            print_debug "Checking for $vcs_type in $vcs_src_path"
+            mlog debug "Checking for $vcs_type in $vcs_src_path"
             if [[ -d ".$vcs_type" ]]; then
-                print_debug "Found $vcs_type in $vcs_src_path"
+                mlog debug "Found $vcs_type in $vcs_src_path"
                 source $(module_get_path vcs)/${vcs_type}.sh
             fi
         done
