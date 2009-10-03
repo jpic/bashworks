@@ -54,9 +54,3 @@ function conf_auto_conf_interactive() {
         echo ""
     fi
 }
-
-function conf_auto_save_all() {
-    for module_name in $(conf_auto_get_modules_to_autosave); do
-        conf_save $module_name
-    done
-}

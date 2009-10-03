@@ -12,3 +12,17 @@ function conf_auto_get_modules_to_autosave() {
 
     echo $output
 }
+
+function conf_auto_load_decorator() {
+    local module_name="$1"
+
+    if [[ "$(conf_auto_get_modules_to_autosave)" =~ "$module_name" ]]; then
+        conf_load $module_name
+    fi
+}
+
+function conf_auto_save_all() {
+    for module_name in $(conf_auto_get_modules_to_autosave); do
+        conf_save $module_name
+    done
+}

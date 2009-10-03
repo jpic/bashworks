@@ -34,4 +34,6 @@ function mpd_post_source() {
     mpd_screenrc=${HOME}/include/shell/mpd/etc/screenrc
     mpd_url=""
     mpd_conf_path=${HOME}/.mpd
+
+    conf_auto_load_decorator mpd
 }
