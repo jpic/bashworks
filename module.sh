@@ -219,11 +219,11 @@ function module_blacklist_check() {
     for module_name in $module_blacklist; do
         if [[ $module_name == $1 ]]; then
             echo "Yes"
-            return 1
+            return 0
         fi
     done
 
-    return 0
+    return 1
 }
 
 #--------------------------
