@@ -55,7 +55,11 @@ function conf_save() {
 
     conf_save_to_path ${!module_save_path} $module_variables
 
+<<<<<<< HEAD
     mlog debug "Saved configuration for $module_name"
+=======
+    mlog trace "Saved configuration for $module_name"
+>>>>>>> 9b2b90ebdda1f018a52ed7b41ad1cc4bdb66d7b2
 }
 
 #--------------------------
@@ -86,7 +90,11 @@ function conf_load() {
 
     conf_load_from_path ${!conf_path}
 
+<<<<<<< HEAD
     mlog debug "Loaded configuration for $module_name (${!conf_path})"
+=======
+    mlog trace "Loaded configuration for $module_name (${!conf_path})"
+>>>>>>> 9b2b90ebdda1f018a52ed7b41ad1cc4bdb66d7b2
 }
 
 #--------------------------
