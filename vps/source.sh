@@ -7,13 +7,6 @@
 #--------------------------
 
 function vps_pre_source() {
-    if [[ -z $VPS_INTERNET_MAP ]] || [[ -z $VPS_INTRANET_MAP ]]; then
-        print_error "VPS_INTERNET_MAP and VPS_INTRANET_MAP are not set, \
-                     cannot interactively configure network"
-        module_blacklist_add vps
-        return 2
-    fi
-
     if [[ -z $VPS_DIR ]]; then
         VPS_DIR="/vservers"
     fi
