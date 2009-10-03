@@ -7,19 +7,20 @@
 ##
 ## The role of module.sh is to traverse application repository directories
 ## and try to load modules. Loading a module consist of:
-## - finding source.sh,
-## - sourcing source.sh,
+## - finding source.sh
+## - sourcing source.sh
 ## - running yourmodule_pre_source()
 ## - running yourmodule_source()
 ## - running yourmodule_post_source()
 ##
 ## Modules are also able to blacklist themselves.
 ##
-## In order to find modules, this script expects the environment variable
-## $MODULES_PATH to be set just like $PATH.
+## In order to find modules, this script expects repository paths either:
+## - in the environment variable $MODULES_PATH (same format than $PATH)
+## - as arguments of the source call (separate paths with space)
+## - as arguments of module_pre_source (separate paths with space)
 ##
-## Role of source.sh:
-## Each module should have a source.sh file which may contain this functions:
+## Each module must have a source.sh file which can contain this functions:
 ## - yourmodule_pre_source(): basically set up variables needed by _source()
 ## - yourmodule_source(): include all dependencies
 ## - yourmodule_post_source(): initialise the module, ie. default variables,
@@ -44,8 +45,8 @@ if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 	return 2
 fi
 # }}}
-if [[ -z $MODULES_PATH ]]; then # {{{ return if $MODULES_PATH is not defined
-    echo "Sorry, MODULES_PATH is not defined"
+if [[ -z $MODULES_PATH ]]; then # {{{
+    echo "Sorry, MODULES_PATH is not defined and no path was supplied as argument"
     echo "MODULES_PATH should contain a list of paths like the PATH variable"
     echo "It should contain a list of directories containing modules"
     echo "Each directory should be separated by ':'"
@@ -81,7 +82,9 @@ function module() {
 ##
 ## It that example case, foo_bar functions should be prefixed by foo_bar_
 ## instead of just foo_.
-## @Param   Path to find modules in.
+## 
+## The blacklist check is done just before adding the module to $module_paths.
+## @Param   Paths to find modules in, separated by space.
 #--------------------------
 function module_pre_source() {
     if [[ -z $1 ]]; then
@@ -120,13 +123,17 @@ function module_pre_source() {
 }
 
 #--------------------------
-## Resets module variables (ie. $module_paths and $module_blacklist).
-## Traverses $MODULES_PATH searching for modules (directories with source.sh)
-## Runs modulename_source() if it exists.
-## Addes module names and paths to $module_paths.
-## This function checks if the module was blacklisted at each step.
-## @Param   Modules paths, default is $MODULES_PATH
-## @Globals module_paths, module_blacklist
+## Source, run _pre_source() and _source() for each modules, uses blacklist.
+##
+## This function loops over the $module_paths associative array and using the
+## module name (array key) and module path (array value), it does the
+## following for each module:
+## - check blacklist
+## - source source.sh
+## - check blacklist
+## - call _pre_source() function if it is declared
+## - check blacklist
+## - call _source() function if it is declared
 #--------------------------
 function module_source() {
     local module_name=""
@@ -171,11 +178,13 @@ function module_source() {
 }
 
 #--------------------------
-## This function iterates over the installed modules list and tryes to run
-## modulename_post_source() function, if it exists.
-## Blacklist is checked at each step.
-##
-## This method should be called *after* module_source().
+## Run _post_source() function for each module.
+## 
+## This function loops over the $module_paths associative array and using the
+## module name (array key) and module path (array value), it does the
+## following for each module:
+## - check blacklist
+## - call _post_source() function if it is declared.
 #--------------------------
 function module_post_source() {    
     local module_post_source_function=""
@@ -207,7 +216,7 @@ function module_post_source() {
 ##
 ## Example usage:
 ##
-##     if [[ $(module_blacklist_check yourmodule) ]]; then
+##     if [[ -n $(module_blacklist_check yourmodule) ]]; then
 ##         echo "yourmodule is blacklisted"
 ##     else
 ##         echo "yourmodule is not blacklisted"
@@ -239,6 +248,8 @@ function module_blacklist_check() {
 ##
 ##    # add yourmodule to the blacklist
 ##    module_blacklist_add yourmodule
+## 
+## @Param   Module name
 #--------------------------
 function module_blacklist_add() {
     for module_name in $module_blacklist; do
@@ -256,12 +267,13 @@ function module_blacklist_add() {
 ## It provides a reliable way for a script in your module to know its own
 ## location on the file system.
 ##
-## It is useful to allow a module to be divided in submodules, it allows
-## yourmodule_source() to source submodules.
-##
 ## Example usage:
 ##
-##     source $(module_get_path yourmodule)/yoursubmodule.sh
+##     source $(module_get_path yourmodule)/functions.sh
+## 
+## Example submodule usage:
+##
+##     source $(module_get_path yourmodule_submodule)/functions.sh
 ## 
 ## @Param   Module name
 #--------------------------
