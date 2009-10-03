@@ -82,9 +82,9 @@ function conf_load() {
         fi
     fi
 
-    local module_save_path=${module_name}_conf_path
+    local conf_path="${module_name}_conf_path"
 
-    conf_load_from_path ${!module_save_path} $module_variables
+    conf_load_from_path ${!conf_path}
 
     mlog debug "Loaded configuration for $module_name (${!conf_path})"
 }
