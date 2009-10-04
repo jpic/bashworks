@@ -946,15 +946,21 @@ _shunit_cleanup()
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
     # disable EXIT trap
     trap 0
-    # add 128 to signal and exit
-    exit `expr ${_shunit_signal_} + 128`
+    # if not in an interactive shell
+    if [[ ! $- =~ i ]]; then
+      # add 128 to signal and exit
+      exit `expr ${_shunit_signal_} + 128`
+    fi
   elif [ ${__shunit_reportGenerated} -eq ${SHUNIT_FALSE} ] ; then
     _shunit_assertFail 'Unknown failure encountered running a test'
     _shunit_generateReport
-    exit ${SHUNIT_ERROR}
+    # if not in an interactive shell
+    if [[ ! $- =~ i ]]; then
+      exit ${SHUNIT_ERROR}
   fi
+    fi
 
-  unset _shunit_name_ _shunit_signal_
+    unset _shunit_name_ _shunit_signal_
 }
 
 # The actual running of the tests happens here.
@@ -963,28 +969,28 @@ _shunit_execSuite()
   for _shunit_test_ in ${__shunit_suite}; do
     __shunit_testSuccess=${SHUNIT_TRUE}
 
-    # disable skipping
-    endSkipping
+# disable skipping
+  endSkipping
 
-    # execute the per-test setup function
+# execute the per-test setup function
     setUp
 
-    # execute the test
+# execute the test
     echo "${_shunit_test_}"
     eval ${_shunit_test_}
 
-    # execute the per-test tear-down function
-    tearDown
+# execute the per-test tear-down function
+  tearDown
 
-    # update stats
+# update stats
     if [ ${__shunit_testSuccess} -eq ${SHUNIT_TRUE} ]; then
       __shunit_testsPassed=`expr ${__shunit_testsPassed} + 1`
     else
       __shunit_testsFailed=`expr ${__shunit_testsFailed} + 1`
-    fi
-  done
+        fi
+        done
 
-  unset _shunit_test_
+        unset _shunit_test_
 }
 
 # This function exits shUnit2 with the appropriate error code and OK/FAILED
@@ -1109,7 +1115,11 @@ _shunit_generateReport
 
 # that's it folks
 [ ${__shunit_testsFailed} -eq 0 ]
-exit $?
+
+# if not in an interactive shell
+if [[ ! $- =~ i ]]; then
+  exit $?
+fi
 
 #/**
 # </s:shelldoc>
