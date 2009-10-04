@@ -1096,8 +1096,13 @@ suite
 
 # if no suite function was defined, dynamically build a list of functions
 if [ -z "${__shunit_suite}" ]; then
-  shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
+  if [[ ! $- =~ i ]]; then # running from a file
+    shunit_funcs_=`grep "^[ \t]*test[A-Za-z0-9_]* *()" ${__SHUNIT_PARENT} \
       |sed 's/[^A-Za-z0-9_]//g'`
+  else # running from an interactive shell
+    shunit_funcs_=`declare -f | grep "^[ \t]*test[A-Za-z0-9_]* *()" \
+      |sed 's/[^A-Za-z0-9_]//g'`
+  fi
   for shunit_func_ in ${shunit_funcs_}; do
     suite_addTest ${shunit_func_}
   done
