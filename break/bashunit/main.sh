@@ -29,27 +29,27 @@ function Teardown() {
 
 #-------------------------- 
 ## Asserts that break_do() updates $break_previous.
-## @call    break_do(), assert_math()
+## @call    break_do(), mtests_bashunit_assert_math()
 #-------------------------- 
 function test_break_do_update_break_previous() {
     break_previous=0
     break_do
-    assert_math "$break_previous > 0"
+    mtests_bashunit_assert_math "$break_previous > 0"
 }
 
 #-------------------------- 
 ## Stress break_do() to make sure it updates $break_previous.
-## @call    break_do(), assert_math()
+## @call    break_do(), mtests_bashunit_assert_math()
 #-------------------------- 
 function test_break_do_update_break_previous_stress() {
     break_do
-    assert_math "$break_previous > 0"
+    mtests_bashunit_assert_math "$break_previous > 0"
     
     backup="$break_previous"
     sleep 1
     
     break_do
-    assert_math "$break_previous > $backup"
+    mtests_bashunit_assert_math "$break_previous > $backup"
 }
 
 #-------------------------- 
