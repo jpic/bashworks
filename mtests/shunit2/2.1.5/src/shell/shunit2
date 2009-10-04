@@ -49,20 +49,23 @@ fi
 __SHUNIT_ASSERT_MSG_PREFIX='ASSERT:'
 __SHUNIT_PARENT=${SHUNIT_PARENT:-$0}
 
-# set the constants readonly
-shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
-echo "${shunit_constants_}" |grep '^Binary file' >/dev/null \
-    && shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
-for shunit_constant_ in ${shunit_constants_}; do
-  shunit_ro_opts_=''
-  case ${ZSH_VERSION:-} in
-    '') ;;  # this isn't zsh
-    [123].*) ;;  # early versions (1.x, 2.x, 3.x)
-    *) shunit_ro_opts_='-g' ;;  # all later versions. declare readonly globally
-  esac
-  readonly ${shunit_ro_opts_} ${shunit_constant_}
-done
-unset shunit_constant_ shunit_constants_ shunit_ro_opts_
+# jpic: set the constants readonly if the shell is non-interactive
+# else running the tests twice in the same shell will cause issues of course
+if [[ ! $- =~ i ]]; then
+  shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
+  echo "${shunit_constants_}" |grep '^Binary file' >/dev/null \
+      && shunit_constants_=`set |grep -a '^__SHUNIT_' |cut -d= -f1`
+  for shunit_constant_ in ${shunit_constants_}; do
+    shunit_ro_opts_=''
+    case ${ZSH_VERSION:-} in
+      '') ;;  # this isn't zsh
+      [123].*) ;;  # early versions (1.x, 2.x, 3.x)
+      *) shunit_ro_opts_='-g' ;;  # all later versions. declare readonly globally
+    esac
+    readonly ${shunit_ro_opts_} ${shunit_constant_}
+  done
+  unset shunit_constant_ shunit_constants_ shunit_ro_opts_
+fi
 
 # variables
 __shunit_skip=${SHUNIT_FALSE}
