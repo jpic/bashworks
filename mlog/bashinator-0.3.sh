@@ -117,7 +117,7 @@ function __dispatch() {
 	## main application post-processing (remove lockfile and subcommand logfile)
 	__cleanup || __die 2 "__cleanup() failure"
 
-	exit ${Exit:-0}
+    exit ${Exit:-0}
 
 } # __dispatch()
 
@@ -249,11 +249,15 @@ function __die() {
 
 	## check for error message
 	if [[ -z "${message}" ]]; then
-		message="<called ${FUNCNAME[0]}() without message>"
+        # jpic hack
+		# message="<called ${FUNCNAME[0]}() without message>"
+		message="<called ${FUNCNAME[1]}() without message>"
 	fi
 
 	## number of functions involved
-	local -i numberOfFunctions=$((${#FUNCNAME[@]} - 1))
+    # jpic hack
+	# local -i numberOfFunctions=$((${#FUNCNAME[@]} - 1))
+	local -i numberOfFunctions=$((${#FUNCNAME[@]} - 2))
 
 	## skip this number of functions from the bottom of the call stack
 	## 1 == only skip this function itself
@@ -275,7 +279,9 @@ function __die() {
 		local -i n=0 p=0 bashLineNumber=0
 		local bashFileName= functionName=
 
-		for ((n = ${#FUNCNAME[@]} - 1, p = ${#BASH_ARGV[@]} - 1; n >= ${skipNumberOfFunctions}; n--)) ; do
+        # jpic hack
+		# for ((n = ${#FUNCNAME[@]} - 1, p = ${#BASH_ARGV[@]} - 1; n >= ${skipNumberOfFunctions}; n--)) ; do
+		for ((n = ${#FUNCNAME[@]} - 2, p = ${#BASH_ARGV[@]} - 1; n >= ${skipNumberOfFunctions}; n--)) ; do
 
 			bashFileName="${BASH_SOURCE[n + 1]##*/}"
 			bashLineNumber="${BASH_LINENO[n]}"
@@ -369,7 +375,8 @@ function __msgPrint() {
 	## determine whether we can show colors
 	local -i colorTerm=0
 	case "${TERM}" in
-		screen*|xterm*) let colorTerm=1 ;;
+        # jpic: add rxvt because it's not configurable
+		rxvt*|screen*|xterm*) let colorTerm=1 ;;
 		*) let colorTerm=0 ;;
 	esac
 
@@ -681,9 +688,13 @@ function __msg() {
 		## we were called by any other function
 		*)
 			## use the info of the function that called __msg()
-			bashFileName=${BASH_SOURCE[1]} # the file name where the function that called __msg was called
+            # jpic hack
+			#bashFileName=${BASH_SOURCE[1]} # the file name where the function that called __msg was called
+			#let bashLineNumber=${BASH_LINENO[0]} # the line number where __msg was called
+			#callingFunction=${FUNCNAME[1]} # the name of the function that called __msg
+			bashFileName=${BASH_SOURCE[2]} # the file name where the function that called __msg was called
 			let bashLineNumber=${BASH_LINENO[0]} # the line number where __msg was called
-			callingFunction=${FUNCNAME[1]} # the name of the function that called __msg
+			callingFunction=${FUNCNAME[2]} # the name of the function that called __msg
 			;;
 	esac
 	bashFileName=${bashFileName##*/} # strip leading path
@@ -1039,40 +1050,49 @@ function __trapSignals() {
 	__msg debug "signal: ${signal}"
 
 	## ----- main -----
+    local doExit=""
 
 	case ${signal} in
 		SIGHUP)
 			__msg notice "received hangup signal"
-			exit 2
+			doExit="2"
 			;;
 		SIGINT)
 			__msg notice "received interrupt from keyboard"
-			exit 2
+            doExit="2"
 			;;
 		SIGQUIT)
 			__msg notice "received quit from keyboard"
-			exit 2
+			doExit="2"
 			;;
 		SIGABRT)
 			__msg notice "received abort signal"
-			exit 2
+			doExit="2"
 			;;
 		SIGPIPE)
 			__msg notice "broken pipe"
-			exit 2
+			doExit="2"
 			;;
 		SIGALRM)
 			__msg notice "received alarm signal"
-			exit 2
+			doExit="2"
 			;;
 		SIGTERM)
 			__msg notice "received termination signal"
-			exit 2
+			doExit="2"
 			;;
 		*)
 			__msg notice "trapped signal ${signal}"
 			;;
 	esac
+
+    # if it wants to exit
+    if [[ -n $doExit ]]; then
+        # only exit if not running from an interactive shell
+        if [[ ! $- =~ i ]]; then
+            exit $doExit
+        fi
+    fi
 
 	return 0 # success
 
