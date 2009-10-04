@@ -1,0 +1,33 @@
+2008-04-14 Jaka Kranjc <lynxlynxlynx@sourcemage.org>
+	* generate_tarball.sh, version: added
+	* generate-smgl-docs.sh: fixed build_api inclusion
+	* version: 0.2
+
+2008-04-02 Jaka Kranjc <lynxlynxlynx@sourcemage.org>
+	* generate-smgl-docs.sh: fixed long standing HTMl typo
+	  added missing scripts
+	* started documenting changes the standard smgl way
+	* bashdoc: chmod +x
+
+Sun Oct 14 17:24:19 CEST 2007; Arvid Norlander
+  The last two days I have changed so much on bashdoc that I lost count of it
+  Some nice things:
+    Cleaned up code.
+    XHTML and CSS.
+    Made bashdoc able to document variables.
+    Fix many bugs.
+
+Sun Aug 13 13:08:12 PDT 2006; Paul Mahon
+  Fix bug which caused either extra garbage around function links in src or
+  skipped some interlinks.
+  Release bashdoc-0.1.8
+
+Sun Jan 22 16:22:45 EST 2006; Paul Mahon
+  ChangeLog: Started
+  src2html: changed sed to fix the weird invalid range end erors
+    Changes suggested by Jaka Kranjc
+  generate-smgl-docs: Add handy example doc generation
+    script, written by and for SourceMage
+  generate-smgl-docs: Patch by Jaka Kranjc
+  generate-smgl-docs: Add -q to bashdoc call to limit useless output
+  Release: bashdoc-0.1.7

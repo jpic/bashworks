@@ -1,0 +1,9 @@
+#!/bin/bash
+PROJECT=bashdoc
+NEW_VERSION=$(< version)
+mkdir $PROJECT-$NEW_VERSION
+cp -r * $PROJECT-$NEW_VERSION/ 2>/dev/null
+rmdir $PROJECT-$NEW_VERSION/$PROJECT-$NEW_VERSION
+tar -jcf $PROJECT-$NEW_VERSION.tar.bz2 $PROJECT-$NEW_VERSION
+gpg --digest-algo SHA512 -b $PROJECT-$NEW_VERSION.tar.bz2
+rm -r $PROJECT-$NEW_VERSION
