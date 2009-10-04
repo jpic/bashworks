@@ -515,7 +515,7 @@ EOF
 }
 
 # Initialise project variables
-#OUT_DIR=$( dirname $0 )
+OUT_DIR=$( dirname $0 )
 NOCSS=0
 args "$@"
 shift $?
