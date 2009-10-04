@@ -1,49 +1,39 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Persistent configuration handler functions.
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-#--------------------------
-
-#--------------------------
-## This functtion takes a module name as first parameter and outputs the
-## name of all declared variables prefixed by it, separated by spaces.
-##
-## WARNING: if the first element is a module name then eval will be used. If the
-##          eval string doesn't pass a regexp security test then 1 will be
-##          returned.
-## @Param   Module name
-#--------------------------
-function conf_get_module_variables() {
-    local -a conf_variables=()
-    local get_conf_variables='echo ${!'
-    get_conf_variables+=$1
-    get_conf_variables+='@}'
-
-    echo $get_conf_variables | grep -q '^echo \${\![a-zA-Z0-9_]*@}$'
-    if [[ $? != 0 ]]; then
-        mlog error "Eval line may be unsecure, abording: $get_conf_variables"
-        return 1
-    fi
-
-    for variable in $(eval $get_conf_variables); do
-        conf_variables+="${variable} "
-    done
-
-    echo $conf_variables
-}
+#-------------------------- 
+## This file declares low level functions, which do not expect anything that
+## concerns modules. For functions which expects modules see the script
+## conf/module.sh.
+## <p>
+## This script basically declares CRUD functions for given configuration file
+## path and given set of configuration variables.
+## <p>
+## Functions declared in this file are likely to change in future major
+## versions because the features that could be added are:
+## - array support in configurations,
+## - better (hidden) password prompt support,
+## - the user interface could use multiple frontends.
+## <p>
+## Note that <a href="http://code.google.com/p/shesfw/">shesfw</a> is open
+## source and has an (unfinished) user interface API with several backends
+## which could be useable for example with new generation browsers like
+## <a href="http://uzbl.org">uzbl</a>,
+## <a href="http://vimpression.org">vimpression</a>,
+## <a href="http://surf.suckless.org">surf</a>
+#-------------------------- 
 
 #-------------------------- 
-## This function saves given variables in a given configuration file.
-##
-## This function is not only able of writing but can also update variables
-## in the file without altering the other contents.
-##
-## Missing directories will be created if the passed path parameter contains any.
-##
-## @Param   Path to configuration file
-## @Param   List of variable names
+## Saves given variables in the given configuration file.
+## <p>
+## This function uses sed to update variables in the configuration file if
+## the file contains a declaration of this variable. This is likely to be
+## dropped in the future.
+## <p>
+## Missing directories will be created if necessary.
+## @param   Path to configuration file
+## @param   List of variable names
+## @log     Debug, when done, with arguments.
+## @log     Error, if the path is not absolute
 #-------------------------- 
 function conf_save_to_path() {
     local conf_path="$1"
@@ -56,8 +46,6 @@ function conf_save_to_path() {
     local conf_variables="$*"
     # Skip the first parameter which is for $conf_path
     conf_variables=${conf_variables#* }
-    
-    mlog debug Will save ${conf_variables} to ${conf_path}
 
     local conf_value=""
 
@@ -88,12 +76,11 @@ function conf_save_to_path() {
 }
 
 #-------------------------- 
-## This function loads the variables from a given configuration file.
-##
-## It will print an error message if the configuration file cannot be read.
-##
-## @Param   Configuration file path
-## @Return  2 If the configuration file path does not exist or is not readable
+## Loads a saved configuration file from a given configuration path.
+## @log     Notice, if the path does not exists.
+## @log     Debug, when done, with arguments.
+## @param   Configuration file path
+## @return 2 If the configuration file path does not exist or is not readable
 #-------------------------- 
 function conf_load_from_path() {
     local conf_path="$1"
@@ -101,7 +88,7 @@ function conf_load_from_path() {
     if [[ -f $conf_path ]]; then
         source $conf_path
     else
-        mlog debug "$conf_path does not exist, not loaded"
+        mlog notice "$conf_path does not exist, not loaded"
         return 2
     fi
 
@@ -109,12 +96,11 @@ function conf_load_from_path() {
 }
 
 #-------------------------- 
-## This function interactively prompts the user for variable value change
-## given a variable name list.
-##
+## Prompt the user for variable value update, given a variable name list.
 ## Note that this method does not save the new values.
-##
-## @param List of variable names
+## @log     Info, when a variable was changed by the user.
+## @log     Debug, when done, with arguments.
+## @param   List of variable names, separated by space
 #-------------------------- 
 function conf_interactive_variables() {
     local conf_variables="$*"
@@ -127,9 +113,9 @@ function conf_interactive_variables() {
 
         if [[ -n $input ]]; then
             printf -v $variable $input
-            echo "Changed $variable to $input"
+            mlog info "Changed $variable to $input"
         fi
     done
 
-    mlog debug "Configured $conf_variables interactively"
+    mlog debug "Configured ${conf_variables[@]}"
 }
