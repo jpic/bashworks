@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 #--------------------------
-##	@Synopsis	Break management module
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-## This module wraps around Bashunit. Read mtest/bashunit/README for more
-## information about bashunit. 
+## Wraps around bashunit bash testing framework. Read bashunit/current/README for
+## information about working with bashunit.
+## <p>
+## Module tests which use bashunit should be in a subdirectory of the module
+## named "bashunit".
 #--------------------------
 
 #--------------------------
@@ -35,10 +35,22 @@ function mtests_bashunit_post_source() {
 
 #--------------------------
 ## Runs bashunit tests of a module.
+## @polite  Will try yourmodule_mtests_basshunit()
+## @calls   ResultColletor, RunAll, Run, $BASHUNIT_OUTPUTTER
 #--------------------------
 function mtests_bashunit() {
     local bashunit_dir=$(module_get_path mtests)/bashunit/current
     local module_name=$1
+
+    local module_overload="${module_name}_mtests_bashunit"
+
+    if [[ $(declare -f $module_overload) ]]; then
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload
+            return $?
+        fi
+    fi
+
     local module_path=$(module_get_path $module_name)
 
     if [[ ! -d $module_path/bashunit ]]; then
