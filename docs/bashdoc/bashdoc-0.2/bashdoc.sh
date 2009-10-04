@@ -367,9 +367,11 @@ function parse_comments()
 #---------------------
 function output_parsed_tags() {
 	local i
+    local label
 	for i in ${!tag_*} ; do
+        label="$(sed 's/_/ /g' <<< "${i#tag_}")"
 		# Convert _ in tags to space. Looks better.
-		echo "	<h3 class=\"othertag ${1}othertag ${i/tag_/tag-}\">$(sed 's/_/ /g' <<< "${i#tag_}")</h3>"
+		echo "	<h3 class=\"othertag ${1}othertag ${i/tag_/tag-}\">${label^}</h3>"
 		# This may be fun, allow special formatting by tag.
 		echo "	<p class=\"othertag ${1}othertag ${i/tag_/tag-}\">"
 		echo "	${!i}"
@@ -513,7 +515,7 @@ EOF
 }
 
 # Initialise project variables
-OUT_DIR=$( dirname $0 )
+#OUT_DIR=$( dirname $0 )
 NOCSS=0
 args "$@"
 shift $?
