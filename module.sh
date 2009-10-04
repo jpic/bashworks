@@ -84,7 +84,8 @@ function module() {
 ## instead of just foo_.
 ## 
 ## The blacklist check is done just before adding the module to $module_paths.
-## @Param   Paths to find modules in, separated by space.
+## @param   Paths to find modules in, separated by space.
+## @calls   <@function module_blacklist_check>
 #--------------------------
 function module_pre_source() {
     if [[ -z $1 ]]; then
@@ -134,6 +135,7 @@ function module_pre_source() {
 ## - call _pre_source() function if it is declared
 ## - check blacklist
 ## - call _source() function if it is declared
+## @calls   <@function module_blacklist_check>
 #--------------------------
 function module_source() {
     local module_name=""
@@ -185,6 +187,7 @@ function module_source() {
 ## following for each module:
 ## - check blacklist
 ## - call _post_source() function if it is declared.
+## @calls   <@function module_blacklist_check>
 #--------------------------
 function module_post_source() {    
     local module_post_source_function=""
@@ -222,7 +225,7 @@ function module_post_source() {
 ##         echo "yourmodule is not blacklisted"
 ##     fi
 ##
-## @Param   Module name
+## @param   Module name
 #--------------------------
 function module_blacklist_check() {
     for module_name in $module_blacklist; do
@@ -249,7 +252,7 @@ function module_blacklist_check() {
 ##    # add yourmodule to the blacklist
 ##    module_blacklist_add yourmodule
 ## 
-## @Param   Module name
+## @param   Module name
 #--------------------------
 function module_blacklist_add() {
     for module_name in $module_blacklist; do
@@ -275,7 +278,7 @@ function module_blacklist_add() {
 ##
 ##     source $(module_get_path yourmodule_submodule)/functions.sh
 ## 
-## @Param   Module name
+## @param   Module name
 #--------------------------
 function module_get_path() {
     echo ${module_paths[$1]}
