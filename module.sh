@@ -3,7 +3,7 @@
 #--------------------------
 ##	@Synopsis	Bash modular application framework.
 ##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
+##	@License	Apache, unless otherwise specified by a LICENSE file.
 ##
 ## The role of module.sh is to traverse application repository directories
 ## and try to load modules. Loading a module consist of:
