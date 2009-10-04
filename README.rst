@@ -122,16 +122,7 @@ module_blacklist_add(). For example, in break/source.sh::
 
         # prepare for the conf module
         break_conf_path="${HOME}/.break"
-        
-        # prepare for the conf_auto module
-        conf_auto_load_decorator break
     }
-
-This example is interresting because it shows how to prepare a module for
-optionnal use with the conf and conf_auto modules. The conf module will use the
-break_conf_path or any variable like modulename_conf_path. The
-conf_auto_load_decorator() function triggers configuration auto loading if the
-user wants it for the given module.
 
 Proposed application layout
 ---------------------------
@@ -184,6 +175,8 @@ Configuration
 -------------
 
 To configure a module, call `conf modulename`. Don't forget to configure the configuration automagic module with `conf conf_auto`.
+
+It will propose to append a call to conf_auto_load_all to your .bashrc and conf_auto_save_all to your .bash_logout if it is not there.
 
 Standards
 =========
