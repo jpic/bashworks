@@ -7,28 +7,34 @@
 ##
 ## The role of module.sh is to traverse application repository directories
 ## and try to load modules. Loading a module consist of:
+## <pre>
 ## - finding source.sh
 ## - sourcing source.sh
 ## - running yourmodule_pre_source()
 ## - running yourmodule_source()
 ## - running yourmodule_post_source()
-##
+## </pre>
+## <p>
 ## Modules are also able to blacklist themselves.
-##
+## <p>
 ## In order to find modules, this script expects repository paths either:
+## <pre>
 ## - in the environment variable $MODULES_PATH (same format than $PATH)
 ## - as arguments of the source call (separate paths with space)
 ## - as arguments of module_pre_source (separate paths with space)
-##
+## </pre>
+## <p>
 ## Each module must have a source.sh file which can contain this functions:
+## <pre>
 ## - yourmodule_pre_source(): basically set up variables needed by _source()
 ## - yourmodule_source(): include all dependencies
 ## - yourmodule_post_source(): initialise the module, ie. default variables,
 ##   conf path, whatever...
-##
+## </pre>
+## <p>
 ## Eventually, your module can have a yourmodule() function defined in source.sh
 ## to something meaningful. Think of it as an object constructor.
-##
+## <p>
 ## Submodules are simply subdirectories of modules which contain source.sh. See
 ## module_pre_source() for more info.
 #--------------------------
@@ -69,20 +75,24 @@ function module() {
 #--------------------------
 ## This function finds all modules and nested submodules in a given path and
 ## registers it.
-##
+## <p>
 ## With this example layout:
+## <pre>
 ## /yourpath/
 ## /yourpath/foo/
 ## /yourpath/foo/source.sh
 ## /yourpath/foo/bar/source.sh
-##
+## </pre>
+## <p>
 ## It will register:
+## <pre>
 ## module "foo" with path "/yourpath/foo"
 ## module "foo_bar" with path "/yourpath/foo/bar"
-##
+## </pre>
+## <p>
 ## It that example case, foo_bar functions should be prefixed by foo_bar_
 ## instead of just foo_.
-## 
+## <p>
 ## The blacklist check is done just before adding the module to $module_paths.
 ## @param   Paths to find modules in, separated by space.
 ## @calls   <@function module_blacklist_check>
@@ -125,16 +135,18 @@ function module_pre_source() {
 
 #--------------------------
 ## Source, run _pre_source() and _source() for each modules, uses blacklist.
-##
+## <p>
 ## This function loops over the $module_paths associative array and using the
 ## module name (array key) and module path (array value), it does the
 ## following for each module:
+## <pre>
 ## - check blacklist
 ## - source source.sh
 ## - check blacklist
 ## - call _pre_source() function if it is declared
 ## - check blacklist
 ## - call _source() function if it is declared
+## </pre>
 ## @calls   <@function module_blacklist_check>
 #--------------------------
 function module_source() {
@@ -181,12 +193,14 @@ function module_source() {
 
 #--------------------------
 ## Run _post_source() function for each module.
-## 
+## <p>
 ## This function loops over the $module_paths associative array and using the
 ## module name (array key) and module path (array value), it does the
 ## following for each module:
+## <pre>
 ## - check blacklist
 ## - call _post_source() function if it is declared.
+## </pre>
 ## @calls   <@function module_blacklist_check>
 #--------------------------
 function module_post_source() {    
@@ -213,10 +227,10 @@ function module_post_source() {
 ## is in the blacklist array.
 ## It will keep quiet (not output anything) it the first parameter is not
 ## in the blacklist array.
-##
+## <p>
 ## Modules should not use $module_blacklist directly and should use this
 ## function to ensure that a module is blacklisted or not.
-##
+## <p>
 ## Example usage:
 ##
 ##     if [[ -n $(module_blacklist_check yourmodule) ]]; then
@@ -240,18 +254,18 @@ function module_blacklist_check() {
 
 #--------------------------
 ## This function adds the first parameter to the blacklist.
-##
+## <p>
 ## User modules should not use the $module_blacklist array dirrectly and
 ## should add modules to the blacklist through this function.
-##
+## <p>
 ## User modules that do sanity checks should call this function if they
 ## cannot prepare to be useable.
-##
+## <p>
 ## Example usage:
-##
-##    # add yourmodule to the blacklist
-##    module_blacklist_add yourmodule
-## 
+## <pre>
+## # add yourmodule to the blacklist
+## module_blacklist_add yourmodule
+## </pre>
 ## @param   Module name
 #--------------------------
 function module_blacklist_add() {
@@ -266,18 +280,18 @@ function module_blacklist_add() {
 #--------------------------
 ## This function takes a module name as first parameter and outputs its
 ## absolute path.
-##
+## <p>
 ## It provides a reliable way for a script in your module to know its own
 ## location on the file system.
-##
+## <p>
 ## Example usage:
-##
-##     source $(module_get_path yourmodule)/functions.sh
-## 
+## <pre>
+## source $(module_get_path yourmodule)/functions.sh
+## </pre>
 ## Example submodule usage:
-##
-##     source $(module_get_path yourmodule_submodule)/functions.sh
-## 
+## <pre>
+## source $(module_get_path yourmodule_submodule)/functions.sh
+## </pre>
 ## @param   Module name
 #--------------------------
 function module_get_path() {
