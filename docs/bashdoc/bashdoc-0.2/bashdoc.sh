@@ -236,8 +236,8 @@ function get_comment_block()
 
 
 #	Parses the comments from stdin. Also reads the (non-commented)
-#	function name. Mostly uses <@function parse_block> and
-#	<@function output_parsed_block> to do the read work.
+#	function name. Mostly uses parse_block and
+#	output_parsed_block to do the read work.
 #	@Stdin	Reads line after comment block
 #	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
 function parse_comments()
@@ -588,7 +588,7 @@ while [[ $# -gt 0 ]] ; do
 		parse_comments < $FILE
 		echo "$FUNC_LIST" > $FUNC_FILE
 		echo "$VAR_LIST" > $VAR_FILE
-	# Convert references like <@function file,functioname> into links
+	# Convert references like file,functioname into links
 	} | sed -e 's!<@[[:blank:]]*function \([^,>]*\)[[:blank:]]*>!<a href="#\1">\1</a>!g' \
 	        -e 's!<@[[:blank:]]*function \([^,>]*\),[[:blank:]]*\([^>]*\)[[:blank:]]*>!<a href="\1#\2">\1</a>!g' >> $OUT_FILE
 	#Close off the html for this src

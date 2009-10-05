@@ -4,7 +4,7 @@
 
 # Is your break granted?
 # @stdout  Wether your request was granted or denied.
-# @calls   <@function break_do>
+# @calls   break_do
 function break_request() {
     if [[ -z $break_previous ]]; then
         echo "Enjoy your first break"

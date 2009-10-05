@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 # Functions which overload default behavior of conf module functions are
 # declared here.
-# <p>
-# <@function conf_auto_get_variables> creates or uses variables which are
+# conf_auto_get_variables creates or uses variables which are
 # named like conf_auto_yourmodule. These variables are subject to change
 # when the conf_module supports array.
-# <p>
-# <@function conf_auto_conf_interactive> overloads conf_interactive for the
+# conf_auto_conf_interactive overloads conf_interactive for the
 # conf_auto module and also helps the user to set up his bash environment.
 
-# Create missing variables like conf_auto_youmodule for each module with
+# Create missing variables like conf_auto_yourmodule for each module with
 # default value "n", and then output the list of variables of conf_auto.
 # @calls   conf_get_variables
 # @stdout  List of module variables.

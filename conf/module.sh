@@ -3,23 +3,18 @@
 # All functions defined in this file take a module name as parameter, and are
 # polite. Refer to the polite standard chapter in the documentation to figure
 # how to overload the behaviour of any of these functions.
-# <p>
-# The highest level function is <@function conf> which runs all functions declared in
+# The highest level function is conf which runs all functions declared in
 # this file at some point. It makes configuring a module easy for the user,
 # who has to type in bash:
-# <pre>
 # # conf yourmodule
-# </pre>
-# <p>
-# Medium level functions are <@function conf_save>, <@function conf_load> and
-# <@function conf_interactive> which only encapsulate the actual conf functions which
+# Medium level functions are conf_save, conf_load and
+# conf_interactive which only encapsulate the actual conf functions which
 # are declared in functions.sh.
-# <p>
-# Lowest level functions are <@function conf_get_variables> and 
-# <@function conf_get_path>. The first outputs the name of the variables of the module
-# for use in <@function conf_save> and <@function conf_interactive>, and the latter outputs the
-# path to the module configuration file which is used by <@function conf_save> and
-# <@function conf_load>.
+# Lowest level functions are conf_get_variables and 
+# conf_get_path. The first outputs the name of the variables of the module
+# for use in conf_save and conf_interactive, and the latter outputs the
+# path to the module configuration file which is used by conf_save and
+# conf_load.
 # @polite  All functions of this script are polite.
 
 # Configure a module.
@@ -27,7 +22,7 @@
 # Given a module name, it will load its configuration, prompt the user for
 # changes and finnally save the changes.
 #
-# @calls   <@function conf_load>, <@function conf_interactive> and <@function conf_save>
+# @calls   conf_load, conf_interactive and conf_save
 # @polite  Will try yourmodule_conf().
 # @log     Debug level, when done
 # @param   Module name
@@ -52,7 +47,7 @@ function conf() {
 
 # Saves variables of a module in a file defined by the module.
 #
-# @calls   <@function conf_get_variables>, <@function conf_get_path>, conf_save_to_path
+# @calls   conf_get_variables, conf_get_path, conf_save_to_path
 # @polite  Will try yourmodule_conf_save().
 # @log     Debug level, when done
 # @param   Module name
@@ -76,7 +71,7 @@ function conf_save() {
 
 # Loads variables of a module from a file defined by the module.
 # 
-# @calls   <@function conf_get_path>, conf_load_from_path
+# @calls   conf_get_path, conf_load_from_path
 # @polite  Will try yourmodule_conf_load().
 # @log     Debug level, when done
 # @param   Module namme
@@ -98,14 +93,12 @@ function conf_load() {
 
 # This function interactively prompts the user to change the values of all
 # variables of a module.
-# <p>
 # For example, calling `conf_interactive yourmodule` will prompt the user to
 # change values of all variables prefixed with yourmodule (ie.
 # $yourmodule_conf_path, $yourmodule_preference ...)
-# <p>
 # Note that this method does not save the new values.
 # 
-# @calls   <@function conf_get_variables>, conf_interactive_variables
+# @calls   conf_get_variables, conf_interactive_variables
 # @polite  Will try yourmodule_conf_interactive().
 # @log     Debug level, once done.
 # @param   List of variable names

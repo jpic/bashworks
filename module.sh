@@ -92,7 +92,7 @@ function module() {
 # <p>
 # The blacklist check is done just before adding the module to $module_paths.
 # @param   Paths to find modules in, separated by space.
-# @calls   <@function module_blacklist_check>
+# @calls   module_blacklist_check
 function module_pre_source() {
     if [[ -z $1 ]]; then
         # make an array of MODULES_PATH
@@ -142,7 +142,7 @@ function module_pre_source() {
 # - check blacklist
 # - call _source() function if it is declared
 # </pre>
-# @calls   <@function module_blacklist_check>
+# @calls   module_blacklist_check
 function module_source() {
     local module_name=""
     local module_path=""
@@ -194,7 +194,7 @@ function module_source() {
 # - check blacklist
 # - call _post_source() function if it is declared.
 # </pre>
-# @calls   <@function module_blacklist_check>
+# @calls   module_blacklist_check
 function module_post_source() {    
     local module_post_source_function=""
 
@@ -282,6 +282,17 @@ function module_blacklist_add() {
 # @param   Module name
 function module_get_path() {
     echo ${module_paths[$1]}
+}
+
+# Outputs the known module repository paths.
+function module_get_repo_paths() {
+    local paths=""
+    
+    for module_path in ${module_paths[@]}; do
+        paths=" ${module_path%/*}"
+    done
+
+    echo $paths
 }
 
 # This function dumps all module variables.
