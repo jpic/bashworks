@@ -24,8 +24,6 @@
 # Missing directories will be created if necessary.
 # @param   Path to configuration file
 # @param   List of variable names
-# @log     Debug, when done, with arguments.
-# @log     Error, if the path is not absolute
 function conf_save_to_path() {
     local conf_path="$1"
 
@@ -67,8 +65,6 @@ function conf_save_to_path() {
 }
 
 # Loads a saved configuration file from a given configuration path.
-# @log     Notice, if the path does not exists.
-# @log     Debug, when done, with arguments.
 # @param   Configuration file path
 # @return 2 If the configuration file path does not exist or is not readable
 function conf_load_from_path() {
@@ -86,8 +82,6 @@ function conf_load_from_path() {
 
 # Prompt the user for variable value update, given a variable name list.
 # Note that this method does not save the new values.
-# @log     Info, when a variable was changed by the user.
-# @log     Debug, when done, with arguments.
 # @param   List of variable names, separated by space
 function conf_interactive_variables() {
     local conf_variables="$*"

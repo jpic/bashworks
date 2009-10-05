@@ -7,24 +7,21 @@
 # this file at some point. It makes configuring a module easy for the user,
 # who has to type in bash:
 # # conf yourmodule
-# Medium level functions are conf_save, conf_load and
-# conf_interactive which only encapsulate the actual conf functions which
+# Medium level functions are conf_save(), conf_load() and
+# conf_interactive() which only encapsulate the actual conf functions which
 # are declared in functions.sh.
-# Lowest level functions are conf_get_variables and 
-# conf_get_path. The first outputs the name of the variables of the module
-# for use in conf_save and conf_interactive, and the latter outputs the
-# path to the module configuration file which is used by conf_save and
-# conf_load.
+# Lowest level functions are conf_get_variables() and 
+# conf_get_path(). The first outputs the name of the variables of the module
+# for use in conf_save() and conf_interactive(), and the latter outputs the
+# path to the module configuration file which is used by conf_save() and
+# conf_load().
 # @polite  All functions of this script are polite.
 
 # Configure a module.
-#
 # Given a module name, it will load its configuration, prompt the user for
 # changes and finnally save the changes.
-#
-# @calls   conf_load, conf_interactive and conf_save
+# @calls   conf_load(), conf_interactive() and conf_save()
 # @polite  Will try yourmodule_conf().
-# @log     Debug level, when done
 # @param   Module name
 function conf() {
     local module_name=$1
@@ -46,10 +43,8 @@ function conf() {
 }
 
 # Saves variables of a module in a file defined by the module.
-#
-# @calls   conf_get_variables, conf_get_path, conf_save_to_path
+# @calls   conf_get_variables(), conf_get_path(), conf_save_to_path()
 # @polite  Will try yourmodule_conf_save().
-# @log     Debug level, when done
 # @param   Module name
 function conf_save() {
     local module_name=$1
@@ -71,10 +66,9 @@ function conf_save() {
 
 # Loads variables of a module from a file defined by the module.
 # 
-# @calls   conf_get_path, conf_load_from_path
+# @calls   conf_get_path(), conf_load_from_path()
 # @polite  Will try yourmodule_conf_load().
-# @log     Debug level, when done
-# @param   Module namme
+# @param   Module name
 function conf_load() {
     local module_name=$1
     local module_overload="${module_name}_conf_load"
@@ -98,9 +92,8 @@ function conf_load() {
 # $yourmodule_conf_path, $yourmodule_preference ...)
 # Note that this method does not save the new values.
 # 
-# @calls   conf_get_variables, conf_interactive_variables
+# @calls   conf_get_variables(), conf_interactive_variables()
 # @polite  Will try yourmodule_conf_interactive().
-# @log     Debug level, once done.
 # @param   List of variable names
 function conf_interactive() {
     local module_name=$1
@@ -124,7 +117,6 @@ function conf_interactive() {
 # WARNING: if the first element is a module name then eval will be used. If the
 # eval string doesn't pass a regexp security test then 1 will be returned.
 # @polite  Will try yourmodule_conf_get_variables().
-# @log     Alert, if the eval line is unsecure.
 # @return 1 Eval string did not pass the security check.
 # @param   Module name
 # @stdout  List of configuration variables of the module.
@@ -159,7 +151,7 @@ function conf_get_variables() {
 }
 
 # This function outputs the path to a module configuration file. By default,
-# it will use the value in yourmodule_conf_path.
+# it will use the value in $yourmodule_conf_path.
 # @polite  Will try yourmodule_conf_get_path().
 # @param   Module name
 # @stdout  Path to the module configuration file.
