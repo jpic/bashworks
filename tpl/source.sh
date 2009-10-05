@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Break management module
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-## This module is ideal when you can't manage your hackers: let the GOD BASH
-## do it.
-#--------------------------
+#	@Synopsis	Break management module
+#	@Copyright	Copyright 2009, James Pic
+#	@License	Apache
+# This module is ideal when you can't manage your hackers: let the GOD BASH
+# do it.
 
-#--------------------------
-## Declares module configuration variable names.
-#--------------------------
+# Declares module configuration variable names.
 function tpl_source() {
     source $(module_get_path tpl)/functions.sh
 }

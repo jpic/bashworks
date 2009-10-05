@@ -1,23 +1,19 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-## This module wraps around xUnit frameworks through submodules:
-## - bashunit: tested, working in module break,
-## - shunit: untested, should work
-## - shunit2: untested, recommanded
-#--------------------------
+# This module wraps around xUnit frameworks through submodules:
+# - bashunit: tested, working in module break,
+# - shunit: untested, should work
+# - shunit2: untested, recommanded
 
-#--------------------------
-## Runs all tests of a given module.
-## <p>
-## If the module has a "bashunit" sub directory then mtests_bashunit will be
-## called. Same goes for the other supported test frameworks: "shunit" and
-## "shunit2",
-## <p>
-## Shunit2 is recommanded.
-## @polite  Will try yourmodule_mtests()
-## @calls   mtests_bashunit, mtests_shunit, mtests_shunit2
-#--------------------------
+# Runs all tests of a given module.
+# <p>
+# If the module has a "bashunit" sub directory then mtests_bashunit will be
+# called. Same goes for the other supported test frameworks: "shunit" and
+# "shunit2",
+# <p>
+# Shunit2 is recommanded.
+# @polite  Will try yourmodule_mtests()
+# @calls   mtests_bashunit, mtests_shunit, mtests_shunit2
 function mtests() {
     local module_name="$1"
     local module_path="$(module_get_path $module_name)"

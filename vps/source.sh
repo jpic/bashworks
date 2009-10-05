@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Template management module
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-#--------------------------
+#	@Synopsis	Template management module
+#	@Copyright	Copyright 2009, James Pic
+#	@License	Apache
 
 function vps_pre_source() {
     if [[ -z $VPS_DIR ]]; then
@@ -16,9 +14,7 @@ function vps_pre_source() {
     fi
 }
 
-#--------------------------
-## Declares module configuration variable names.
-#--------------------------
+# Declares module configuration variable names.
 function vps_source() {
     source $(module_get_path vps)/functions.sh
     source $(module_get_path vps)/conf.sh
@@ -44,11 +40,9 @@ function vps_get_conf_path() {
     echo $VPS_ETC_DIR/${vps_name}.config
 }
 
-#--------------------------
-## Initialises a vps configuration with a given name
-## @param VPS name
-## @param Silent (optionnal)
-#--------------------------
+# Initialises a vps configuration with a given name
+# @param VPS name
+# @param Silent (optionnal)
 function vps() {
     local usage="vps \$vps_name"
     vps_name="$1"

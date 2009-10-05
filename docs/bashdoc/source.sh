@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-## Bashdoc tiein for the docs module.
-#--------------------------
+# Bashdoc tiein for the docs module.
 
-#--------------------------
-## Outputs the documentation for a given module to 
-## $docs_path/modules/$module_name.
-## @param   Module name
-#--------------------------
+# Outputs the documentation for a given module to 
+# $docs_path/modules/$module_name.
+# @param   Module name
 function docs_bashdoc_for_module() {
     local module_name="$1"
     local path="$docs_path/modules/$module_name"

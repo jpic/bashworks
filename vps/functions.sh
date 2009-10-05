@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	VCS management functions
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-#--------------------------
+#	@Synopsis	VCS management functions
+#	@Copyright	Copyright 2009, James Pic
+#	@License	Apache
 
-#--------------------------
-## Outputs a free id between 100 and 240
-#--------------------------
+# Outputs a free id between 100 and 240
 function vps_get_free_id() {
     for i in {100..240}; do
         grep -q "vps_id=\"${i}\"" ${VPS_ETC_DIR}/*.config
@@ -34,9 +30,7 @@ function vps_get_property() {
     return 0
 }
 
-#--------------------------
-## Generates a VPS
-#--------------------------
+# Generates a VPS
 function vps_generate() {
     vps_getstage
     vps_build

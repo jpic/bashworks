@@ -12,7 +12,6 @@
 # load test helpers
 . ./shunit2_test_helpers
 
-#------------------------------------------------------------------------------
 # suite tests
 #
 
@@ -174,7 +173,6 @@ testAssertFalse()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-#------------------------------------------------------------------------------
 # suite functions
 #
 

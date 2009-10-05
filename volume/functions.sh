@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Sound volume management functions
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-#--------------------------
+#	@Synopsis	Sound volume management functions
+#	@Copyright	Copyright 2009, James Pic
+#	@License	Apache
 
-#--------------------------
-## Outputs the current volume
-#--------------------------
+# Outputs the current volume
 function volume_get_current() {
      case $os_type in
         bsd)
@@ -20,9 +16,7 @@ function volume_get_current() {
     esac
 }
 
-#--------------------------
-## Increase volume with $volume_interval
-#--------------------------
+# Increase volume with $volume_interval
 function volume_inc() {
     case $os_type in
         bsd)
@@ -34,9 +28,7 @@ function volume_inc() {
     esac
 }
 
-#--------------------------
-## Decrease volume with $volume_interval
-#--------------------------
+# Decrease volume with $volume_interval
 function volume_dec() {
     case $os_type in
         bsd)
@@ -48,9 +40,7 @@ function volume_dec() {
     esac
 }
 
-#--------------------------
-## Unmute
-#--------------------------
+# Unmute
 function volume_unmute() {
     case $os_type in
         bsd)
@@ -63,9 +53,7 @@ function volume_unmute() {
 }
 
 
-#--------------------------
-## Mute
-#--------------------------
+# Mute
 function volume_mute() {
     volume_conf_save
 

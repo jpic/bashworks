@@ -12,7 +12,6 @@
 # load test helpers
 . ./shunit2_test_helpers
 
-#------------------------------------------------------------------------------
 # suite tests
 #
 
@@ -21,7 +20,7 @@
 testUnboundVariable()
 {
   sed 's/^#//' >"${testF}" <<EOF
-## treat unset variables as an error when performing parameter expansion
+# treat unset variables as an error when performing parameter expansion
 #set -u
 #
 #boom() { x=\$1; }  # this function goes boom if no parameters are passed!
@@ -54,7 +53,6 @@ EOF
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
-#------------------------------------------------------------------------------
 # suite functions
 #
 

@@ -12,7 +12,6 @@
 # load test helpers
 . ./shunit2_test_helpers
 
-#------------------------------------------------------------------------------
 # suite tests
 #
 
@@ -233,7 +232,6 @@ testFailNotSame()
   [ ${rtrn} -ne ${SHUNIT_TRUE} ] && cat "${stderrF}" >&2
 }
 
-#------------------------------------------------------------------------------
 # suite functions
 #
 

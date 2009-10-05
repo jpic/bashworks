@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Todo management functions
-##	@Copyright	Copyright 2009, James Pic
-##	@License	Apache
-#--------------------------
+#	@Synopsis	Todo management functions
+#	@Copyright	Copyright 2009, James Pic
+#	@License	Apache
 
-#--------------------------
-## Adds a todo to the list.
-## @param Todo name
-## @return 2 If the todo name param was not given.
-#--------------------------
+# Adds a todo to the list.
+# @param Todo name
+# @return 2 If the todo name param was not given.
 function todo_add() {
     local usage="todo_add name"
     local todo_name="$*"
@@ -25,10 +21,8 @@ function todo_add() {
     mlog info "Added: $todo_name"
 }
 
-#--------------------------
-## Prints the todo list.
-## @Credit Riviera#bash@irc.freenode.net
-#--------------------------
+# Prints the todo list.
+# @Credit Riviera#bash@irc.freenode.net
 function todo_list() {
     for i in ${!todo_list[*]}; do
         echo "#$i ${todo_list[$i]}"
@@ -36,10 +30,8 @@ function todo_list() {
     done
 }
 
-#--------------------------
-## Removes a todo from the list.
-## @param Index of the todo.
-#--------------------------
+# Removes a todo from the list.
+# @param Index of the todo.
 function todo_delete() {
     local usage="todo_delete todo_id"
     local todo_id="$1"

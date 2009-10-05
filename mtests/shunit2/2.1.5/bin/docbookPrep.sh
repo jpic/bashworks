@@ -10,9 +10,7 @@ XSL_VERSION='1.73.2'
 XSL_FILE="docbook-xsl-${XSL_VERSION}"
 XSL_URL="http://downloads.sourceforge.net/docbook/${XSL_FILE}.tar.bz2"
 
-#-----------------------------------------------------------------------------
 # do no edit below here
-#-----------------------------------------------------------------------------
 
 PATH="${PATH}:${MY_DIR}"
 PWD=${PWD:-`pwd`}

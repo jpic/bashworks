@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-## This file declares functions to test the break module which are useable
-## with the mtests_bashunit submodule.
-#-------------------------- 
+# This file declares functions to test the break module which are useable
+# with the mtests_bashunit submodule.
 
-#-------------------------- 
-## Sets up an arbitary conf path and break interval for testing.
-## @calls   break_post_source()
-#-------------------------- 
+# Sets up an arbitary conf path and break interval for testing.
+# @calls   break_post_source()
 function Setup() {
     break_post_source
     
@@ -20,27 +16,21 @@ function Setup() {
     fi
 }
 
-#-------------------------- 
-## Removes the temporary break configuration file.
-#-------------------------- 
+# Removes the temporary break configuration file.
 function Teardown() {
     rm -rf $break_conf_path
 }
 
-#-------------------------- 
-## Asserts that break_do() updates $break_previous.
-## @call    break_do(), mtests_bashunit_assert_math()
-#-------------------------- 
+# Asserts that break_do() updates $break_previous.
+# @call    break_do(), mtests_bashunit_assert_math()
 function test_break_do_update_break_previous() {
     break_previous=0
     break_do
     mtests_bashunit_assert_math "$break_previous > 0"
 }
 
-#-------------------------- 
-## Stress break_do() to make sure it updates $break_previous.
-## @call    break_do(), mtests_bashunit_assert_math()
-#-------------------------- 
+# Stress break_do() to make sure it updates $break_previous.
+# @call    break_do(), mtests_bashunit_assert_math()
 function test_break_do_update_break_previous_stress() {
     break_do
     mtests_bashunit_assert_math "$break_previous > 0"
@@ -52,10 +42,8 @@ function test_break_do_update_break_previous_stress() {
     mtests_bashunit_assert_math "$break_previous > $backup"
 }
 
-#-------------------------- 
-## Asserts that break_request() will deny if break_do() was just called.
-## @call    break_do(), break_request()
-#-------------------------- 
+# Asserts that break_request() will deny if break_do() was just called.
+# @call    break_do(), break_request()
 function test_denied_break_request() {
     break_do
     

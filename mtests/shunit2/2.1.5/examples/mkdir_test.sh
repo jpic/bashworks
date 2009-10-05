@@ -12,7 +12,6 @@
 # example, we will test several aspects of the the mkdir command, but the
 # techniques could be used for any existing shell script.
 
-#-----------------------------------------------------------------------------
 # suite tests
 #
 
@@ -52,7 +51,6 @@ testParentDirectoryCreation()
   assertNull 'unexpected output to stderr' "`cat ${stderrF}`"
 }
 
-#-----------------------------------------------------------------------------
 # suite functions
 #
 

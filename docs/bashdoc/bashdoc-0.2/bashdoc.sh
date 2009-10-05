@@ -1,37 +1,34 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-##	@Synopsis	Reads specialy formated shell scripts and creates docs
-##	@Copyright	Copyright 2003, Paul Mahon
-##	@Copyright	Copyright 2007, Arvid Norlander
-##	@License	GPL v2
-##	Parses comments between lines of '#---'
-##	Lines to be parsed start with ##. All tags start with @.
-##	Lines without a tag are considered simple description of the section.
-##	If the line following the comment block doesn't start with 'function'
-##	the it's assumed that the comment is for the whole file. Only the first
-##	non-function comment block will be used, the other will be ignored.
-##	<p>
-##	Multiple identical tags are allowed, the contents are appended and separated
-##	with a space. @param tags are treated specials and are assumed to be in order.
-##	<p>
-##	There is an additional &lt;@function FUNCTION_NAME&gt; tag that can be embeded
-##	in any bashdoc comment. It will be transformed into a link to that function.
-##	Note, this will only work for functions that are defined in the same script.
-##	<p><pre>
-##	Usage:	[OPTIONS] [--] script [ script ...]
-##	-p, --project project   Name of the project
-##	-o, --output directory  Specifies the directory you want the resulting html to go into
-##	-c, --nocss             Do not write default CSS file.
-##	-e, --exclusive tag     Only output if the block has this tag
-##	-q, --quiet             Quiet the output
-##	-h, --help              Display this help and exit
-##	-V, --version           Output version information and exit
-##	--                      No more arguments, only scripts
-##	script                  The script you want documented
-##</pre>
-##
-#--------------------------
+#	@Synopsis	Reads specialy formated shell scripts and creates docs
+#	@Copyright	Copyright 2003, Paul Mahon
+#	@Copyright	Copyright 2007, Arvid Norlander
+#	@License	GPL v2
+#	Lines to be parsed start with #. All tags start with @.
+#	Lines without a tag are considered simple description of the section.
+#	If the line following the comment block doesn't start with 'function'
+#	the it's assumed that the comment is for the whole file. Only the first
+#	non-function comment block will be used, the other will be ignored.
+#	<p>
+#	Multiple identical tags are allowed, the contents are appended and separated
+#	with a space. @param tags are treated specials and are assumed to be in order.
+#	<p>
+#	There is an additional &lt;@function FUNCTION_NAME&gt; tag that can be embeded
+#	in any bashdoc comment. It will be transformed into a link to that function.
+#	Note, this will only work for functions that are defined in the same script.
+#	<p><pre>
+#	Usage:	[OPTIONS] [--] script [ script ...]
+#	-p, --project project   Name of the project
+#	-o, --output directory  Specifies the directory you want the resulting html to go into
+#	-c, --nocss             Do not write default CSS file.
+#	-e, --exclusive tag     Only output if the block has this tag
+#	-q, --quiet             Quiet the output
+#	-h, --help              Display this help and exit
+#	-V, --version           Output version information and exit
+#	--                      No more arguments, only scripts
+#	script                  The script you want documented
+#</pre>
+#
 
 # Make env sane
 unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY
@@ -65,44 +62,34 @@ WARN=$'\e[33;01m'
 BAD=$'\e[31;01m'
 NORMAL=$'\e[0m'
 
-#--------------------------
-##	Output error message
-##	@param	Message
-##	@Stderr	Formated message
-#--------------------------
+#	Output error message
+#	@param	Message
+#	@Stderr	Formated message
 print_error () {
 	echo -e " ${BAD}*${NORMAL} $*" >&2
 }
-#--------------------------
-##	Output warning message
-##	@param	Message
-##	@Stderr	Formated message
-#--------------------------
+#	Output warning message
+#	@param	Message
+#	@Stderr	Formated message
 print_warn () {
 	echo -e " ${WARN}*${NORMAL} $*" >&2
 }
-#--------------------------
-##	Output info message
-##	@param	Message
-##	@Stderr	Formated message
-#--------------------------
+#	Output info message
+#	@param	Message
+#	@Stderr	Formated message
 print_info () {
 	echo -e " ${GOOD}*${NORMAL} $*" >&2
 }
-#--------------------------
-##	Output debug message
-##	@param	Message
-##	@Stderr	Formated message
-#--------------------------
+#	Output debug message
+#	@param	Message
+#	@Stderr	Formated message
 print_debug () {
     echo -e "   $*" >&2
 }
 
-#--------------------------
-##	@Arguments	-r: recursive, -o [directory]: output html
-##	Parses arguments for this script
-##	@Gobals	RECURSIVE, OUT_DIR
-#--------------------------
+#	@Arguments	-r: recursive, -o [directory]: output html
+#	Parses arguments for this script
+#	@Gobals	RECURSIVE, OUT_DIR
 function args()
 {
 	local retVal=0
@@ -161,10 +148,8 @@ function args()
 	done
 }
 
-#-------------------------
-##	Version for this script
-##	@Stdout	Version information
-#-------------------------
+#	Version for this script
+#	@Stdout	Version information
 function version()
 {
 	echo "bashdoc $VERSION - Generate HTML documentation from bash scripts"
@@ -177,10 +162,8 @@ function version()
 	echo 'Written by Paul Mahon and modified by Arvid Norlander'
 }
 
-#-------------------------
-##	Usage for this script
-##	@Stdout	Usage information
-#-------------------------
+#	Usage for this script
+#	@Stdout	Usage information
 function usage()
 {
 cat <<- EOF
@@ -208,28 +191,23 @@ EOF
 }
 
 
-#--------------------------
-##	Reads until it has read an entire comment block. A block starts with
-##	<br><pre>#---</pre></br>
-##	Alone on a line, and continues until the next
-##	<br><pre>#---</pre></br>
-##	All comment lines inside should have ## at the start or they
-##	will be ignored.
-##
-##	@return 0 Possibly more blocks
-##	@return 1 Unexpected end of file
-##	@return 2 Expected end of file, no more blocks
-##	@Stdin	Reads a chunk
-##	@Stdout	Block with starting '##' removed
-##	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
-#--------------------------
+#	Reads until it has read an entire comment block. A block starts with
+#	Alone on a line, and continues until the next
+#	All comment lines inside should have # at the start or they
+#	will be ignored.
+#
+#	@return 0 Possibly more blocks
+#	@return 1 Unexpected end of file
+#	@return 2 Expected end of file, no more blocks
+#	@Stdin	Reads a chunk
+#	@Stdout	Block with starting '#' removed
+#	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
 function get_comment_block()
 {
 	local inComment commentBlock lastLine=""
 	commentBlock=""
 	while read LINE ; do
 		(( srcLine++ ))
-		if [[ ${LINE:0:4} == '#---' ]] ; then
 			if [[ $inComment ]] ; then
 				out_comment_block="$commentBlock"
 				# I'm not sure why this is needed but it fixes incorrect line number
@@ -238,11 +216,11 @@ function get_comment_block()
 			else
 				inComment=yes
 			fi
-		elif [[ ${LINE:0:2} != '##' ]] && [[ $inComment ]] ; then
+		elif [[ ${LINE:0:2} != '#' ]] && [[ $inComment ]] ; then
 				[[ $QUIET -lt 1 ]] && print_warn "Line $srcLine of $FILE isn't a doc comment! Ignoring."
 				[[ $QUIET -lt 1 ]] && print_warn "Line in question is: $LINE"
 		elif [[ $inComment ]] ; then
-			commentBlock="$commentBlock"$'\n'${LINE####}
+			commentBlock="$commentBlock"$'\n'${LINE##}
 		fi
 	done
 	#If we make it out here, we hit the end of the file
@@ -257,13 +235,11 @@ function get_comment_block()
 }
 
 
-#-----------------------
-##	Parses the comments from stdin. Also reads the (non-commented)
-##	function name. Mostly uses <@function parse_block> and
-##	<@function output_parsed_block> to do the read work.
-##	@Stdin	Reads line after comment block
-##	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
-#-----------------------
+#	Parses the comments from stdin. Also reads the (non-commented)
+#	function name. Mostly uses <@function parse_block> and
+#	<@function output_parsed_block> to do the read work.
+#	@Stdin	Reads line after comment block
+#	@Globals	paramDesc, retDesc, desc, block, split, out_comment_block
 function parse_comments()
 {
 
@@ -360,11 +336,9 @@ function parse_comments()
 	done
 }
 
-#---------------------
-##	Create HTML from the non-special tags
-##	@param	var or func (is this for a variable or function)
-##	@Stdout	HTMLized tags
-#---------------------
+#	Create HTML from the non-special tags
+#	@param	var or func (is this for a variable or function)
+#	@Stdout	HTMLized tags
 function output_parsed_tags() {
 	local i
     local label
@@ -380,11 +354,9 @@ function output_parsed_tags() {
 	done
 }
 
-#---------------------
-##	Outputs the parsed information in a nice pretty format.
-##	@Stdout	formated documentation
-##	@Globals	paramDesc, retDesc, desc, block, split
-#---------------------
+#	Outputs the parsed information in a nice pretty format.
+#	@Stdout	formated documentation
+#	@Globals	paramDesc, retDesc, desc, block, split
 function output_parsed_block()
 {
 	echo "<hr />"
@@ -432,12 +404,10 @@ function output_parsed_block()
 
 }
 
-#---------------
-##	Does the real work of the parsing. Tags start with @. Special
-##	tags are @return and @param. Doc lines without a tag are
-##	considered description.
-##	@Globals	paramDesc, retDesc, desc, block, split
-#---------------
+#	Does the real work of the parsing. Tags start with @. Special
+#	tags are @return and @param. Doc lines without a tag are
+#	considered description.
+#	@Globals	paramDesc, retDesc, desc, block, split
 function parse_block()
 {
 	local tag
@@ -477,13 +447,11 @@ function parse_block()
 	IFS="$backIFS"
 }
 
-#----------------
-##	Splits a line that starts with a tag into tag and data.
-##	@param	Variable you want the result put into. Array is format is ( tag, data ).
-##	@param	Tag
-##	@param	Data
-##	@Globals	The variable in $1 will get the results
-#----------------
+#	Splits a line that starts with a tag into tag and data.
+#	@param	Variable you want the result put into. Array is format is ( tag, data ).
+#	@param	Tag
+#	@param	Data
+#	@Globals	The variable in $1 will get the results
 function split_tag()
 {
 	local out="${1}"			;	shift
@@ -493,11 +461,9 @@ function split_tag()
 	eval "$out=( \"\$tag\" \"\${value}\" )"
 }
 
-#--------------------
-##	Outputs a header for script pages
-##	@Stdout	html header
-##	@param	Script name
-#--------------------
+#	Outputs a header for script pages
+#	@Stdout	html header
+#	@param	Script name
 function script_header()
 {
 cat <<- EOF > $OUT_FILE

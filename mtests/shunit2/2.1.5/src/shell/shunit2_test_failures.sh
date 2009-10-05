@@ -12,7 +12,6 @@
 # load common unit-test functions
 . ./shunit2_test_helpers
 
-#-----------------------------------------------------------------------------
 # suite tests
 #
 
@@ -70,7 +69,6 @@ testFailSame()
   th_assertFalseWithError 'too many arguments' $? "${stdoutF}" "${stderrF}"
 }
 
-#-----------------------------------------------------------------------------
 # suite functions
 #
 

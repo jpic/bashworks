@@ -1,24 +1,18 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#--------------------------
-## The role of this module is to generate the documentation of installed modules.
-## It depends on bashdoc which is provided.
-## <p>
-## Type "conf docs" to configure the output directory.
-#--------------------------
+# The role of this module is to generate the documentation of installed modules.
+# It depends on bashdoc which is provided.
+# <p>
+# Type "conf docs" to configure the output directory.
 
-#--------------------------
-## Sets up the default path.
-#--------------------------
+# Sets up the default path.
 function docs_post_source() {
     docs_path="/tmp/docs"
 }
 
-#--------------------------
-## Generates all the documentation. It depends on bashdoc until another bash
-## documentation tool requires some abstraction.
-## @param   Path to the dir with module.sh and README.rst
-#--------------------------
+# Generates all the documentation. It depends on bashdoc until another bash
+# documentation tool requires some abstraction.
+# @param   Path to the dir with module.sh and README.rst
 function docs() {
     local framework_path="$1"
 
@@ -47,9 +41,7 @@ function docs() {
     docs_generate_nav > $docs_path/nav.html
 }
 
-#--------------------------
-## Outputs a simple navigation html.
-#--------------------------
+# Outputs a simple navigation html.
 function docs_generate_nav() {
     echo "<p>"
     echo "<a href=\"/docs/module.sh/\" title=\"Bashworks API documentation\">bashworks.sh</a>"

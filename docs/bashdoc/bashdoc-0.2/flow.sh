@@ -2,11 +2,9 @@
 #set -x
 VERSION="0.0.1"
 
-#------------------
-##	Creates a dia graph of the functional "uses" relationships
-##	Uses the .func files created by bashdoc.
-## @Gloabals FUNC_DIR, SCRIPTS
-#------------------
+#	Creates a dia graph of the functional "uses" relationships
+#	Uses the .func files created by bashdoc.
+# @Gloabals FUNC_DIR, SCRIPTS
 function Args()
 {
 	while [ $# -gt 0 ] ; do
@@ -27,9 +25,7 @@ function Args()
 	done
 }
 
-#---------------
-##	Usage for this script
-#---------------
+#	Usage for this script
 function Usage()
 {
 cat << EOF
@@ -121,7 +117,7 @@ for i in $SCRIPTS ; do
 	echo "$i:" >&2
 	htmlFile=${i//\//.}
 	htmlFile="${htmlFile#.}.html"
-	echo "	subgraph ${i##*/} {" >> $OUT
+	echo "	subgraph ${i#*/} {" >> $OUT
 
 	#Awk removes self-loops
 	TranslateSource $i $FUNC_FILES | sort | uniq | \

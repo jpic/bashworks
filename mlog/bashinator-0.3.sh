@@ -1,50 +1,50 @@
-## $Id: bashinator.lib.0.sh,v 1.5 2009/05/27 07:50:56 wschlich Exp wschlich $
-## vim:ts=4:sw=4:tw=200:nu:ai:nowrap:
-##
-## bashinator shell script framework library
-##
-## Created by Wolfram Schlich <wschlich@gentoo.org>
-## Licensed under the GNU GPLv3
+# $Id: bashinator.lib.0.sh,v 1.5 2009/05/27 07:50:56 wschlich Exp wschlich $
+# vim:ts=4:sw=4:tw=200:nu:ai:nowrap:
+#
+# bashinator shell script framework library
+#
+# Created by Wolfram Schlich <wschlich@gentoo.org>
+# Licensed under the GNU GPLv3
 
-##
-## REQUIRED PROGRAMS
-## =================
-## - rm
-## - touch
-## - mktemp
-## - cat
-## - logger
-## - sed
-## - date
-## - sendmail (default /usr/sbin/sendmail, can be overridden with __SendmailBin)
-##
+#
+# REQUIRED PROGRAMS
+# =================
+# - rm
+# - touch
+# - mktemp
+# - cat
+# - logger
+# - sed
+# - date
+# - sendmail (default /usr/sbin/sendmail, can be overridden with __SendmailBin)
+#
 
-## define the required minimum bash version for this
-## bashinator release to function properly
+# define the required minimum bash version for this
+# bashinator release to function properly
 export __BashinatorRequiredBashVersion=3.2.0
 
-##
-## bashinator control functions
-##
+#
+# bashinator control functions
+#
 
 function __boot() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   initializes bashinator
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   __BashinatorRequiredBashVersion (default: 0.0.0)
-	##   BASH_VERSINFO
-	##   EUID
-	##   PATH
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   initializes bashinator
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   __BashinatorRequiredBashVersion (default: 0.0.0)
+	#   BASH_VERSINFO
+	#   EUID
+	#   PATH
+	#
 
-	## check for required bash version
+	# check for required bash version
 	IFS='.'
 	set -- ${__BashinatorRequiredBashVersion:-0.0.0}
 	unset IFS
@@ -59,13 +59,13 @@ function __boot() {
 		exit 2 # error
 	fi
 
-	## define safe PATH
+	# define safe PATH
 	export PATH="/bin:/usr/bin"
 	if [[ ${EUID} -eq 0 ]]; then
 		export PATH="/sbin:/usr/sbin:${PATH}"
 	fi
 
-	## basic shell settings
+	# basic shell settings
 	shopt -s extglob  # enable extended globbing (required for pattern matching)
 	shopt -s extdebug # enable extended debugging (required for function stack trace)
 	hash -r           # reset hashed command paths
@@ -78,43 +78,43 @@ function __boot() {
 
 function __dispatch() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   dispatches the application.
-	##   calls the __init() and __main()
-	##   functions that have to be defined by the user.
-	##
-	## ARGUMENTS:
-	##   *: all arguments of the originally executed script
-	##
-	## GLOBAL VARIABLES USED:
-	##   Exit: can be set to a custom exit code from within
-	##   the user functions
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   dispatches the application.
+	#   calls the __init() and __main()
+	#   functions that have to be defined by the user.
+	#
+	# ARGUMENTS:
+	#   *: all arguments of the originally executed script
+	#
+	# GLOBAL VARIABLES USED:
+	#   Exit: can be set to a custom exit code from within
+	#   the user functions
+	#
 
-	## check for user defined __init() function
+	# check for user defined __init() function
 	if ! declare -F __init >&/dev/null; then
 		__die 2 "function __init() does not exist, unable to dispatch application"
 	fi
 
-	## check for user defined __main() function
+	# check for user defined __main() function
 	if ! declare -F __main >&/dev/null; then
 		__die 2 "function __main() does not exist, unable to dispatch application"
 	fi
 
-	## ----- main -----
+	# ----- main -----
 
-	## init application function
+	# init application function
 	__init "${@}" || __die 2 "__init() failure"
 
-	## main application pre-processing (create lockfile and subcommand logfile)
+	# main application pre-processing (create lockfile and subcommand logfile)
 	__prepare || __die 2 "__prepare() failure"
 
-	## main application function
+	# main application function
 	__main || __die 2 "__main() failure"
 
-	## main application post-processing (remove lockfile and subcommand logfile)
+	# main application post-processing (remove lockfile and subcommand logfile)
 	__cleanup || __die 2 "__cleanup() failure"
 
     exit ${Exit:-0}
@@ -123,26 +123,26 @@ function __dispatch() {
 
 function __prepare() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   run application main pre-processing tasks
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   __ScriptSubCommandLog (default: 0)
-	##   __ScriptSubCommandLogFile
-	##   __ScriptLock (default: 0)
-	##   __ScriptLockFile
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   run application main pre-processing tasks
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   __ScriptSubCommandLog (default: 0)
+	#   __ScriptSubCommandLogFile
+	#   __ScriptLock (default: 0)
+	#   __ScriptLockFile
+	#
 
-	## ----- main -----
+	# ----- main -----
 
-	## handle script subcommand logfile
+	# handle script subcommand logfile
 	if [[ ${__ScriptSubCommandLog:-0} == 1 ]]; then
-		## create temporary logfile
+		# create temporary logfile
 		__ScriptSubCommandLogFile=$(mktemp -q -t -p "${__ScriptSubCommandLogDir:-/var/log}" ${__ScriptName}.log.XXXXXX)
 		if [[ -z "${__ScriptSubCommandLogFile}" ]]; then
 			__msg alert "failed to create temporary script subcommand logfile in script logdir '${__ScriptSubCommandLogDir:-/var/log}'"
@@ -151,17 +151,17 @@ function __prepare() {
 			__msg debug "successfully created temporary script subcommand logfile '${__ScriptSubCommandLogFile}'"
 		fi
 	else
-		## if sub command logging is disabled, set logfile to
-		## /dev/null to make redirections work nevertheless.
+		# if sub command logging is disabled, set logfile to
+		# /dev/null to make redirections work nevertheless.
 		__ScriptSubCommandLogFile="/dev/null"
 	fi
 	export __ScriptSubCommandLogFile _L=${__ScriptSubCommandLogFile} # use _L as a shorthand
 	__msg debug "script subcommand logfile: '${__ScriptSubCommandLogFile}'"
 
-	## handle script lockfile
+	# handle script lockfile
 	if [[ ${__ScriptLock:-0} == 1 ]]; then
 		__ScriptLockFile="${__ScriptLockDir:-/var/lock}/${__ScriptName}.lock"
-		## check/create lockfile
+		# check/create lockfile
 		if [[ -e "${__ScriptLockFile}" ]]; then
 			__msg alert "script lockfile '${__ScriptLockFile}' already exists"
 			return 2 # error
@@ -179,24 +179,24 @@ function __prepare() {
 
 function __cleanup() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   run application main post-processing tasks
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   __ScriptSubCommandLog (default: 0)
-	##   __ScriptSubCommandLogFile
-	##   __ScriptLock (default: 0)
-	##   __ScriptLockFile
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   run application main post-processing tasks
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   __ScriptSubCommandLog (default: 0)
+	#   __ScriptSubCommandLogFile
+	#   __ScriptLock (default: 0)
+	#   __ScriptLockFile
+	#
 
-	## ----- main -----
+	# ----- main -----
 
-	## remove script subcommand logfile
+	# remove script subcommand logfile
 	if [[ ${__ScriptSubCommandLog:-0} == 1 && "${__ScriptSubCommandLogFile}" != /dev/null ]]; then
 		__msg debug "removing script subcommand logfile '${__ScriptSubCommandLogFile}'"
 		if ! rm -f "${__ScriptSubCommandLogFile}" &>/dev/null; then
@@ -207,7 +207,7 @@ function __cleanup() {
 		fi
 	fi
 
-	## remove script lockfile
+	# remove script lockfile
 	if [[ ${__ScriptLock:-0} == 1 ]]; then
 		__msg debug "removing script lockfile '${__ScriptLockFile}'"
 		if ! rm -f "${__ScriptLockFile}" &>/dev/null; then
@@ -224,58 +224,58 @@ function __cleanup() {
 
 function __die() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   terminate the currently executing script
-	##
-	## ARGUMENTS:
-	##   1: exit code (req, default: 1)
-	##   2: message (opt): the message explaining the termination
-	##
-	## GLOBAL VARIABLES USED:
-	##   /
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   terminate the currently executing script
+	#
+	# ARGUMENTS:
+	#   1: exit code (req, default: 1)
+	#   2: message (opt): the message explaining the termination
+	#
+	# GLOBAL VARIABLES USED:
+	#   /
+	#
 
 	local -i exitCode="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## check for exit code
+	# check for exit code
 	if [[ -z "${exitCode}" ]]; then
 		let exitCode=1
 	fi
 
-	## check for error message
+	# check for error message
 	if [[ -z "${message}" ]]; then
         # jpic hack
 		# message="<called ${FUNCNAME[0]}() without message>"
 		message="<called ${FUNCNAME[1]}() without message>"
 	fi
 
-	## number of functions involved
+	# number of functions involved
     # jpic hack
 	# local -i numberOfFunctions=$((${#FUNCNAME[@]} - 1))
 	local -i numberOfFunctions=$((${#FUNCNAME[@]} - 2))
 
-	## skip this number of functions from the bottom of the call stack
-	## 1 == only skip this function itself
+	# skip this number of functions from the bottom of the call stack
+	# 1 == only skip this function itself
 	local -i skipNumberOfFunctions=1
 
-	## display main error message
+	# display main error message
 	__msg alert "FATAL: ${message}"
 
-	## display function call stack (if any functions are involved)
+	# display function call stack (if any functions are involved)
 	if [[ "${numberOfFunctions}" > "${skipNumberOfFunctions}" ]]; then
 
 		__msg alert "function call stack (most recent last):"
 
-		## n: current function array pointer (initially the last element of the FUNCNAME array)
-		## p: current parameter pointer (initially the last element of the BASH_ARGV array)
-		## bashFileName: source file of previous function that called the current function
-		## bashLineNumber: line in file that called the function
-		## functionName: name of called function
+		# n: current function array pointer (initially the last element of the FUNCNAME array)
+		# p: current parameter pointer (initially the last element of the BASH_ARGV array)
+		# bashFileName: source file of previous function that called the current function
+		# bashLineNumber: line in file that called the function
+		# functionName: name of called function
 		local -i n=0 p=0 bashLineNumber=0
 		local bashFileName= functionName=
 
@@ -283,37 +283,37 @@ function __die() {
 		# for ((n = ${#FUNCNAME[@]} - 1, p = ${#BASH_ARGV[@]} - 1; n >= ${skipNumberOfFunctions}; n--)) ; do
 		for ((n = ${#FUNCNAME[@]} - 2, p = ${#BASH_ARGV[@]} - 1; n >= ${skipNumberOfFunctions}; n--)) ; do
 
-			bashFileName="${BASH_SOURCE[n + 1]##*/}"
+			bashFileName="${BASH_SOURCE[n + 1]#*/}"
 			bashLineNumber="${BASH_LINENO[n]}"
 			functionName="${FUNCNAME[n]}"
 
-			## get function arguments (bash3 only)
+			# get function arguments (bash3 only)
 			if [[ ${#BASH_ARGC[n]} -gt 0 ]]; then
-				## argList: list of quoted arguments of current function
-				## arg: next argument
+				# argList: list of quoted arguments of current function
+				# arg: next argument
 				local argList= arg=
-				## a: current function argument count pointer
+				# a: current function argument count pointer
 				local -i a=0
 				for ((a = 0; a < ${BASH_ARGC[n]}; ++a)); do
 					arg="${BASH_ARGV[p - a]}"
 					argList="${argList:+${argList},}'${arg}'"
 				done
-				## decrement parameter pointer by the count of parameters of the current function
+				# decrement parameter pointer by the count of parameters of the current function
 				(( p -= ${BASH_ARGC[n]} ))
 			fi
 
-			## skip main function
+			# skip main function
 			if [[ ${FUNCNAME[n]} == "main" ]]; then
 				continue
 			fi
 
-			## print function information
+			# print function information
 			__msg alert "--> ${functionName}(${argList:+${argList}}) called in '${bashFileName}' on line ${bashLineNumber}"
 
 		done
 	fi
 
-	## mention path to script subcommand log if enabled and not empty
+	# mention path to script subcommand log if enabled and not empty
 	if [[ ${__ScriptSubCommandLog:-0} -eq 1 \
 		&& ${__ScriptSubCommandLogFile} != /dev/null \
 		&& -s ${__ScriptSubCommandLogFile} ]]; then
@@ -326,41 +326,41 @@ function __die() {
 
 } # __die()
 
-##
-## bashinator message functions
-##
+#
+# bashinator message functions
+#
 
 function __msgPrint() {
 	
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   prints a message
-	##
-	## ARGUMENTS:
-	##   1: severity (req): severity of the message
-	##   2: message (req): the message to print
-	##
-	## GLOBAL VARIABLES USED:
-	##   __PrintDebug
-	##   __PrintInfo
-	##   __PrintNotice
-	##   __PrintWarning
-	##   __PrintErr
-	##   __PrintCrit
-	##   __PrintAlert
-	##   __PrintEmerg
-	##   __PrintPrefixTimestamp
-	##   TERM (used to determine if we are running inside a terminal supporting colors)
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   prints a message
+	#
+	# ARGUMENTS:
+	#   1: severity (req): severity of the message
+	#   2: message (req): the message to print
+	#
+	# GLOBAL VARIABLES USED:
+	#   __PrintDebug
+	#   __PrintInfo
+	#   __PrintNotice
+	#   __PrintWarning
+	#   __PrintErr
+	#   __PrintCrit
+	#   __PrintAlert
+	#   __PrintEmerg
+	#   __PrintPrefixTimestamp
+	#   TERM (used to determine if we are running inside a terminal supporting colors)
+	#
 
 	local timestamp="${1}"; shift
 	local severity="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## check whether message is to be printed at all
+	# check whether message is to be printed at all
 	case ${severity} in
 		  debug) if [[ ${__PrintDebug:-0}   -ne 1 ]]; then return 0; fi ;;
 		   info) if [[ ${__PrintInfo:-1}    -ne 1 ]]; then return 0; fi ;;
@@ -372,7 +372,7 @@ function __msgPrint() {
 		  emerg) if [[ ${__PrintEmerg:-1}   -ne 1 ]]; then return 0; fi ;;
 	esac
 
-	## determine whether we can show colors
+	# determine whether we can show colors
 	local -i colorTerm=0
 	case "${TERM}" in
         # jpic: add rxvt because it's not configurable
@@ -380,8 +380,8 @@ function __msgPrint() {
 		*) let colorTerm=0 ;;
 	esac
 
-	## show colors on stdout/stderr only if
-	## on a terminal (not redirected)
+	# show colors on stdout/stderr only if
+	# on a terminal (not redirected)
 	local -i colorStdout=0 colorStderr=0
 	if [[ -t 1 && ${colorTerm} -eq 1 ]]; then
 		let colorStdout=1
@@ -390,7 +390,7 @@ function __msgPrint() {
 		let colorStderr=1
 	fi
 
-	## mapping severity -> stderr/prefix/color
+	# mapping severity -> stderr/prefix/color
 	local prefix color
 	local -i stderr=0
 	case ${severity} in
@@ -404,31 +404,31 @@ function __msgPrint() {
 		  emerg) let stderr=1; prefix="!!! [EMERGENCY] "; color="1;37;45" ;; # white on magenta
 	esac
 
-	## prefix message with timestamp?
+	# prefix message with timestamp?
 	case ${__PrintPrefixTimestamp:-1} in
 		1) prefix="${timestamp} ${prefix}" ;;
 		*) ;;
 	esac
 
-	## print message
+	# print message
 	case ${stderr} in
-		## print message to stdout
+		# print message to stdout
 		0)
 			if [[ ${colorStdout} -eq 1 ]]; then
-					## print colored message
+					# print colored message
 					echo -e "\033[${color}m${prefix}${message}\033[m"
 			else
-					## print plain message
+					# print plain message
 					echo "${prefix}${message}"
 			fi
 			;;
-		## print message to stderr
+		# print message to stderr
 		1)
 			if [[ ${colorStderr} -eq 1 ]]; then
-					## print colored message
+					# print colored message
 					echo -e "\033[${color}m${prefix}${message}\033[m" 1>&2
 			else
-					## print plain message
+					# print plain message
 					echo "${prefix}${message}" 1>&2
 			fi
 			;;
@@ -440,28 +440,28 @@ function __msgPrint() {
 
 function __print() {
 	
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   prints a message
-	##
-	## ARGUMENTS:
-	##   1: severity (req): severity of the message
-	##   2: message (req): the message to print
-	##
-	## GLOBAL VARIABLES USED:
-	##   __MsgTimestampFormat
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   prints a message
+	#
+	# ARGUMENTS:
+	#   1: severity (req): severity of the message
+	#   2: message (req): the message to print
+	#
+	# GLOBAL VARIABLES USED:
+	#   __MsgTimestampFormat
+	#
 
 	local severity="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## get current timestamp
+	# get current timestamp
 	local timestamp=$(date "+${__MsgTimestampFormat:-%Y-%m-%d %H:%M:%S %:z}" 2>/dev/null)
 
-	## print message
+	# print message
 	__msgPrint "${timestamp}" "${severity}" "${message}"
 
 	return 0 # success
@@ -470,37 +470,37 @@ function __print() {
 
 function __msgLog() {
 	
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   logs a message (or stdin)
-	##
-	## ARGUMENTS:
-	##   1: severity (req): severity of the message
-	##   2: message (opt): the message to log (else stdin is read and logged)
-	##
-	## GLOBAL VARIABLES USED:
-	##   __LogDebug
-	##   __LogInfo
-	##   __LogNotice
-	##   __LogWarning
-	##   __LogErr
-	##   __LogCrit
-	##   __LogAlert
-	##   __LogEmerg
-	##   __LogPrefixTimestamp
-	##   __LogTarget (fallback: syslog.user)
-	##   __LogFileHasBeenWrittenTo (helper variable)
-	##   _L
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   logs a message (or stdin)
+	#
+	# ARGUMENTS:
+	#   1: severity (req): severity of the message
+	#   2: message (opt): the message to log (else stdin is read and logged)
+	#
+	# GLOBAL VARIABLES USED:
+	#   __LogDebug
+	#   __LogInfo
+	#   __LogNotice
+	#   __LogWarning
+	#   __LogErr
+	#   __LogCrit
+	#   __LogAlert
+	#   __LogEmerg
+	#   __LogPrefixTimestamp
+	#   __LogTarget (fallback: syslog.user)
+	#   __LogFileHasBeenWrittenTo (helper variable)
+	#   _L
+	#
 
 	local timestamp="${1}"; shift
 	local severity="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## check whether message is to be logged at all
+	# check whether message is to be logged at all
 	case ${severity} in
 		  debug) if [[ ${__LogDebug:-0}   -ne 1 ]]; then return 0; fi ;;
 		   info) if [[ ${__LogInfo:-1}    -ne 1 ]]; then return 0; fi ;;
@@ -512,7 +512,7 @@ function __msgLog() {
 		  emerg) if [[ ${__LogEmerg:-1}   -ne 1 ]]; then return 0; fi ;;
 	esac
 
-	## mapping severity -> prefix
+	# mapping severity -> prefix
 	local prefix
 	case ${severity} in
 		  debug) prefix=">>> [____DEBUG] " ;;
@@ -525,13 +525,13 @@ function __msgLog() {
 		  emerg) prefix="!!! [EMERGENCY] " ;;
 	esac
 
-	## prefix message with timestamp?
+	# prefix message with timestamp?
 	case ${__LogPrefixTimestamp:-1} in
 		1) prefix="${timestamp} ${prefix}" ;;
 		*) ;;
 	esac
 
-	## loop through list of log targets
+	# loop through list of log targets
 	IFS=','
 	local -a logTargetArray=( ${__LogTarget:-syslog:user} )
 	unset IFS
@@ -539,9 +539,9 @@ function __msgLog() {
 	for ((l = 0; l < ${#logTargetArray[@]}; l++)); do
 		local logTarget=${logTargetArray[l]}
 		case ${logTarget} in
-			## log to a file
+			# log to a file
 			file:*)
-				## parse log target setting
+				# parse log target setting
 				IFS=':'
 				set -- ${logTarget}
 				unset IFS
@@ -549,53 +549,53 @@ function __msgLog() {
 				local logMode=${3:-overwrite} # overwrite|append, default: overwrite
 				set --
 
-				## write log message to file
-				## if message is empty, we read stdin
+				# write log message to file
+				# if message is empty, we read stdin
 				if [[ -z ${message} ]]; then
 					if [[ ${logMode} == 'append' || ${__LogFileHasBeenWrittenTo} -eq 1 ]]; then
-						## TODO FIXME: check return value?
+						# TODO FIXME: check return value?
 						#cat >>${logFile} 2>>"${_L:-/dev/null}"
 						sed -e "s/^/${prefix} /" >>${logFile} 2>>"${_L:-/dev/null}"
 					else
-						## TODO FIXME: check return value?
+						# TODO FIXME: check return value?
 						#cat >${logFile} 2>>"${_L:-/dev/null}"
 						sed -e "s/^/${prefix} /" >${logFile} 2>>"${_L:-/dev/null}"
 					fi
 				else
 					if [[ ${logMode} == 'append' || ${__LogFileHasBeenWrittenTo} -eq 1 ]]; then
-						## TODO FIXME: check return value?
+						# TODO FIXME: check return value?
 						echo "${prefix}${message}" >>${logFile} 2>>"${_L:-/dev/null}"
 					else
-						## TODO FIXME: check return value?
+						# TODO FIXME: check return value?
 						echo "${prefix}${message}" >${logFile} 2>>"${_L:-/dev/null}"
 					fi
 				fi
-				## global helper variable to determine if logfile
-				## has already been opened / written to before
-				## during the current execution of the script,
-				## needed to support "append" mode.
+				# global helper variable to determine if logfile
+				# has already been opened / written to before
+				# during the current execution of the script,
+				# needed to support "append" mode.
 				declare -i __LogFileHasBeenWrittenTo=1
 				;;
-			## log via syslog
+			# log via syslog
 			syslog:*)
-				## parse log target setting
+				# parse log target setting
 				IFS=':'
 				set -- ${logTarget}
 				unset IFS
 				local syslogFacility=${2:-user}
 				local syslogPri="${syslogFacility}.${severity}"
-				local syslogTag="${0##*/}[${$}]" # scriptname[PID]
+				local syslogTag="${0#*/}[${$}]" # scriptname[PID]
 				set --
-				## send log message to syslog
+				# send log message to syslog
 				if [[ -z ${message} ]]; then
-					## log stdin
+					# log stdin
 					logger -p "${syslogPri}" -t "${syslogTag}" >>"${_L:-/dev/null}" 2>&1
 				else
-					## log passed message
+					# log passed message
 					logger -p "${syslogPri}" -t "${syslogTag}" -- "${message}" >>"${_L:-/dev/null}" 2>&1
 				fi
 				;;
-			## any other (invalid) log target
+			# any other (invalid) log target
 			*)
 				return 2 # error
 				;;
@@ -608,28 +608,28 @@ function __msgLog() {
 
 function __log() {
 	
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   logs a message (or stdin)
-	##
-	## ARGUMENTS:
-	##   1: severity (req): severity of the message
-	##   2: message (opt): the message to log (else stdin is read and logged)
-	##
-	## GLOBAL VARIABLES USED:
-	##   __MsgTimestampFormat
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   logs a message (or stdin)
+	#
+	# ARGUMENTS:
+	#   1: severity (req): severity of the message
+	#   2: message (opt): the message to log (else stdin is read and logged)
+	#
+	# GLOBAL VARIABLES USED:
+	#   __MsgTimestampFormat
+	#
 
 	local severity="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## get current timestamp
+	# get current timestamp
 	local timestamp=$(date "+${__MsgTimestampFormat:-%Y-%m-%d %H:%M:%S %:z}" 2>/dev/null)
 
-	## log message
+	# log message
 	__msgLog "${timestamp}" "${severity}" "${message}"
 
 	return 0 # success
@@ -638,21 +638,21 @@ function __log() {
 
 function __msg() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   processes a message (or stdin) for logging/printing/later mailing
-	##
-	## ARGUMENTS:
-	##   0: -q (opt): quiet (do not print message, required for print functions)
-	##   1: severity (req): severity of the message
-	##   2: message (opt): the message to log (else stdin is read and logged)
-	##
-	## GLOBAL VARIABLES USED:
-	##   __MsgArray
-	##   __MsgQuiet
-	##   __MsgTimestampFormat
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   processes a message (or stdin) for logging/printing/later mailing
+	#
+	# ARGUMENTS:
+	#   0: -q (opt): quiet (do not print message, required for print functions)
+	#   1: severity (req): severity of the message
+	#   2: message (opt): the message to log (else stdin is read and logged)
+	#
+	# GLOBAL VARIABLES USED:
+	#   __MsgArray
+	#   __MsgQuiet
+	#   __MsgTimestampFormat
+	#
 
 	if [[ ${1} == "-q" ]]; then
 		let quiet=1; shift
@@ -661,33 +661,33 @@ function __msg() {
 	local severity="${1}"; shift
 	local message="${1}"; shift
 
-	## ----- main -----
+	# ----- main -----
 
-	## get current timestamp
+	# get current timestamp
 	local timestamp=$(date "+${__MsgTimestampFormat:-%Y-%m-%d %H:%M:%S %:z}" 2>/dev/null)
 
-	## check for global quiet operation setting
+	# check for global quiet operation setting
 	if [[ ${__MsgQuiet} -eq 1 ]]; then
 		let quiet=1
 	fi
 
-	## determine the line number and file name
-	## of the current script file and the
-	## calling function
+	# determine the line number and file name
+	# of the current script file and the
+	# calling function
 	local callingFunction=
 	local -i bashLineNumber=
 	local bashFile=
 	case "${FUNCNAME[1]}" in
-		## we were called by __die()
+		# we were called by __die()
 		__die)
-			## use the info of the function that called __die()
+			# use the info of the function that called __die()
 			bashFileName=${BASH_SOURCE[2]} # the file name where the function that called __die was called
 			let bashLineNumber=${BASH_LINENO[1]} # the line number where __die was called
 			callingFunction=${FUNCNAME[2]} # the name of the function that called __die
 			;;
-		## we were called by any other function
+		# we were called by any other function
 		*)
-			## use the info of the function that called __msg()
+			# use the info of the function that called __msg()
             # jpic hack
 			#bashFileName=${BASH_SOURCE[1]} # the file name where the function that called __msg was called
 			#let bashLineNumber=${BASH_LINENO[0]} # the line number where __msg was called
@@ -697,59 +697,59 @@ function __msg() {
 			callingFunction=${FUNCNAME[2]} # the name of the function that called __msg
 			;;
 	esac
-	bashFileName=${bashFileName##*/} # strip leading path
+	bashFileName=${bashFileName#*/} # strip leading path
 
-	## build message prefix based on calling function
+	# build message prefix based on calling function
 	local messagePrefix=
 	case "${callingFunction}" in
-		## main execution/no function
+		# main execution/no function
 		main)
 			messagePrefix="{${bashFileName}:${bashLineNumber}}: "
 			;;
-		## __die function
+		# __die function
 		#__die)
 		#	messagePrefix="{${bashFileName}:${bashLineNumber}}, ${callingFunction}(): "
 		#	;;
-		## we were called by any other function
+		# we were called by any other function
 		*)
-			## use the calling function as message prefix
+			# use the calling function as message prefix
 			messagePrefix="{${bashFileName}:${bashLineNumber}}, ${callingFunction}(): "
 			;;
 	esac
 
-	## populate local messsage array
+	# populate local messsage array
 	local -a messageArray
 	if [[ -z ${message} ]]; then
-		## no message argument given, so read stdin
-		## and append every line to the message array
+		# no message argument given, so read stdin
+		# and append every line to the message array
 		while read; do
 			messageArray+=( "${REPLY}" )
 		done
 	else
-		## single message argument
+		# single message argument
 		messageArray=( "${messagePrefix}${message}" )
 	fi
 
-	## loop through local message array
-	## and process messages:
-	## - add message to global message array
-	## - print message
-	## - log message
+	# loop through local message array
+	# and process messages:
+	# - add message to global message array
+	# - print message
+	# - log message
 	local -i m
 	for ((m = 0; m < ${#messageArray[@]}; m++)); do
 
-		## current message
+		# current message
 		local currentMessage=${messageArray[m]}
 
-		## append current message to the global message array
+		# append current message to the global message array
 		__MsgArray+=( "${timestamp}|${severity}|${currentMessage}" )
 
-		## only print current message if quiet operation isn't enabled
+		# only print current message if quiet operation isn't enabled
 		if [[ ${quiet} -ne 1 ]]; then
 			__msgPrint "${timestamp}" "${severity}" "${currentMessage}"
 		fi
 
-		## log current message
+		# log current message
 		__msgLog "${timestamp}" "${severity}" "${currentMessage}"
 
 	done
@@ -760,23 +760,23 @@ function __msg() {
 
 function __mail() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   sends the contents of stdin via mail
-	##
-	## ARGUMENTS:
-	##   1: mailFrom (req): Some User <some.user@example.com>
-	##   2: mailEnvelopeFrom (req): some.user@example.com
-	##   3: mailRecipient (req): some.user@example.com
-	##   4: mailSubject (req): Messages from thisscript
-	##
-	## GLOBAL VARIABLES USED:
-	##   __ScriptFile
-	##   __ScriptHost
-	##   __SendmailBin (default: /usr/sbin/sendmail)
-	##   __SendmailArgs (default: -t)
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   sends the contents of stdin via mail
+	#
+	# ARGUMENTS:
+	#   1: mailFrom (req): Some User <some.user@example.com>
+	#   2: mailEnvelopeFrom (req): some.user@example.com
+	#   3: mailRecipient (req): some.user@example.com
+	#   4: mailSubject (req): Messages from thisscript
+	#
+	# GLOBAL VARIABLES USED:
+	#   __ScriptFile
+	#   __ScriptHost
+	#   __SendmailBin (default: /usr/sbin/sendmail)
+	#   __SendmailArgs (default: -t)
+	#
 
 	local mailFrom=${1}
 	if [[ -z "${mailFrom}" ]]; then
@@ -806,21 +806,21 @@ function __mail() {
 	fi
 	__msg debug "mailSubject: ${mailSubject}"
 
-	## ---- main -----
+	# ---- main -----
 
-	## get current timestamp
+	# get current timestamp
 	local timestamp=$(date "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
 
-	## read stdin and append every line to the body array
+	# read stdin and append every line to the body array
 	local -a mailBodyArray
 	while read; do
 		mailBodyArray+=( "${REPLY}" )
 	done
 
-	## sendmail arguments
+	# sendmail arguments
 	local sendmailArgs="${__SendmailArgs:--t}"
 
-	## send mail via sendmail
+	# send mail via sendmail
 	{
 		echo "From: ${mailFrom}"
 		echo "To: ${mailRecipient}"
@@ -851,49 +851,49 @@ function __mail() {
 
 function __msgMail() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   sends all saved messages (and script subcommand log, if enabled) via mail
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   __MailDebug
-	##   __MailInfo
-	##   __MailNotice
-	##   __MailWarning
-	##   __MailErr
-	##   __MailCrit
-	##   __MailAlert
-	##   __MailEmerg
-	##   __MailPrefixTimestamp
-	##   __MailFrom
-	##   __MailEnvelopeFrom
-	##   __MailRecipient
-	##   __MailSubject
-	##   __MsgArray
-	##   __ScriptFile
-	##   __ScriptHost
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   sends all saved messages (and script subcommand log, if enabled) via mail
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   __MailDebug
+	#   __MailInfo
+	#   __MailNotice
+	#   __MailWarning
+	#   __MailErr
+	#   __MailCrit
+	#   __MailAlert
+	#   __MailEmerg
+	#   __MailPrefixTimestamp
+	#   __MailFrom
+	#   __MailEnvelopeFrom
+	#   __MailRecipient
+	#   __MailSubject
+	#   __MsgArray
+	#   __ScriptFile
+	#   __ScriptHost
+	#
 
 	local mailFrom=${__MailFrom:-${USER} <${USER}@${__ScriptHost}>}
 	local mailEnvelopeFrom=${__MailEnvelopeFrom:-${USER}@${__ScriptHost}}
 	local mailRecipient=${__MailRecipient:-${USER}@${__ScriptHost}}
 	local mailSubject=${__MailSubject:-Messages from ${__ScriptFile} running on ${__ScriptHost}}
 
-	## ----- main -----
+	# ----- main -----
 
-	## check whether the global message array contains any messages at all
+	# check whether the global message array contains any messages at all
 	if [[ ${#__MsgArray[@]} -eq 0 ]]; then
 		return 0
 	fi
 
-	## initialize mail message array
+	# initialize mail message array
 	local -a mailMessageArray
 
-	## loop through global message array
+	# loop through global message array
 	local -i i=0
 	for ((i = 0; i < ${#__MsgArray[@]}; i++)); do
 		IFS='|'
@@ -904,7 +904,7 @@ function __msgMail() {
 		local message=${@}
 		set --
 
-		## check whether message is to be mailed at all
+		# check whether message is to be mailed at all
 		case ${severity} in
 			  debug) if [[ ${__MailDebug:-0}   -ne 1 ]]; then continue; fi ;;
 			   info) if [[ ${__MailInfo:-1}    -ne 1 ]]; then continue; fi ;;
@@ -916,7 +916,7 @@ function __msgMail() {
 			  emerg) if [[ ${__MailEmerg:-1}   -ne 1 ]]; then continue; fi ;;
 		esac
 
-		## mapping severity -> prefix
+		# mapping severity -> prefix
 		local prefix
 		case ${severity} in
 			  debug) prefix="[____DEBUG] " ;;
@@ -929,28 +929,28 @@ function __msgMail() {
 			  emerg) prefix="[EMERGENCY] " ;;
 		esac
 
-		## prefix message with timestamp?
+		# prefix message with timestamp?
 		case ${__MailPrefixTimestamp:-1} in
 			1) prefix="${timestamp} ${prefix}" ;;
 			*) ;;
 		esac
 
-		## push final message into array
+		# push final message into array
 		mailMessageArray+=( "${prefix}${message}" )
 	done
 
-	## check whether the mail message array contains any messages at all
+	# check whether the mail message array contains any messages at all
 	if [[ ${#mailMessageArray[@]} -eq 0 ]]; then
 		return 0
 	fi
 
-	## send mail
+	# send mail
 	{
-		## print all messages that are to be mailed
+		# print all messages that are to be mailed
 		for ((i = 0; i < ${#mailMessageArray[@]}; i++)); do
 			echo "${mailMessageArray[i]}"
 		done
-		## append script subcommand log?
+		# append script subcommand log?
 		if [[ ${__MailAppendScriptSubCommandLog:-1} -eq 1 \
 			&& ${__ScriptSubCommandLog:-0} -eq 1 \
 			&& ${__ScriptSubCommandLogFile} != /dev/null \
@@ -984,27 +984,27 @@ function __msgMail() {
 
 } # __msgMail()
 
-##
-## trap functions
-##
+#
+# trap functions
+#
 
 function __trapExit() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   trap function for script exits
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   /
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   trap function for script exits
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   /
+	#
 
-	## ----- main -----
+	# ----- main -----
 
-	## mail saved messages
+	# mail saved messages
 	__msgMail
 	local -i returnValue=${?}
 	case ${returnValue} in
@@ -1016,7 +1016,7 @@ function __trapExit() {
 			return 2 # error
 			;;
 		*)
-			__msg err "undefined return value: ${returnValue}" ##
+			__msg err "undefined return value: ${returnValue}" #
 			return 2 # error
 			;;
 	esac
@@ -1025,22 +1025,22 @@ function __trapExit() {
 
 } # __trapExit()
 
-## enable the __trapExit function for script exits
+# enable the __trapExit function for script exits
 trap "__trapExit" EXIT
 
 function __trapSignals() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   trap function for script signals
-	##
-	## ARGUMENTS:
-	##   1: signal (req): signal that was trapped
-	##
-	## GLOBAL VARIABLES USED:
-	##   /
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   trap function for script signals
+	#
+	# ARGUMENTS:
+	#   1: signal (req): signal that was trapped
+	#
+	# GLOBAL VARIABLES USED:
+	#   /
+	#
 
 	local signal=${1}
 	if [[ -z "${signal}" ]]; then
@@ -1049,7 +1049,7 @@ function __trapSignals() {
 	fi
 	__msg debug "signal: ${signal}"
 
-	## ----- main -----
+	# ----- main -----
     local doExit=""
 
 	case ${signal} in
@@ -1098,7 +1098,7 @@ function __trapSignals() {
 
 } # __trapSignals()
 
-## enable the __trapSignals function for certain signals:
+# enable the __trapSignals function for certain signals:
 declare -a __TrapSignals=(
 	SIGHUP  # 1
 	SIGINT  # 2 (^C)
@@ -1112,27 +1112,27 @@ for signal in "${__TrapSignals[@]}"; do
 	trap "__trapSignals ${signal}" "${signal}"
 done
 
-##
-## misc helper functions
-##
+#
+# misc helper functions
+#
 
 function __includeSource() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   source a file
-	##
-	## ARGUMENTS:
-	##   1: file: the file to include
-	##
-	## GLOBAL VARIABLES USED:
-	##   _L
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   source a file
+	#
+	# ARGUMENTS:
+	#   1: file: the file to include
+	#
+	# GLOBAL VARIABLES USED:
+	#   _L
+	#
 
 	local file=${1}
 
-	## ----- main -----
+	# ----- main -----
 
 	if ! source "${file}" >>"${_L:-/dev/null}" 2>&1; then
 		__msg crit "failed to include source file '${file}'"
@@ -1145,21 +1145,21 @@ function __includeSource() {
 
 function __requireSource() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   source a file and die on failure
-	##
-	## ARGUMENTS:
-	##   1: file: the file to include
-	##
-	## GLOBAL VARIABLES USED:
-	##   _L
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   source a file and die on failure
+	#
+	# ARGUMENTS:
+	#   1: file: the file to include
+	#
+	# GLOBAL VARIABLES USED:
+	#   _L
+	#
 
 	local file=${1}
 
-	## ----- main -----
+	# ----- main -----
 
 	if ! source "${file}" >>"${_L:-/dev/null}" 2>&1; then
 		__die 2 "failed to include required source file '${file}'"
@@ -1171,19 +1171,19 @@ function __requireSource() {
 
 function __addPrefix() {
 
-	## ----- head -----
-	##
-	## DESCRIPTION:
-	##   add a prefix to a line of text read from stdin
-	##
-	## ARGUMENTS:
-	##   /
-	##
-	## GLOBAL VARIABLES USED:
-	##   /
-	##
+	# ----- head -----
+	#
+	# DESCRIPTION:
+	#   add a prefix to a line of text read from stdin
+	#
+	# ARGUMENTS:
+	#   /
+	#
+	# GLOBAL VARIABLES USED:
+	#   /
+	#
 
-	## ----- main -----
+	# ----- main -----
 
 	sed -e "s/^/[${@}] /"
 
