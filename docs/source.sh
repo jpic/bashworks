@@ -27,6 +27,19 @@ function docs() {
     $(module_get_path docs_bashdoc)/current/bashdoc.sh \
         -p "Module.sh framework" -o "$docs_path/module.sh" "$framework_path/module.sh"
 
+    local framework_dotted="${framework_path:1}"
+    local framework_dotted="${framework_dotted//\//.}"
+    local new_name=""
+
+    for file in $(find $docs_path/module.sh -type f); do
+        sed -i ".backup" -e "s/${framework_dotted//./\\.}\.//g" $file
+        sed -i ".backup" -e "s/${framework_path//\//\/}//g" $file
+        new_name="${file//$framework_dotted./}"
+        mv $file $new_name
+    done
+    
+    rm -rf "$docs_path/module.sh/*.backup"
+
     for module_name in ${!module_paths[@]}; do
         docs_bashdoc_for_module $module_name
     done
