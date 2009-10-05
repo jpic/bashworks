@@ -4,8 +4,12 @@ use Text::Template;
 use Cwd 'realpath';
 use Text::Template 'fill_in_file';
 
-my $template_dir = "/tmp/templates";
-my $out_dir = "/tmp/out";
+my $template_dir = $ENV{"docs_template_path"};
+print "Templates dir: $template_dir\n";
+
+my $out_dir = $ENV{"docs_path"};
+print "Documentation output: $out_dir\n";
+
 my %module_paths = ();
 my %file_module = ();
 my %file_doc = ();
@@ -16,14 +20,16 @@ my %func_modules = ();
 my %func_doc = ();
 my %func_link = ();
 
-# find modules and submodules
-my @sources = split(/\n/, `find . -name source.sh`);
-foreach(@sources) {
-    s/\/source\.sh//;
-    $path = realpath($_);
-    s/\.\///;
-    s/\//_/;
-    $module_paths{$_} = $path;
+foreach $argnum (0 .. $#ARGV) {
+    # find modules and submodules
+    @sources = split(/\n/, `find $ARGV[$argnum] -name source.sh`);
+    foreach(@sources) {
+        s/\/source\.sh//;
+        $path = realpath($_);
+        s/\.\///;
+        s/\//_/;
+        $module_paths{$_} = $path;
+    }
 }
 
 # find scripts and their belonging module
@@ -56,7 +62,7 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
         $_ = $absolute;
         s/^.*($module_rel)/$module_rel/;
         $file_relative{$absolute} = $_;
-        print $module, " ", $_, "\n";
+        # print $module, " ", $_, "\n";
         #print "  ", $absolute, $_, "\n";
     }    
 }
@@ -103,7 +109,7 @@ foreach $script (keys %file_module) {
 }
 
 for $module ( keys %module_paths ) {
-    $template = Text::Template->new(TYPE => 'FILE',  SOURCE => '/tmp/templates/module_index.html')
+    $template = Text::Template->new(TYPE => 'FILE',  SOURCE => $template_dir . '/module_index.html')
       or die "Couldn't construct template: $Text::Template::ERROR";
 
     $text = $template->fill_in( HASH => {
