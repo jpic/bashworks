@@ -22,8 +22,6 @@ function docs_post_source() {
 function docs() {
     local framework_path="$1"
 
-    rst2html "$framework_path/README.rst" > "$docs_path/README.html"
-
     $(module_get_path docs_bashdoc)/current/bashdoc.sh \
         -p "Module.sh framework" -o "$docs_path/module.sh" "$framework_path/module.sh"
 
@@ -43,4 +41,24 @@ function docs() {
     for module_name in ${!module_paths[@]}; do
         docs_bashdoc_for_module $module_name
     done
+    
+    rst2html "$framework_path/README.rst" > "$docs_path/README.html"
+
+    docs_generate_nav > $docs_path/nav.html
+}
+
+#--------------------------
+## Outputs a simple navigation html.
+#--------------------------
+function docs_generate_nav() {
+    echo "<p>"
+    echo "<a href=\"/docs/module.sh/\" title=\"Bashworks API documentation\">bashworks.sh</a>"
+    echo "<a href=\"/docs/README.html\" title=\"Bashworks Guide\">Guide/README</a>"
+    echo "</p>"
+    echo "<h2>Modules</h2>"
+    echo "<p>"
+    for module_name in ${!module_paths[@]}; do
+        echo "[ <a href=\"/docs/modules/${module_name}/\" title=\"Documentation of ${module_name}\">${module_name}</a> ] "
+    done
+    echo "</p>"
 }

@@ -715,10 +715,12 @@ cat <<- EOF > index.html
 		$HEADERS
 		<title>BashDoc - $PROJECT</title>
 	</head>
-	<frameset cols="25%,*">
-		<frame src="function_list.html" name="function_list" />
-		<frame src="script_list.html" name="main" />
-	</frameset>
+    <frameset rows="120,*">
+		<frame src="/nav.html" name="nav" />
+    	<frameset cols="25%,*">
+	    	<frame src="function_list.html" name="function_list" />
+		    <frame src="script_list.html" name="main" />
+    	</frameset>
 </html>
 EOF
 
