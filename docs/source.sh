@@ -7,19 +7,43 @@
 
 # Sets up the default path.
 function docs_post_source() {
-    export docs_path="/tmp/docs"
-    export docs_template_path="$(module_get_path docs)/bwdocs/templates"
+    docs_path="/tmp/docs"
+    docs_template_path="$(module_get_path docs)/bwdocs/templates"
+    docs_template_debug=0
+    docs_debug=0
 }
 
 # Generates all the documentation. It depends on bashdoc until another bash
 # documentation tool requires some abstraction.
-# Note: the param will go away and module.sh and its documentation will move
-# into their own module directory.
-# @param   Path to the dir with module.sh and README.rst
 function docs() {
-    local framework_path="$1"
+    if [[ ! -d "$docs_path" ]]; then
+        mkdir -p "$docs_path"
+        mlog info "Created $docs_path"
+    else
+        rm -rf "$docs_path/*"
+        mlog info "Cleaned $docs_path"
+    fi
 
+    export docs_path
+    export docs_template_path
     $(module_get_path docs)/bwdocs/doc.pl $(module_get_repo_paths)
 
-    rst2html "$framework_path/README.rst" > "$docs_path/README.html"
+    rst2html "$(module_get_path module)/docs/guide.rst" > "$docs_path/bashworks_guide.html"
+}
+
+function docs_test() {
+    docs_path="$(module_get_path docs)/bwdocs/example/"
+    if [[ ! -d "$docs_path" ]]; then
+        mkdir -p "$docs_path"
+        mlog info "Created $docs_path"
+    else
+        rm -rf "$docs_path/*"
+        mlog info "Cleaned $docs_path"
+    fi
+
+    export docs_path
+    export docs_template_path
+    export docs_template_debug
+    export docs_debug
+    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/bwdocs
 }

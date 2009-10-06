@@ -70,6 +70,8 @@ li.selected \{
     margin: 7px 0;
 \}
 </style>
+<script type="text/javascript" src="http://chocolatpistche.com/static/js/highlight.pack.js?200907051350"></script>
+<script type="text/javascript">initHighlightingOnLoad();</script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() \{
@@ -139,52 +141,141 @@ $(document).ready(function() \{
         <h2>Files</h2>
 
 {
+    # loop over all files
     foreach $file ( sort keys %file_doc ) {
+
+        # skip over files not in this module
         if ( $file_module{$file} ne $module_name ) {
             next;
         }
 
+        # file doc buffer
         $fd = $file_doc{$file};
+
+        # link function names
         foreach $func (sort { length($func_link{$a}) cmp length($func_link{$b}) } keys %func_link) {
             $fd =~ s/([^_\$])($func)(\([^)]*\))/$1.'<a href="'.$func_link{$2}.'">'.$2.$3.'<\/a>'/e;
             $fd =~ s/([^_\$])(yourmodule_)($func)(\([^)]*\))/$1.'<a href="'.$func_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
         }
-
-        $doc = "<p>";
-        $prev_line = "";
-        $in_p=1;
+        
+        # prepare to parse the file doc buffer
         @lines = split(/\n/, $fd);
         %tags = ();
+        %buffer = ();
+        $to_open="";
+        $to_close="";
+        $doc = "";
 
+        # loop over lines in the file doc buffer
         foreach (@lines) {
-            s/^#//;
 
+            # remove the first dash
+            s/^#//;
+            if ( $tpldebug ) {
+                print "\nRaw line: ", $_, "\n";
+            }
+
+            # skip editor tags
             if ( /-\*- coding/ ) {
                 next;
             }
 
+            # do * and _
+            s/\*([^*]+)\*/<b>$1<\/b>/g;
+            s/_([^_]+)_/<u>$1<\/u>/g;
+
+            # register the tag and skip
             if ( /@([^ ]+) +(.*)/ ) {
                 push @{$tags{$1}}, $2;
                 next;
             }
 
-            if ( $in_p eq 0 ) {
-                $doc .= "<p>";
-                $in_p = 1;
+            # aliment %buffer{pre}
+            # set $to_open = pre
+            elsif ( /^#  (.*)$/ ) {
+                push @{$buffer{"pre"}}, "$1\n";
+                $to_open="pre";
             }
 
-            if ( /([^ (]ie)\.$/ ) { # close paragraph
-                if ( $1 ne " ie" ) {
-                    print "Closer '" . $_ . "'\n";
-                    $doc .= "$_</p>";
-                    $in_p = 0;
-                    next;
+            # aliment %buffer{ul}
+            # set $to_open = ul
+            elsif ( /^ - (.*)$/ || /^   (.*)$/) {
+                if ( /^   (.*)$/ ) {
+                    my $append = $1;
+                    $_ = pop @{$buffer{"ul"}};
+                    s/^<li>(.*)<\/li>$/$1/;
+                    push @{$buffer{"ul"}}, "<li>$_ $append</li>";
+                } else {
+                    push @{$buffer{"ul"}}, "<li>$1</li>";
+                }
+                $to_open="ul";
+            }
+
+            # aliment %buffer{p} by default
+            # set $to_open = p
+            else {
+                push @{$buffer{"p"}}, $_;
+                $to_open="p";
+            }
+
+            # if $to_open is not $to_close and $to_close not empty
+            if ( $to_open !~ /^($to_close)$/ && $to_close ne "" ) {
+                # do the current tag
+                if ( $tpldebug ) {
+                    print "$to_open should be openned, doing $to_close with \n";
+                }
+                
+                $doc .= "<$to_close>";
+                
+                while(@{$buffer{$to_close}}) {
+                    $_ = shift @{$buffer{$to_close}};
+                    $doc .= $_;
+
+                    if ($tpldebug) {
+                        print "$_";
+                    }
+                }
+                
+                $doc .= "</$to_close>";
+
+                if ( $tpldebug ) {
+                    print "\nClosing: $to_close\n";
                 }
             }
 
-            $doc .= "$_";
+            # set $to_close to $to_open
+            $to_close = $to_open;
         }
-        $doc .= "</p>";
+
+        # do the current tag if it was not done
+        if (@{$buffer{$to_close}}) {
+            if ($tpldebug) {
+                print "$to_close was left to do\n";
+            }
+
+            # do the current tag
+            if ( $tpldebug ) {
+                print "$to_open should be openned, doing $to_close with \n";
+            }
+            
+            $doc .= "<$to_close>";
+            
+            while(@{$buffer{$to_close}}) {
+                $_ = shift @{$buffer{$to_close}};
+                $doc .= $_;
+
+                if ($tpldebug) {
+                    print "$_";
+                }
+            }
+            
+            $doc .= "</$to_close>";
+
+            if ( $tpldebug ) {
+                print "\nClosing: $to_close\n";
+            }
+        }
+        undef $buffer;
 
         $rel_file=$file_relative{$file};
 
@@ -269,39 +360,118 @@ $(document).ready(function() \{
             #$fd =~ s/($func)/$func_link{$1}/eg;
         }
 
-        $doc = "<p>";
-        $prev_line = "";
-        $in_p=1;
+        # prepare to parse the func doc buffer
         @lines = split(/\n/, $fd);
         %tags = ();
+        undef %buffer;
+        %buffer = {};
+        $to_open="";
+        $to_close="";
+        $doc = "";
 
+        # loop over lines in the file doc buffer
         foreach (@lines) {
+
+            # remove the first dash
             s/^#//;
 
+            # skip editor tags
+            if ( /-\*- coding/ ) {
+                next;
+            }
+
+            # register the tag and skip
             if ( /@([^ ]+) +(.*)/ ) {
                 push @{$tags{$1}}, $2;
                 next;
             }
 
-            if ( $in_p eq 0 ) {
-                $doc .= "<p>";
-                $in_p = 1;
+            # aliment %buffer{pre}
+            # set $to_open = pre
+            elsif ( /^#(.*)$/ ) {
+                push @{$buffer{"pre"}}, $1;
+                $to_open="pre";
             }
 
-            if ( /([^ (]ie)\.$/ ) { # close paragraph
-                if ( $1 ne " ie" ) {
-                    print "Closer '" . $_ . "'\n";
-                    $doc .= "$_</p>";
-                    $in_p = 0;
-                    next;
+            # aliment %buffer{ul}
+            # set $to_open = ul
+            elsif ( /^ - (.*)$/ || /^   (.*)$/) {
+                if ( /^   (.*)$/ ) {
+                    my $append = $1;
+                    $_ = pop @{$buffer{"ul"}};
+                    s/^<li>(.*)<\/li>$/$1/;
+                    push @{$buffer{"ul"}}, "<li>$_ $append</li>";
+                } else {
+                    push @{$buffer{"ul"}}, "<li>$1</li>";
+                }
+                $to_open="ul";
+            }
+
+            # aliment %buffer{p} by default
+            # set $to_open = p
+            else {
+                push @{$buffer{"p"}}, $_;
+                $to_open="p";
+            }
+
+            # if $to_open is not $to_close
+            if ( $to_open !~ /^($to_close)$/ && $to_close ne "") {
+                # do the current tag
+                if ( $tpldebug ) {
+                    print "$to_open should be openned, doing $to_close with \n";
+                }
+                
+                $doc .= "<$to_close>";
+                
+                while(@{$buffer{$to_close}}) {
+                    $_ = shift @{$buffer{$to_close}};
+                    $doc .= $_;
+
+                    if ($tpldebug) {
+                        print "$_";
+                    }
+                }
+                
+                $doc .= "</$to_close>";
+
+                if ( $tpldebug ) {
+                    print "\nClosing: $to_close\n";
                 }
             }
 
-            $doc .= "$_";
+            # set $to_close to $to_open
+            $to_close = $to_open;
         }
-        $doc .= "</p>";
 
-        $OUT .= "<a href=\"#$func\" name=\"$func\"></a>";
+
+        # do the current tag if it was not done
+        if (@{$buffer{$to_close}}) {
+            if ($tpldebug) {
+                print "$to_close was left to do\n";
+            }
+
+            # do the current tag
+            if ( $tpldebug ) {
+                print "$to_open should be openned, doing $to_close with \n";
+            }
+            
+            $doc .= "<$to_close>";
+            
+            while(@{$buffer{$to_close}}) {
+                $_ = shift @{$buffer{$to_close}};
+                $doc .= $_;
+
+                if ($tpldebug) {
+                    print "$_";
+                }
+            }
+            
+            $doc .= "</$to_close>";
+
+            if ( $tpldebug ) {
+                print "\nClosing: $to_close\n";
+            }
+        }        $OUT .= "<a href=\"#$func\" name=\"$func\"></a>";
         $OUT .= "<h3>$func()</h3>\n";
         $OUT .= $doc;
 

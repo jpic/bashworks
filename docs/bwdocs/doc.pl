@@ -5,10 +5,16 @@ use Cwd 'realpath';
 use Text::Template 'fill_in_file';
 
 my $template_dir = $ENV{"docs_template_path"};
-print "Templates dir: $template_dir\n";
+print "Templates dir (env \$docs_template_path): $template_dir\n";
 
 my $out_dir = $ENV{"docs_path"};
-print "Documentation output: $out_dir\n";
+print "Documentation output (env \$docs_path): $out_dir\n";
+
+my $debug = $ENV{"docs_debug"} || 0;
+print "Debug (env \$docs_debug): $debug\n";
+
+my $tpldebug = $ENV{"docs_template_debug"} || 0;
+print "Template debug (env \$docs_template_debug): $tpldebug\n";
 
 my %module_paths = ();
 my %file_module = ();
@@ -26,18 +32,26 @@ foreach $argnum (0 .. $#ARGV) {
     foreach(@sources) {
         s/\/source\.sh//;
         $path = realpath($_);
-        s/\.\///;
+        s/($ARGV[$argnum])\///;
         s/\//_/;
         $module_paths{$_} = $path;
     }
 }
 
+if ( $debug ) {
+    print "Phase 1: finding modules (_pre_source)\n";
+}
+
 # find scripts and their belonging module
 # longest module name first
 foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_paths{$b}) } keys %module_paths) {
-    # print $module, "\n";
-    
+
     $path = $module_paths{$module};
+    
+    if ( $debug ) {
+        print "- $module from $path:\n";
+    }
+
     @scripts = split(/\n/, `find "$path" -name "*.sh"`);
 
     foreach(@scripts) {
@@ -62,14 +76,25 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
         $_ = $absolute;
         s/^.*($module_rel)/$module_rel/;
         $file_relative{$absolute} = $_;
-        # print $module, " ", $_, "\n";
-        #print "  ", $absolute, $_, "\n";
+
+    
+        if ( $debug ) {
+            print "  absolute path: $absolute\n  relative path: $_\n";
+        }
     }    
+}
+
+if ( $debug ) {
+    print "Phase 2: analysing modules (source)\n";
 }
 
 # find docblocks and their belonging functions
 foreach $script (keys %file_module) {
     $module = $file_module{$script};
+
+    if ( $debug ) {
+        print "- $module";
+    }
 
     open SCRIPT, "< $script";
 
@@ -78,7 +103,7 @@ foreach $script (keys %file_module) {
     $current_func = "";
     $script_doc = "";
     while(<SCRIPT>) {
-        if (/^# /) {
+        if (/^# / || /^##/) {
             # function current_docblock
             $current_doc .= $_;
         } elsif (/^\n$/ and $current_doc and $script_doc eq "") {
@@ -106,9 +131,21 @@ foreach $script (keys %file_module) {
     }
 
     close SCRIPT;
+
+    if ( $debug ) {
+        print "  done reading $script";
+    }
+}
+
+if ( $debug ) {
+    print "Phase 3: rendering\n";
 }
 
 for $module ( keys %module_paths ) {
+    if ( $debug ) {
+        print "- $module:\n";
+    }
+
     $template = Text::Template->new(TYPE => 'FILE',  SOURCE => $template_dir . '/module_index.html')
       or die "Couldn't construct template: $Text::Template::ERROR";
 
@@ -116,6 +153,8 @@ for $module ( keys %module_paths ) {
         "module_name" => \$module,
         "template_dir" => \$template_dir,
         "out_dir" => \$out_dir,
+        "debug" => \$debug,
+        "tpldebug" => \$tpldebug,
         "module_paths" => \%module_paths,
         "file_module" => \%file_module,
         "file_doc" => \%file_doc,
@@ -127,7 +166,11 @@ for $module ( keys %module_paths ) {
         "func_doc" => \%func_doc,
     });
 
-    open MODULE_TEMPLATE, "> $out_dir/$module.html";
-    printf MODULE_TEMPLATE $text;
+    open MODULE_TEMPLATE, "> $out_dir/$module.html" or print "Could not open $out_dir/$module.html";
+    printf MODULE_TEMPLATE $text or print "Could not write $out_dir/$module.html";
     close MODULE_TEMPLATE;
+
+    if ($debug) {
+        print "  wrote $out_dir/$module.html";
+    }
 }

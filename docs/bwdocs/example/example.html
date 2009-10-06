@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://chocolatpistche.com/static/js/highlight.pack.js?200907051350"></script>
+<script type="text/javascript">initHighlightingOnLoad();</script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>example functions</h2>
+        <ul>
+<li><a href="#foofunc" title="Documentation of foofunc">foofunc</a></li><li><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class="selected"><a href="example.html" title="Documentation of example">example</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>example documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#example/other_source.sh" name="example/other_source.sh"></a><h3>example/other_source.sh</h3>
+<p> This file only exists for testing.</p><ul><li>This is a multilign item.</li><li>This is another multilign item.</li></ul><a href="#example/source.sh" name="example/source.sh"></a><h3>example/source.sh</h3>
+<p> This is a paragraph with code after it:</p><pre># this is a code comment
+this is code
+</pre><p> To use 80 char wide terminals multi lign paragraphs are supported. Look at this list:</p><ul><li>this is a list item</li><li>this is a list item with a function link <a href="example.html#foofunc">foofunc()</a></li></ul><p> This is a multi phrase paragraph. A list of the possible work decorations will be presented right now:</p><ul><li>an <b>emphatized</b> word,</li><li>an <u>underlined</u> word,</li></ul>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#foofunc" title="Documentation of foofunc">foofunc</a></td>
+<td>example/source.sh</td>
+<td>16</td>
+</tr>
+<tr>
+<td><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></td>
+<td>example/other_source.sh</td>
+<td>11</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#foofunc" name="foofunc"></a><h3>foofunc()</h3>
+<p> this is a function level comment block</p><a href="#foofunc2" name="foofunc2"></a><h3>foofunc2()</h3>
+<p> this is a function level comment block for <a href="example.html#foofunc2">foofunc2()</a></p>
+    </div>
+</div>
+
+</body>
+</html>
