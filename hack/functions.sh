@@ -28,3 +28,19 @@ function hack_cdpath() {
         fi
     done
 }
+
+# Given a relative path, it outputs the realpath.
+# The realpath utility uses the realpath(3) function to resolve all symbolic
+# links, extra `/' characters and references to /./ and /../ in path.
+# @param    Path to make real
+# @stdout   Absolute path
+function hack_realpath() {
+    if which -s realpath; then
+        realpath "$1"
+    elif which -s readlink; then
+        readlink -f "$1"
+    else
+        mlog error "Need either realpath or readlink command"
+        return 1
+    fi
+}
