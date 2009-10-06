@@ -101,11 +101,6 @@ function module_pre_source() {
             relative_path="${module_path#*$path/}"
             module_name="${relative_path//\//_}"
             
-            # blacklist check
-            if [[ -n "$(module_blacklist_check $module_name)" ]]; then
-                continue
-            fi
-            
             # add to module_path if required
             if [[ ! "${!module_paths[@]}" =~ ^$module_name$ ]]; then
                 module_paths["$module_name"]="$module_path"
@@ -116,8 +111,6 @@ function module_pre_source() {
         repo_name="${path##*/}"
         module_repo_paths["$repo_name"]="$path"
     done
-
-    module_blacklist_add module
 }
 
 # Source, run _pre_source() and _source() for each modules, uses blacklist.
@@ -176,24 +169,61 @@ function module_source() {
 # module name (array key) and module path (array value), it does the
 # following for each module:
 # - check blacklist
+# - unset any function or variable starting with blacklist module prefix
 # - call _post_source() function if it is declared.
-# @calls   module_blacklist_check
+# @calls   module_blacklist_check(), module_unset()
 function module_post_source() {    
     local module_post_source_function=""
 
     for module_name in ${!module_paths[@]}; do
-                
-        # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
-            continue
-        fi
-
+        
         module_post_source_function="${module_name}_post_source"
 
-        if [[ $(declare -f $module_post_source_function) ]]; then
+        if [[ -z "$(module_blacklist_check $module_name)" ]] && \
+            [[ -n "$(declare -f $module_post_source_function)" ]]; then
             $module_post_source_function
         fi
 
+        module_blacklist_check_unset $module_name
+    done
+}
+
+# Unsets a module if blacklisted, and if not "module"
+# @calls module_blacklist_check(), module_unset()
+function module_blacklist_check_unset() {
+    local module_name="$1"
+    
+    # blacklist check
+    if [[ $(module_blacklist_check $module_name) ]]; then
+        # i won't unset myself
+        if [[ "$module_name" != "module" ]]; then
+            module_unset $to_unset
+        fi
+    fi
+}
+
+# Will unset anything starting with a given module prefix.
+function module_unset() {
+    local module_name="$1"
+
+    # polite module snippet
+    local module_overload="${module_name}_unset"
+    if [[ $(declare -f $module_overload) ]]; then
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload
+            return $?
+        fi
+    fi
+
+
+    local declared=$(declare | grep -o "^${module_name}.*")
+    local to_unset=""
+
+    for word in $declared; do
+        if [[ $word =~ ^$module_name ]]; then
+            to_unset=$(echo $word| grep -o "^${module_name}[^=(]*")
+            unset $to_unset
+        fi
     done
 }
 
@@ -229,7 +259,8 @@ function module_blacklist_check() {
 # Example usage:
 #   # add yourmodule to the blacklist
 #   module_blacklist_add yourmodule
-# @param   Module name
+# @param    Module name
+# @polite   Will try to call yourmodule_unset()
 function module_blacklist_add() {
     for module_name in $module_blacklist; do
         if [[ $module_name == $1 ]]; then
@@ -273,9 +304,19 @@ function module_debug() {
         echo " - ${module_name} from ${module_paths[$module_name]}"
     done
 
+    echo "List of repo names and paths":
+
+    for repo_name in ${!module_repo_paths[@]}; do
+        echo " - ${repo_name} from ${module_repo_paths[$repo_name]}"
+    done
+
     echo "List of blacklisted modules:"
 
-    for module_name in ${!module_blacklist[@]}; do
-        echo " - ${module_name}"
+    for module_name in ${module_blacklist[@]}; do
+        echo " - ${module_name} from ${module_paths[$module_name]}"
     done
 }
+
+# blacklist ourself because of course our structure is slightly different from
+# others as we're one step in advance
+module_blacklist_add module
