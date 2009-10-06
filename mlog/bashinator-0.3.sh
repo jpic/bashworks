@@ -5,10 +5,8 @@
 #
 # Created by Wolfram Schlich <wschlich@gentoo.org>
 # Licensed under the GNU GPLv3
-
 #
-# REQUIRED PROGRAMS
-# =================
+# *REQUIRED PROGRAMS*:
 # - rm
 # - touch
 # - mktemp
@@ -17,32 +15,17 @@
 # - sed
 # - date
 # - sendmail (default /usr/sbin/sendmail, can be overridden with __SendmailBin)
-#
 
 # define the required minimum bash version for this
 # bashinator release to function properly
 export __BashinatorRequiredBashVersion=3.2.0
 
-#
-# bashinator control functions
-#
-
+# Initializes bashinator.
+# @variable $__BashinatorRequiredBashVersion default: 0.0.0
+# @variable $BASH_VERSINFO
+# @variable $EUID
+# @variable $PATH
 function __boot() {
-
-	# ----- head -----
-	#
-	# DESCRIPTION:
-	#   initializes bashinator
-	#
-	# ARGUMENTS:
-	#   /
-	#
-	# GLOBAL VARIABLES USED:
-	#   __BashinatorRequiredBashVersion (default: 0.0.0)
-	#   BASH_VERSINFO
-	#   EUID
-	#   PATH
-	#
 
 	# check for required bash version
 	IFS='.'
@@ -76,23 +59,14 @@ function __boot() {
 
 } # __boot()
 
+# - dispatches the application.
+# - calls the __init() and __main()
+# - functions that have to be defined by the user.
+#
+# @param  *: all arguments of the originally executed script
+# @variable Exit: can be set to a custom exit code from within
+#   the user functions
 function __dispatch() {
-
-	# ----- head -----
-	#
-	# DESCRIPTION:
-	#   dispatches the application.
-	#   calls the __init() and __main()
-	#   functions that have to be defined by the user.
-	#
-	# ARGUMENTS:
-	#   *: all arguments of the originally executed script
-	#
-	# GLOBAL VARIABLES USED:
-	#   Exit: can be set to a custom exit code from within
-	#   the user functions
-	#
-
 	# check for user defined __init() function
 	if ! declare -F __init >&/dev/null; then
 		__die 2 "function __init() does not exist, unable to dispatch application"
@@ -121,25 +95,12 @@ function __dispatch() {
 
 } # __dispatch()
 
+# run application main pre-processing tasks
+# @variable $__ScriptSubCommandLog default: 0
+# @variable $__ScriptSubCommandLogFile
+# @variable $__ScriptLock default: 0
+# @variable $__ScriptLockFile
 function __prepare() {
-
-	# ----- head -----
-	#
-	# DESCRIPTION:
-	#   run application main pre-processing tasks
-	#
-	# ARGUMENTS:
-	#   /
-	#
-	# GLOBAL VARIABLES USED:
-	#   __ScriptSubCommandLog (default: 0)
-	#   __ScriptSubCommandLogFile
-	#   __ScriptLock (default: 0)
-	#   __ScriptLockFile
-	#
-
-	# ----- main -----
-
 	# handle script subcommand logfile
 	if [[ ${__ScriptSubCommandLog:-0} == 1 ]]; then
 		# create temporary logfile
@@ -177,25 +138,12 @@ function __prepare() {
 
 } # __prepare()
 
+# run application main post-processing tasks
+# @variable $__ScriptSubCommandLog default: 0
+# @variable $__ScriptSubCommandLogFile
+# @variable $__ScriptLock default: 0
+# @variable $__ScriptLockFile
 function __cleanup() {
-
-	# ----- head -----
-	#
-	# DESCRIPTION:
-	#   run application main post-processing tasks
-	#
-	# ARGUMENTS:
-	#   /
-	#
-	# GLOBAL VARIABLES USED:
-	#   __ScriptSubCommandLog (default: 0)
-	#   __ScriptSubCommandLogFile
-	#   __ScriptLock (default: 0)
-	#   __ScriptLockFile
-	#
-
-	# ----- main -----
-
 	# remove script subcommand logfile
 	if [[ ${__ScriptSubCommandLog:-0} == 1 && "${__ScriptSubCommandLogFile}" != /dev/null ]]; then
 		__msg debug "removing script subcommand logfile '${__ScriptSubCommandLogFile}'"

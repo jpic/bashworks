@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	GIT VCS management functions
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# VCS interface for git.
 
 # Commits with a given message
 # @param Message

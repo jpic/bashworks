@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Mpd management module
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
-#
-# This simple module handles making a remote http connection to mpd stream
-# and to mpd administration.
+# This simple module handles making a remote http connection to mpd stream and
+# to mpd administration.
 # 
-# Basically it presents some configurable shortcuts
+# Basically it presents some configurable shortcuts, if you like mpd, mplayer,
+# ncmpc and screen then maybe this module will be useful to you.
 
 # Declares module configuration variable names.
 function mpd_source() {
     source $(module_get_path mpd)/functions.sh
 }
 
-# Module initialization callback
-#
-# This function is responsible for putting the module in a useable state.
-#
 # It sets some defaults and load the user configuration data.
 function mpd_post_source() {
     mpd_host=""

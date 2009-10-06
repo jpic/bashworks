@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 # Wraps around shunit bash testing framework. Read shunit/current/README for
 # information about working with shunit.
-# <p>
 # Module tests which use shunit should be in a subdirectory of the module
 # named "shunit".
 
-# Sets SHUNIT_HOME environment variable required by shunit.
+# Sets $SHUNIT_HOME environment variable required by shunit.
 function mtests_shunit_pre_source() {
     export SHUNIT_HOME="$(module_get_path mtests_shunit)/current"
 }
@@ -18,7 +17,7 @@ function mtests_shunit_source() {
 
 # Runs the test suites of a module.
 # @polite  Will try yourmodule_mtests_shunit()
-# @calls   shuStart
+# @calls   shuStart()
 function mtests_shunit() {
     local module_name=$1
 

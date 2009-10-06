@@ -5,22 +5,22 @@
 # conf/module.sh.
 # This script basically declares CRUD functions for given configuration file
 # path and given set of configuration variables.
-# Functions declared in this file are likely to change in future major
-# versions because the features that could be added are:
+# Functions declared in this file are likely to change in future major versions
+# because the features that could be added are:
 # - array support in configurations,
 # - better (hidden) password prompt support,
 # - the user interface could use multiple frontends,
 # Note that <a href="http://code.google.com/p/shesfw/">shesfw</a> is open
-# source and has an (unfinished) user interface API with several backends
-# which could be useable for example with new generation browsers like:
+# source and has an (unfinished) user interface API with several backends which
+# could be useable for example with new generation browsers like:
 # - <a href="http://uzbl.org">uzbl</a>,
 # - <a href="http://vimpression.org">vimpression</a>,
 # - <a href="http://surf.suckless.org">surf</a>
 
 # Saves given variables in the given configuration file.
-# This function uses sed to update variables in the configuration file if
-# the file contains a declaration of this variable. This is likely to be
-# dropped in the future.
+# This function uses sed to update variables in the configuration file if the
+# file contains a declaration of this variable. This is likely to be dropped in
+# the future.
 # Missing directories will be created if necessary.
 # @param   Path to configuration file
 # @param   List of variable names

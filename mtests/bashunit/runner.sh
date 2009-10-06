@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Break management module
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# @license GPLv3 (bashunit)
 # This script contains bashunit outputter and listener functions.
 #
 # Bashunit uses listener functions which names are present in the
-# BASHUNIT_TESTLISTENERS environment variable, separated by spaces.
+# $BASHUNIT_TESTLISTENERS environment variable, separated by spaces.
 # Listener functions are run when tests are executed.
 # 
 # Bashunit uses outputter functions which names are present in the
-# BASHUNIT_OUTPUTTER environment variable, separated by spaces.
+# $BASHUNIT_OUTPUTTER environment variable, separated by spaces.
 # Outputter funcitons are run when all tests are done executing.
 
 # Outputs a green dot when a test passes and a red F when a test fails.

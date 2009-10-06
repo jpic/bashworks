@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 # Functions which overload default behavior of conf module functions are
-# declared here.
-# conf_auto_get_variables creates or uses variables which are
-# named like conf_auto_yourmodule. These variables are subject to change
-# when the conf_module supports array.
-# conf_auto_conf_interactive overloads conf_interactive for the
-# conf_auto module and also helps the user to set up his bash environment.
+# declared here. 
+# conf_auto_get_variables() creates or uses variables which are named like
+# $conf_auto_yourmodule. These variables are subject to change when the
+# conf_module supports array.
+# conf_auto_conf_interactive() overloads conf_interactive() for the conf_auto
+# module and also helps the user to set up his bash environment.
 
-# Create missing variables like conf_auto_yourmodule for each module with
-# default value "n", and then output the list of variables of conf_auto.
-# @calls   conf_get_variables
+# Create missing variables like $conf_auto_yourmodule for each module with
+# default value "n", and then output the list of variables of conf_auto().
+# @calls   conf_get_variables()
 # @stdout  List of module variables.
 function conf_auto_get_variables() {
     # make up a variable for each module that have a conf path
@@ -25,11 +25,11 @@ function conf_auto_get_variables() {
     conf_get_variables conf_auto
 }
 
-# Informs the user of acceptable variable values, proposes to save all
-# current configuration and and helps him setting up the bashrc and 
-# bash_logout files if necessary.
+# Informs the user of acceptable variable values, proposes to save all current
+# configuration and and helps him setting up the bashrc and bash_logout files
+# if necessary.
 # @stdout  Informations and prompts.
-# @calls   conf_interactive
+# @calls   conf_interactive()
 # @log     Info, if bashrc or bash_logout was modified.
 function conf_auto_conf_interactive() {
     local variable=""

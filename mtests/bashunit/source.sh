@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Wraps around bashunit bash testing framework. Read bashunit/current/README for
 # information about working with bashunit.
-# <p>
 # Module tests which use bashunit should be in a subdirectory of the module
 # named "bashunit".
 
@@ -29,7 +28,7 @@ function mtests_bashunit_post_source() {
 
 # Runs bashunit tests of a module.
 # @polite  Will try yourmodule_mtests_basshunit()
-# @calls   ResultColletor, RunAll, Run, $BASHUNIT_OUTPUTTER
+# @calls   ResultColletor(), RunAll(), Run(), $BASHUNIT_OUTPUTTER
 function mtests_bashunit() {
     local bashunit_dir=$(module_get_path mtests)/bashunit/current
     local module_name=$1

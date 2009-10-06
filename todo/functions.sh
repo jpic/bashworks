@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Todo management functions
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# A simple todo list module.
 
 # Adds a todo to the list.
 # @param Todo name

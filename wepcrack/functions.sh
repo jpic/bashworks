@@ -1,4 +1,10 @@
 #!/bin/bash
+# My good old wepcrack script. It works very well and could teach you stuff,
+# *but* it is not ported to the framework architecture so it's blacklisted
+# until then.
+# Anyhow, if you want to enjoy it, then just do:
+## source wepcrack/functions.sh
+# It will display help by itself, as well as how to use the help pages.
 
 CONFIG="config.sh"
 ESSID=""

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # Wraps around shunit2 bash testing framework. Read shunit2/current/README for
 # information about working with shunit2.
-# <p>
 # Module tests which use shunit2 should be in a subdirectory of the module
 # named "shunit2".
+# See hack/shunit2 for an example.
 
 # Runs the shunit2 test suite of a given module.
 # @polite  Will try yourmodule_mtests_shunit2()

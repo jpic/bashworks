@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 # The role of this module is to generate the documentation of installed modules.
-# It depends on bashdoc which is provided.
-# <p>
-# Type "conf docs" to configure the output directory.
+# Example usage:
+##  conf docs # configure variables such as the output dir
+##  docs # run the generator
 
 # Sets up the default path.
 function docs_post_source() {
@@ -31,6 +31,7 @@ function docs() {
     rst2html "$(module_get_path module)/docs/guide.rst" > "$docs_path/bashworks_guide.html"
 }
 
+# Regenerates the example documentation.
 function docs_test() {
     docs_path="$(module_get_path docs)/bwdocs/example/"
     if [[ ! -d "$docs_path" ]]; then

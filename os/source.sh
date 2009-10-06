@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#	@Synopsis	OS management module
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
-#  In its early version, it just figures the os.
-#  The plan: port multi-os compiles and bin/ symlinks from my .bashrc
+# In its early version, it just figures the os in a more general way than
+# $OSTYPE.
+# The plan: port multi-os compiles and bin/ symlinks from my .bashrc
 
-# Declares module configuration variable names and sets the os.
+# Sets $os_type to bsd or linux.
 function os_source() {
     uname -a | grep -q -i bsd
     if [[ $? -eq 0 ]]; then

@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-# Bashdoc tiein for the docs module.
+# Bashdoc tiein for the docs module. Not used anymore.
+
+# Blacklists the module.
+# @calls module_blacklist_add()
+function docs_bashdoc_post_source() {
+    module_blacklist_add docs_bashdoc
+}
 
 # Outputs the documentation for a given module to 
 # $docs_path/modules/$module_name.

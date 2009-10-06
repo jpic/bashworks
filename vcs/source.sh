@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	VCS management module
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# VCS wrapper, for git only right now.
 
-# Declares module configuration variable names.
+# Sources functions and aliases.
 function vcs_source() {
     source $(module_get_path vcs)/functions.sh
     source $(module_get_path vcs)/aliases.sh
 }
 
+# Sets variable defaultts.
 function vcs_post_source() {
     vcs_src_path=""
     vcs_type=""
     vps_conf_path=$(vcs_get_conf_path)
 }
 
+# Returns $vps_src_path/.vcs.sh
 function vcs_get_conf_path() {
     echo ${vcs_src_path}/.vcs.sh
 }

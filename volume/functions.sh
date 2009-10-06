@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Sound volume management functions
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# Some volue management functions which work under linux or bsd.
 
 # Outputs the current volume
 function volume_get_current() {

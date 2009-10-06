@@ -3,19 +3,18 @@
 # All functions defined in this file take a module name as parameter, and are
 # polite. Refer to the polite standard chapter in the documentation to figure
 # how to overload the behaviour of any of these functions.
-# The highest level function is conf which runs all functions declared in
-# this file at some point. It makes configuring a module easy for the user,
-# who has to type in bash:
+# The highest level function is conf which runs all functions declared in this
+# file at some point. It makes configuring a module easy for the user, who has
+# to type in bash:
 #   # this will run the interactive module configurator
 #   conf yourmodule
-# Medium level functions are conf_save(), conf_load() and
-# conf_interactive() which only encapsulate the actual conf functions which
-# are declared in functions.sh.
-# Lowest level functions are conf_get_variables() and 
-# conf_get_path(). The first outputs the name of the variables of the module
-# for use in conf_save() and conf_interactive(), and the latter outputs the
-# path to the module configuration file which is used by conf_save() and
-# conf_load().
+# Medium level functions are conf_save(), conf_load() and conf_interactive()
+# which only encapsulate the actual conf functions which are declared in
+# conf/functions.sh.
+# Lowest level functions are conf_get_variables() and conf_get_path(). The
+# first outputs the name of the variables of the module for use in conf_save()
+# and conf_interactive(), and the latter outputs the path to the module
+# configuration file which is used by conf_save() and conf_load().
 # @polite  All functions of this script are polite.
 
 # Configure a module.
@@ -89,7 +88,7 @@ function conf_load() {
 # This function interactively prompts the user to change the values of all
 # variables of a module.
 # For example, calling `conf_interactive yourmodule` will prompt the user to
-# change values of all variables prefixed with yourmodule (ie.
+# change values of all variables prefixed with yourmodule (for example
 # $yourmodule_conf_path, $yourmodule_preference ...)
 # Note that this method does not save the new values.
 # 
@@ -112,7 +111,7 @@ function conf_interactive() {
     mlog debug "Done interactive configuration for $module_name"
 }
 
-# This function outputs all variable names which are prefixed by the given 
+# This function outputs all variable names which are prefixed by the given
 # module name.
 #
 # WARNING: if the first element is a module name then eval will be used. If the

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-# This file declares functions to test the break module which are useable
-# with the mtests_bashunit submodule.
+# This file declares functions to test the break module which are useable with
+# the mtests_bashunit submodule.
 
 # Sets up an arbitary conf path and break interval for testing.
 # @calls   break_post_source()

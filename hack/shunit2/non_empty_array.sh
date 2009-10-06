@@ -1,3 +1,5 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
 # Tests for hack_is_non_empty_array()
 
 # Ensures that hack_is_non_empty_array() outputs nothing if variable is not an

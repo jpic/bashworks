@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Template management module
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache
+# VPS management module, currently only supporting Linux-Vserver and Gentoo
+# GNU/Linux.
+# Example usage:
+## vps yourvps
+## vps_generate
+## vps_enter
+# See vps functions documentation for more information.
 
+# Sets the default globals if required.
+# @variable $VPS_DIR
+# @variable $VPS_ETC_DIR
 function vps_pre_source() {
     if [[ -z $VPS_DIR ]]; then
         VPS_DIR="/vservers"
@@ -20,6 +27,7 @@ function vps_source() {
     source $(module_get_path vps)/conf.sh
 }
 
+# Unsets all vps variables.
 function vps_post_source() {
     vps_name=""
     vps_root=""
@@ -33,16 +41,15 @@ function vps_post_source() {
     vps_ip=""
     vps_intranet=""
     vps_host_ip=""
-    vps_conf_path=$(vps_get_conf_path)
+    vps_conf_path=$(vps_conf_get_path)
 }
 
-function vps_get_conf_path() {
+function vps_conf_get_path() {
     echo $VPS_ETC_DIR/${vps_name}.config
 }
 
 # Initialises a vps configuration with a given name
 # @param VPS name
-# @param Silent (optionnal)
 function vps() {
     local usage="vps \$vps_name"
     vps_name="$1"
@@ -51,7 +58,7 @@ function vps() {
         mlog error "Usage: $usage"
     fi
 
-    vps_conf_path=$(vps_get_conf_path)
+    vps_conf_path=$(vps_conf_get_path)
 
     if [[ ! -f $vps_conf_path ]]; then
         mlog info $vps_conf_path not found, configuring new vps
