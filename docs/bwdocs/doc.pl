@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+# do NOT uncomment THAT
+#use strict;
+#use warnings;
+
 use Text::Template;
 use Cwd 'realpath';
 use Text::Template 'fill_in_file';
@@ -17,9 +21,13 @@ my $tpldebug = $ENV{"docs_template_debug"} || 0;
 print "Template debug (env \$docs_template_debug): $tpldebug\n";
 
 my %module_paths = ();
+my %module_file = ();
+my %module_var = ();
+my %module_func = ();
 my %file_module = ();
 my %file_doc = ();
 my %file_relative = ();
+my %file_link = ();
 my %relative_file = ();
 my %func_lines = ();
 my %func_files = ();
@@ -83,11 +91,16 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
 
         $_ = $absolute;
         s/^.*($module_rel)/$module_rel/;
-        $file_relative{$absolute} = $_;
-        $relative_file{$_} = $absolute;
+        $relative = $_;
+        $file_relative{$absolute} = $relative;
+        $relative_file{$relative} = $absolute;
+        s/\//_/;
+        $file_anchor{$absolute} = $_;
+        $file_link{$absolute} = $module . ".html#" . $file_anchor{$absolute};
+        $module_file{$module} = $absolute;
 
         if ( $debug ) {
-            print "  absolute path: $absolute\n  relative path: $_\n";
+            print "  absolute path: $absolute\n  relative path: $relative\n  anchor: $file_anchor{$absolute}\n";
         }
     }    
 }
@@ -126,6 +139,7 @@ foreach $script (keys %file_module) {
             $func_files{$current_func} = $script;
             $func_modules{$current_func} = $module;
             $func_link{$current_func} = $module . ".html#" .$current_func;
+            $module_func{$module} = 1;
         } elsif (/^declare -([a-zA-Z]) ([a-zA-Z0-9_-]+)(=(.*))?/) {
             $current_var=$2;
             $var_lines{$current_var} = $line;
@@ -134,6 +148,7 @@ foreach $script (keys %file_module) {
             $var_link{$current_var} = $module . ".html#" .$current_var;
             $var_default{$current_var} = $4;
             $var_doc{$current_var} = $current_doc;
+            $module_var{$module} = 1;
             $_ = $1;
             if (/A/) {
                 $var_type{$current_var} = "Associative array";
@@ -153,6 +168,7 @@ foreach $script (keys %file_module) {
             $var_link{$current_var} = $module . ".html#" .$current_var;
             $var_default{$current_var} = $3;
             $var_doc{$current_var} = $current_doc;
+            $module_var{$module} = 1;
             $_ = $3;
             if (/[0-9]+/) {
                 $var_type{$current_var} = "Integer";
@@ -202,9 +218,14 @@ for $module ( keys %module_paths ) {
         "debug" => \$debug,
         "tpldebug" => \$tpldebug,
         "module_paths" => \%module_paths,
+        "module_var" => \%module_var,
+        "module_func" => \%module_func,
+        "module_file" => \%module_file,
         "file_module" => \%file_module,
         "file_doc" => \%file_doc,
         "file_relative" => \%file_relative,
+        "file_link" => \%file_link,
+        "file_anchor" => \%file_anchor,
         "relative_file" => \%relative_file,
         "func_lines" => \%func_lines,
         "func_link" => \%func_link,

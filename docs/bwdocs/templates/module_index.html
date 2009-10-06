@@ -139,14 +139,16 @@ $(document).ready(function() \{
         }
 
         $rel_file=$file_relative{$file};
-        $OUT .= "<li><a href=\"#$rel_file\" title=\"Documentation of $rel_file\">$rel_file</a></li>";
+        $OUT .= "<li><a href=\"#$file_anchor{$file}\" title=\"Documentation of $rel_file\">$rel_file</a></li>";
     }
 }
         </ul>
 
-        <h2><a href="#func_overview">Functions</a></h2>
-        <ul>
 {
+    if ( $module_func{$module_name} ) {
+        $OUT .= "<h2><a href=\"#func_overview\">Functions</a></h2><ul>";
+    }
+    
     foreach $func (sort keys %func_modules) {
         if ( $func_modules{$func} ne $module_name ) {
             next;
@@ -154,12 +156,15 @@ $(document).ready(function() \{
 
         $OUT .= "<li><a href=\"#$func\" title=\"Documentation of $func\">$func</a></li>";
     }
-}
-        </ul>
+    
+    if ( $module_func{$module_name} ) {
+        $OUT.='</ul>';
+    }
+    
+    if ( $module_var{$module_name} ) {
+        $OUT.= '<h2><a href=\"#var_overview\">Variables</a></h2><ul>';
+    }
 
-        <h2><a href="#var_overview">Variables</a></h2>
-        <ul>
-{
     foreach $var (sort keys %var_modules) {
         if ( $var_modules{$var} ne $module_name ) {
             next;
@@ -167,8 +172,11 @@ $(document).ready(function() \{
 
         $OUT .= "<li><a href=\"#$var\" title=\"Documentation of $var\">$var</a></li>";
     }
+    
+    if ($module_var{$module_name} ) {
+        $OUT.='</ul>';
+    }
 }
-        </ul>
 
         <h2>Other modules</h2>
         <ul>
@@ -209,14 +217,12 @@ $(document).ready(function() \{
         }
 
         # link variables
-        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
-            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
-        }
+        $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/e;
 
         # link files with relative paths
         foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
             $module = ${file_module{$relative_file{$file}}};
-            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $fd =~ s/($file)/'<a href="'. $file_link{$file} .'">'.$1.'<\/a>'/e;
         }
         # link files of this module
         foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
@@ -224,8 +230,9 @@ $(document).ready(function() \{
             if ( $file_module{$file} ne $module_name ) {
                 next;
             }
-            $file =~ s/^.*\///;
-            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $short_file = $file;
+            $short_file =~ s/^.*\///;
+            $fd =~ s/ ($short_file)/' <a href="'.$file_link{$file} .'">'.$1.'<\/a>'/e;
         }
 
         # prepare to parse the file doc buffer
@@ -348,7 +355,7 @@ $(document).ready(function() \{
 
         $rel_file=$file_relative{$file};
 
-        $OUT .= "<a href=\"#$rel_file\" name=\"$rel_file\"></a>";
+        $OUT .= "<a name=\"$file_anchor{$file}\"></a>";
         $OUT .= "<h3>$rel_file</h3>\n";
         $OUT .= $doc;
 
@@ -378,7 +385,9 @@ $(document).ready(function() \{
     }
 }
 
-<h2><a name="var_overview">Variables overview</a></h2>
+{
+    if ($module_var{$module_name} ) {
+        $OUT .= '<h2><a name="var_overview">Variables overview</a></h2>
 
 <table>
     <thead>
@@ -390,7 +399,9 @@ $(document).ready(function() \{
             <th>Line</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody>';
+    }
+}
 {
     foreach $var (sort keys %var_modules) {
         # skip variables from other modules
@@ -413,7 +424,7 @@ $(document).ready(function() \{
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
-        $OUT .= "<a href=\"#$file_relative{$var_files{$var}}\" title=\"Documentation of $file_relative{$var_files{$var}}\">$file_relative{$var_files{$var}}</a>";
+        $OUT .= "<a href=\"$file_link{$var_files{$var}}\" title=\"Documentation of $file_relative{$var_files{$var}}\">$file_relative{$var_files{$var}}</a>";
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
@@ -423,10 +434,14 @@ $(document).ready(function() \{
         $OUT .= '</tr>';
         $OUT .= "\n";
     }
-}
-    </tbody>
-</table>
-<h2><a name="func_overview">Functions overview</a></h2>
+    
+    if ($module_var{$module_name} ) {
+        $OUT .= '</tbody>
+</table>';
+    }
+
+    if ( $module_func{$module_name} ) {
+        $OUT .= '<h2><a name="func_overview">Functions overview</a></h2>
 <table>
     <thead>
         <tr>
@@ -435,8 +450,9 @@ $(document).ready(function() \{
             <td>Line</td>
         </tr>
     </thead>
-    <tbody>
-{
+    <tbody>'
+    }
+
     foreach $func (sort keys %func_modules) {
         if ( $func_modules{$func} ne $module_name ) {
             next;
@@ -449,7 +465,7 @@ $(document).ready(function() \{
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
-        $OUT .= "<a href=\"#$file_relative{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
+        $OUT .= "<a href=\"$file_link{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
@@ -459,13 +475,16 @@ $(document).ready(function() \{
         $OUT .= '</tr>';
         $OUT .= "\n";
     }
-}
+     if ( $module_func{$module_name} ) {
+        $OUT .= '   
     </tbody>
-</table>
+</table>';
+    }
 
-<h2>Variables</h2>
+    if ( $module_var{$module_name} ) {
+        $OUT .= "<h2>Variables</h2>";
+    }
 
-{
     foreach $var (sort keys %var_modules) {
         # skip vartions from other modules
         if ( $var_modules{$var} ne $module_name ) {
@@ -475,20 +494,19 @@ $(document).ready(function() \{
         $fd = $var_doc{$var};
         
         # do basic replacements
-        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
-            $fd =~ s/([^_\$])($var)(\([^)]*\))/$1.'<a href="'.$var_link{$2}.'">'.$2.$3.'<\/a>'/e;
-            $fd =~ s/([^_\$])(yourmodule_)($var)(\([^)]*\))/$1.'<a href="'.$var_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
-            #$fd =~ s/($var)/$var_link{$1}/eg;
+        foreach $func (sort { length($func_link{$a}) cmp length($func_link{$b}) } keys %func_link) {
+            $fd =~ s/([^_\$])($func)(\([^)]*\))/$1.'<a href="'.$func_link{$2}.'">'.$2.$3.'<\/a>'/e;
+            $fd =~ s/([^_\$])(yourmodule_)($func)(\([^)]*\))/$1.'<a href="'.$func_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
+            #$fd =~ s/($func)/$func_link{$1}/eg;
         }
+
         # link variables
-        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
-            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
-        }
+        $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/e;
 
         # link files with relative paths
         foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
             $module = ${file_module{$relative_file{$file}}};
-            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $fd =~ s/($file)/'<a href="'. $file_link{$file} .'">'.$1.'<\/a>'/e;
         }
         # link files of this module
         foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
@@ -496,8 +514,9 @@ $(document).ready(function() \{
             if ( $file_module{$file} ne $module_name ) {
                 next;
             }
-            $file =~ s/^.*\///;
-            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $short_file = $file;
+            $short_file =~ s/^.*\///;
+            $fd =~ s/ ($short_file)/' <a href="'.$file_link{$file} .'">'.$1.'<\/a>'/e;
         }
         # prepare to parse the var doc buffer
         @lines = split(/\n/, $fd);
@@ -626,9 +645,9 @@ $(document).ready(function() \{
             $OUT .= "</ul>";
         }
     }
-}
 
-<h2>Functions</h2>
+    if ($module_func{$module_name} ) {
+        $OUT .= '<h2>Functions</h2>
 
 <table>
     <thead>
@@ -638,8 +657,9 @@ $(document).ready(function() \{
             <td>Line</td>
         </tr>
     </thead>
-    <tbody>
-{
+    <tbody>';
+    }
+    
     foreach $func (sort keys %func_modules) {
         if ( $func_modules{$func} ne $module_name ) {
             next;
@@ -652,7 +672,7 @@ $(document).ready(function() \{
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
-        $OUT .= "<a href=\"#$file_relative{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
+        $OUT .= "<a href=\"$file_link{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
@@ -662,11 +682,12 @@ $(document).ready(function() \{
         $OUT .= '</tr>';
         $OUT .= "\n";
     }
-}
-    </tbody>
-</table>
+    
+    if ( $module_func{$module_name} ) {
+        $OUT .= '</tbody>
+</table>';
+    }
 
-{
     foreach $func (sort keys %func_modules) {
         # skip functions from other modules
         if ( $func_modules{$func} ne $module_name ) {
@@ -682,14 +703,12 @@ $(document).ready(function() \{
             #$fd =~ s/($func)/$func_link{$1}/eg;
         }
         # link variables
-        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
-            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
-        }
+        $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/e;
 
         # link files with relative paths
         foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
             $module = ${file_module{$relative_file{$file}}};
-            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $fd =~ s/($file)/'<a href="'. $file_link{$file} .'">'.$1.'<\/a>'/e;
         }
         # link files of this module
         foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
@@ -697,9 +716,11 @@ $(document).ready(function() \{
             if ( $file_module{$file} ne $module_name ) {
                 next;
             }
-            $file =~ s/^.*\///;
-            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+            $short_file = $file;
+            $short_file =~ s/^.*\///;
+            $fd =~ s/ ($short_file)/' <a href="'.$file_link{$file} .'">'.$1.'<\/a>'/e;
         }
+
         # prepare to parse the func doc buffer
         @lines = split(/\n/, $fd);
         %tags = ();
