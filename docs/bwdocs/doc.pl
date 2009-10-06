@@ -126,13 +126,13 @@ foreach $script (keys %file_module) {
             $func_files{$current_func} = $script;
             $func_modules{$current_func} = $module;
             $func_link{$current_func} = $module . ".html#" .$current_func;
-        } elsif (/^declare -([a-zA-Z]) ([a-zA-Z0-9_-]+)=(.*)/) {
+        } elsif (/^declare -([a-zA-Z]) ([a-zA-Z0-9_-]+)(=(.*))?/) {
             $current_var=$2;
             $var_lines{$current_var} = $line;
             $var_files{$current_var} = $script;
             $var_modules{$current_var} = $module;
             $var_link{$current_var} = $module . ".html#" .$current_var;
-            $var_default{$current_var} = $3;
+            $var_default{$current_var} = $4;
             $var_doc{$current_var} = $current_doc;
             $_ = $1;
             if (/A/) {

@@ -250,9 +250,8 @@ $(document).ready(function() \{
                 next;
             }
 
-            # do * and _
+            # do *
             s/\*([^ *]+)\*/<b>$1<\/b>/g;
-            s/_([a-zA-Z0-9-]+)_/<u>$1<\/u>/g;
 
             # register the tag and skip
             if ( /@([^ ]+) +(.*)/ ) {
@@ -522,7 +521,6 @@ $(document).ready(function() \{
 
             # do * and _
             s/\*([^ *]+)\*/<b>$1<\/b>/g;
-            s/_([^ _]+)_/<u>$1<\/u>/g;
 
 
             # register the tag and skip
@@ -724,7 +722,6 @@ $(document).ready(function() \{
 
             # do * and _
             s/\*([^ *]+)\*/<b>$1<\/b>/g;
-            s/_([^ _]+)_/<u>$1<\/u>/g;
 
 
             # register the tag and skip

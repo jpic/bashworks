@@ -14,7 +14,6 @@
 # This is a multi phrase paragraph. A list of the possible work decorations
 # will be presented right now:
 # - an *emphatized* word,
-# - an _underlined_ word,
 # - This is a multilign
 #   item.
 # - This is
