@@ -1,6 +1,3 @@
-# cannot declare a global associative array in a function
-declare -A mlog_levels
-
 function mlog_source() {
     source $(module_get_path mlog)/bashinator-0.3.sh
 }
