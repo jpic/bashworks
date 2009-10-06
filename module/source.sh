@@ -1,8 +1,92 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#   Synopsis	Bash modular application framework.
-#	@Copyright	Copyright 2009, James Pic
-#	@License	Apache, unless otherwise specified by a LICENSE file.
+# @Synopsis     Bash modular application framework.
+# @Copyright    Copyright 2009, James Pic
+# @License      Apache, unless otherwise specified by a file or a comment.
+#
+# <h4>The KISS framework</h4>
+# This file is the framework. It is *all* the framework. The framework is
+# nothing else but this file. All other features, such as configuration
+# management, unit testing, documentation, logging etc ... are done in
+# separate, reuseable, consistent, simple modules.
+#
+# <h4>Framework variables</h4>
+# The role of this framework is to manage repositories of modules with the
+# following variables:
+# - $module_repo_paths is an associative array of :
+#   repo name => repo absolute path
+# - $module_paths is an associative array of:
+#   module name => module absolute path
+# - $module_status is an associative array of:
+#   module name => module status (string)
+# 
+# <h4>Definition of a module</h4>
+# A module is defined by a subdirectory of a repository with a source.sh file
+# in it. That's all a module need. The module directory name is the name of the
+# module. If hopefully it declares functions or variables then those should be
+# prefixed by the module name and an underscore for example:
+# yourmodule_somevar, yourmodule_somefunc.
+# 
+# A module may have dependencies and control of their loading is inversed,
+# which means that specifically named functions may be declared in the module
+# source.sh file if required by the module:
+# - modulename_pre_source(): prepare for sourcing dependencies,
+# - modulename_source(): load dependencies,
+# - modulename_post_source(): prepare to be useable,
+#
+# These function may also check if the system its module is being load on is
+# suitable or not, and call module_blacklist_add() otherwise. For example, if a
+# module requires a linux-vserver kernel or a BSD system.
+#
+# <h4>Inversion of control and polite functions</h4>
+# Inversion of control: the overall program's flow of control is not dictated
+# by the caller, but by the framework. This applies for the framework and
+# several modules, like conf, at a basic level, and in a polite way.
+#
+# Polite functions: Generic reuseable functions usually take a module name
+# string argument. It should let the actual module to overload what is it about
+# to process. For example, conf_save() is polite, calling `conf_save
+# yourmodule` will first check if yourmodule_conf_save() exists, and run it
+# then return 0 if it does. "Civilized coding" sucks way less than reinventing
+# OOP in Bash.
+# 
+# That said, this is the general useage example:
+#
+##  # find all modules and submodules in your repo:
+##  module_repo_add /path/to/your/repo
+##  # pre source a module:
+##  module_pre_source yourmodule # would call yourmodule_pre_source
+##  # OR pre source all modules:
+##  module_pre_source # would call yourmodule_pre_source for all modules
+##  # then source a module:
+##  module_source yourmodule # would call yourmodule_source
+##  # OR source all modules:
+##  module_source # would call yourmodule_call for all modules
+##  # then post source a module:
+##  module_post_source yourmodule # would call yourmodule_post_source
+##  # OR post source all modules:
+##  module_post_source # would call yourmodule_post_source for all modules
+# 
+# Or, run all at once:
+#
+##  module yourmodule # will do the pre_source, source and post_source
+##  module # same, with all modules
+#
+# <h4>Module status</h4>
+#
+# A module status corresponds to the last thing that was done with it, for
+# instance either of the following values:
+# - *found*: the module source.sh file was found:
+#   it is ready to source,
+# - *source*: the module source.sh file was sourced:
+#   it is ready to _pre_source(),
+# - *pre_source()*: the module _pre_source() function was called:
+#   it is ready to _source(),
+# - *source()*: the module _source() function was called:
+#   it is ready to _post_source(),
+# - *post_source()*: the module _post_source() function was called:
+#   it is ready to use,
+# - *blacklist*: the module was blacklisted with module_blacklist_add(),
 #
 # The role of module.sh is to traverse application repository directories
 # and try to load modules. Loading a module consist of:
@@ -29,28 +113,67 @@
 # Check bash version. We need at least 4.0.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
+#if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 	echo "Sorry your bash version is too old!"
 	echo "You need at least version 3.2 of bash"
 	echo "Please install a newer version:"
 	echo " * Either use your distro's packages"
 	echo " * Or see http://www.gnu.org/software/bash/"
-	return 2
-fi
+#	return 2
+#fi
 
 # string repo name => string repo absolute path
 declare -A module_repo_paths
 # string module name => string module absolute path
 declare -A module_paths
-# list of module names
-declare -a module_blacklist
+# list of loaded modules
+declare -A module_status
 
-# Passes its arguments to module_pre_source().
-# @call module_pre_source(), module_source(), module_post_source()
+# (Re)-loads one or several modules.
+# Keep in mind that module_source() is reponsible for calling
+# yourmodule_pre_source() so for example:
+##  module hack # will load the hack module
+# @param module names separated by spaces
 function module() {
     module_pre_source $*
-    module_source
-    module_post_source
+    module_source $*
+    module_post_source $*
+}
+
+# Load a module if not loaded.
+# If this was called during a _pre_source or _source() function then it will
+# add the module name to the load queue for later loading by
+# module_load_queue().
+# @param module names separated by spaces
+function module_require() {
+    for module_name in $*; do
+        case ${module_status[$module_name]} in
+            loaded)
+                continue
+                ;;
+            blacklist)
+                mlog error "Required module $module_name is blacklisted"
+                return 2
+                ;;
+            *) # found, queued, but not loaded
+                module_status[$module_name]="queued"
+                ;;
+        esac
+    done
+
+    if [[ ${FUNCNAME[@]} =~ _post_source ]] || [[ ! ${FUNCNAME[@]} =~ _source ]]; then
+        module_queue_load
+    fi
+}
+
+# Calls module() for each module with status "queued".
+# @call module()
+function module_queue_flush() {
+    for module_name in ${!module_status[@]}; do
+        if [[ ${module_status[$module_name]} == "queued" ]]; then
+            module $module_name
+        fi
+    done
 }
 
 # This function finds all modules and nested submodules in a given path and
@@ -109,6 +232,8 @@ function module_pre_source() {
             if [[ ! "${!module_paths[@]}" =~ ^$module_name$ ]]; then
                 module_paths["$module_name"]="$module_path"
             fi
+
+            module_status[$module_name]="found"
         
         done
 
@@ -147,7 +272,7 @@ function module_source() {
         module_source_function="${module_name}_source"
 
         # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
+        if [[ -n $(module_blacklist_check $module_name) ]]; then
             continue
         fi
 
@@ -155,22 +280,22 @@ function module_source() {
         source $module_source_path || echo "Could not source $module_source_path $module_name"
         
         # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
+        if [[ -n $(module_blacklist_check $module_name) ]]; then
             continue
         fi
         
         # run module pre_source function if it is declared
-        if [[ $(declare -f $module_pre_source_function) ]]; then
+        if [[ -n $(declare -f $module_pre_source_function) ]]; then
             $module_pre_source_function
         fi
         
         # blacklist check
-        if [[ $(module_blacklist_check $module_name) ]]; then
+        if [[ -n $(module_blacklist_check $module_name) ]]; then
             continue
         fi
         
         # run module source function if it is declared
-        if [[ $(declare -f $module_source_function) ]]; then
+        if [[ -n $(declare -f $module_source_function) ]]; then
             $module_source_function
         fi
     done
@@ -205,6 +330,8 @@ function module_post_source() {
         fi
 
         module_blacklist_check_unset $module_name
+
+        module_status[$module_name]="loaded"
     done
 }
 
@@ -214,7 +341,7 @@ function module_blacklist_check_unset() {
     local module_name="$1"
     
     # blacklist check
-    if [[ $(module_blacklist_check $module_name) ]]; then
+    if [[ -n $(module_blacklist_check $module_name) ]]; then
         # i won't unset myself
         if [[ "$module_name" != "module" ]]; then
             module_unset $to_unset
@@ -229,7 +356,7 @@ function module_unset() {
 
     # polite module snippet
     local module_overload="${module_name}_unset"
-    if [[ $(declare -f $module_overload) ]]; then
+    if [[ -n $(declare -f $module_overload) ]]; then
         if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
             $module_overload
             return $?
@@ -262,12 +389,10 @@ function module_unset() {
 #   fi
 # @param   Module name
 function module_blacklist_check() {
-    for module_name in $module_blacklist; do
-        if [[ $module_name == $1 ]]; then
-            echo "Yes"
-            return 0
-        fi
-    done
+    if [[ ${module_status[$1]}="blacklist" ]]; then
+        echo "Yes"
+        return 0
+    fi
 
     return 1
 }
@@ -283,12 +408,7 @@ function module_blacklist_check() {
 # @param    Module name
 # @polite   Will try to call yourmodule_unset()
 function module_blacklist_add() {
-    for module_name in $module_blacklist; do
-        if [[ $module_name == $1 ]]; then
-            return 0
-        fi
-    done
-    module_blacklist+=("$1")
+    module_status[$1]="blacklist"
 }
 
 # This function takes a module name as first parameter and outputs its
