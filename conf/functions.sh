@@ -9,13 +9,13 @@
 # versions because the features that could be added are:
 # - array support in configurations,
 # - better (hidden) password prompt support,
-# - the user interface could use multiple frontends.
+# - the user interface could use multiple frontends,
 # Note that <a href="http://code.google.com/p/shesfw/">shesfw</a> is open
 # source and has an (unfinished) user interface API with several backends
-# which could be useable for example with new generation browsers like
-# <a href="http://uzbl.org">uzbl</a>,
-# <a href="http://vimpression.org">vimpression</a>,
-# <a href="http://surf.suckless.org">surf</a>
+# which could be useable for example with new generation browsers like:
+# - <a href="http://uzbl.org">uzbl</a>,
+# - <a href="http://vimpression.org">vimpression</a>,
+# - <a href="http://surf.suckless.org">surf</a>
 
 # Saves given variables in the given configuration file.
 # This function uses sed to update variables in the configuration file if

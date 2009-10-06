@@ -6,7 +6,8 @@
 # The highest level function is conf which runs all functions declared in
 # this file at some point. It makes configuring a module easy for the user,
 # who has to type in bash:
-# # conf yourmodule
+#   # this will run the interactive module configurator
+#   conf yourmodule
 # Medium level functions are conf_save(), conf_load() and
 # conf_interactive() which only encapsulate the actual conf functions which
 # are declared in functions.sh.
