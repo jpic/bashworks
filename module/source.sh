@@ -95,7 +95,11 @@ function module_pre_source() {
             path="${path:0:$len}"
         fi
 
-        path="$(readlink -f $path)"
+        if echo $OSTYPE | grep -q -o bsd; then
+            path="$(realpath $path)"
+        else
+            path="$(readlink -f $path)"
+        fi
 
         for module_path in `find $path -name source.sh -exec dirname {} \;`; do
             relative_path="${module_path#*$path/}"
