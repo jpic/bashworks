@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
-#	@Synopsis	Bash modular application framework.
+#   Synopsis	Bash modular application framework.
 #	@Copyright	Copyright 2009, James Pic
 #	@License	Apache, unless otherwise specified by a LICENSE file.
 #
@@ -26,7 +26,7 @@
 # Submodules are simply subdirectories of modules which contain source.sh. See
 # module_pre_source() for more info.
 
-# Check bash version. We need at least 4.0.x {{{
+# Check bash version. We need at least 4.0.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
 if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
@@ -37,7 +37,7 @@ if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
 	echo " * Or see http://www.gnu.org/software/bash/"
 	return 2
 fi
-# }}}
+
 # string repo name => string repo absolute path
 declare -A module_repo_paths
 # string module name => string module absolute path
@@ -117,23 +117,31 @@ function module_pre_source() {
     done
 }
 
-# Source, run _pre_source() and _source() for each modules, uses blacklist.
-# This function loops over the $module_paths associative array and using the
-# module name (array key) and module path (array value), it does the
-# following for each module:
+# Source, run _pre_source() and _source() for each modules. Module names can be
+# passed as parameters, or all modules that where found will be used. This
+# function cares about the possible blacklisting modules.
+# It does the following for each module:
 # - check blacklist
 # - source source.sh
 # - check blacklist
 # - call _pre_source() function if it is declared
 # - check blacklist
 # - call _source() function if it is declared
-# @calls   module_blacklist_check
+# @param    optionnal list of modules, separated by space
+# @calls    module_blacklist_check
 function module_source() {
+    local -a module_names=()
     local module_name=""
     local module_source_path=""
     local module_source=""
 
-    for module_name in ${!module_paths[@]}; do
+    if [[ -n $1 ]]; then
+        module_names=$*
+    else
+        module_names=${!module_paths[@]}
+    fi
+
+    for module_name in ${module_names[@]}; do
         module_source_path="$(module_get_path $module_name)/source.sh"
         module_pre_source_function="${module_name}_pre_source"
         module_source_function="${module_name}_source"
@@ -168,16 +176,24 @@ function module_source() {
     done
 }
 
-# Run _post_source() function for each module.
-# This function loops over the $module_paths associative array and using the
-# module name (array key) and module path (array value), it does the
-# following for each module:
+# Run _post_source() function for each selected module. Module names should be
+# passed as parameter, separated by space. All found and non blacklisted
+# modules are selected if no parameter is passed.
+# It does following for each module:
 # - check blacklist
-# - unset any function or variable starting with blacklist module prefix
+# - unset any function or variable starting with blacklist module prefix,
 # - call _post_source() function if it is declared.
-# @calls   module_blacklist_check(), module_unset()
+# @param   optionnal list of modules, separated by space
+# @calls   module_blacklist_check(), module_blacklist_check_unset()
 function module_post_source() {    
     local module_post_source_function=""
+    local module_names=$*
+
+    if [[ -n $1 ]]; then
+        module_names=$*
+    else
+        module_names=${!module_paths[@]}
+    fi
 
     for module_name in ${!module_paths[@]}; do
         
@@ -207,6 +223,7 @@ function module_blacklist_check_unset() {
 }
 
 # Will unset anything starting with a given module prefix.
+# @polite   Will try to run yourmodule_unset().
 function module_unset() {
     local module_name="$1"
 
