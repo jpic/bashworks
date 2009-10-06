@@ -32,7 +32,7 @@ li.selected \{
     padding: 0; margin: 15px 0 5px;
 \}   
 #sidenav ul \{
-    margin: 0; padding: 0 20px 30px 20px;
+    margin: 0; padding: 0 20px 0px 20px;
     list-style: none;
     background: url(sidenav_hr.gif) no-repeat right bottom;
 \}
@@ -51,18 +51,39 @@ li.selected \{
     color: #999;
 \}
 
-
+h1 a, h2 a, h3 a, h4 a \{
+    text-decoration: none;
+    color: #333;
+\}
 
 #content \{
     float: right;
     width: 640px;
     padding: 0 20px 20px;
 \}
-#content h2 \{
+h2 a \{
+    color: #7f0708; \}
+h2 \{ 
     color: #7f0708;
-    margin: 10px 0;  padding: 10px 0;
     font-size: 2em;
+\}
+#content h2 \{
+    margin: 6px 0;  padding: 6px 0;
     font-weight: normal;
+\}
+h3 \{
+    font-size: 1.5em;
+    font-weight: bold;
+\}
+#content h3 \{
+    margin: 6px 0;  padding: 6px 0;
+\}
+h4 \{
+    font-size: 1em;
+    font-weight: bold;
+\}
+#content h4 \{
+    margin: 6px 0;  padding: 6px 0;
 \}
 #content p \{
     line-height: 1.8em;
@@ -106,8 +127,24 @@ $(document).ready(function() \{
 <body>
 
 <div class="container">
+
+
     <div id="sidenav">
-        <h2>{$module_name} functions</h2>
+        <h2><a href="#files">Files</a></h2>
+        <ul>
+{
+    foreach $file (sort keys %file_module) {
+        if ( $file_module{$file} ne $module_name ) {
+            next;
+        }
+
+        $rel_file=$file_relative{$file};
+        $OUT .= "<li><a href=\"#$rel_file\" title=\"Documentation of $rel_file\">$rel_file</a></li>";
+    }
+}
+        </ul>
+
+        <h2><a href="#func_overview">Functions</a></h2>
         <ul>
 {
     foreach $func (sort keys %func_modules) {
@@ -116,6 +153,19 @@ $(document).ready(function() \{
         }
 
         $OUT .= "<li><a href=\"#$func\" title=\"Documentation of $func\">$func</a></li>";
+    }
+}
+        </ul>
+
+        <h2><a href="#var_overview">Variables</a></h2>
+        <ul>
+{
+    foreach $var (sort keys %var_modules) {
+        if ( $var_modules{$var} ne $module_name ) {
+            next;
+        }
+
+        $OUT .= "<li><a href=\"#$var\" title=\"Documentation of $var\">$var</a></li>";
     }
 }
         </ul>
@@ -138,7 +188,7 @@ $(document).ready(function() \{
     <div id="content">
         <h1>{$module_name} documentation</h1>
 
-        <h2>Files</h2>
+        <h2><a name="files">Files</a></h2>
 
 {
     # loop over all files
@@ -157,7 +207,27 @@ $(document).ready(function() \{
             $fd =~ s/([^_\$])($func)(\([^)]*\))/$1.'<a href="'.$func_link{$2}.'">'.$2.$3.'<\/a>'/e;
             $fd =~ s/([^_\$])(yourmodule_)($func)(\([^)]*\))/$1.'<a href="'.$func_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
         }
-        
+
+        # link variables
+        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
+            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
+        }
+
+        # link files with relative paths
+        foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
+            $module = ${file_module{$relative_file{$file}}};
+            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+        # link files of this module
+        foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
+            # skip over files not in this module
+            if ( $file_module{$file} ne $module_name ) {
+                next;
+            }
+            $file =~ s/^.*\///;
+            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+
         # prepare to parse the file doc buffer
         @lines = split(/\n/, $fd);
         %tags = ();
@@ -181,8 +251,8 @@ $(document).ready(function() \{
             }
 
             # do * and _
-            s/\*([^*]+)\*/<b>$1<\/b>/g;
-            s/_([^_]+)_/<u>$1<\/u>/g;
+            s/\*([^ *]+)\*/<b>$1<\/b>/g;
+            s/_([a-zA-Z0-9-]+)_/<u>$1<\/u>/g;
 
             # register the tag and skip
             if ( /@([^ ]+) +(.*)/ ) {
@@ -309,8 +379,55 @@ $(document).ready(function() \{
     }
 }
 
-<h2>Functions</h2>
+<h2><a name="var_overview">Variables overview</a></h2>
 
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>File</th>
+            <th>Line</th>
+        </tr>
+    </thead>
+    <tbody>
+{
+    foreach $var (sort keys %var_modules) {
+        # skip variables from other modules
+        if ($var_modules{$var} ne $module_name) {
+            next;
+        }
+
+        $OUT .= '<tr>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "<a href=\"#$var\" title=\"Documentation of $var\">$var</a>";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "$var_type{$var}";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "$var_default{$var}";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "<a href=\"#$file_relative{$var_files{$var}}\" title=\"Documentation of $file_relative{$var_files{$var}}\">$file_relative{$var_files{$var}}</a>";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "$var_lines{$var}";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '</tr>';
+        $OUT .= "\n";
+    }
+}
+    </tbody>
+</table>
+<h2><a name="func_overview">Functions overview</a></h2>
 <table>
     <thead>
         <tr>
@@ -333,7 +450,7 @@ $(document).ready(function() \{
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
-        $OUT .= $file_relative{$func_files{$func}};
+        $OUT .= "<a href=\"#$file_relative{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
         $OUT .= '</td>';
         $OUT .= "\n";
         $OUT .= '<td>';
@@ -347,20 +464,43 @@ $(document).ready(function() \{
     </tbody>
 </table>
 
+<h2>Variables</h2>
+
 {
-    foreach $func (sort keys %func_modules) {
-        if ( $func_modules{$func} ne $module_name ) {
+    foreach $var (sort keys %var_modules) {
+        # skip vartions from other modules
+        if ( $var_modules{$var} ne $module_name ) {
             next;
         }
         
-        $fd = $func_doc{$func};
-        foreach $func (sort { length($func_link{$a}) cmp length($func_link{$b}) } keys %func_link) {
-            $fd =~ s/([^_\$])($func)(\([^)]*\))/$1.'<a href="'.$func_link{$2}.'">'.$2.$3.'<\/a>'/e;
-            $fd =~ s/([^_\$])(yourmodule_)($func)(\([^)]*\))/$1.'<a href="'.$func_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
-            #$fd =~ s/($func)/$func_link{$1}/eg;
+        $fd = $var_doc{$var};
+        
+        # do basic replacements
+        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
+            $fd =~ s/([^_\$])($var)(\([^)]*\))/$1.'<a href="'.$var_link{$2}.'">'.$2.$3.'<\/a>'/e;
+            $fd =~ s/([^_\$])(yourmodule_)($var)(\([^)]*\))/$1.'<a href="'.$var_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
+            #$fd =~ s/($var)/$var_link{$1}/eg;
+        }
+        # link variables
+        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
+            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
         }
 
-        # prepare to parse the func doc buffer
+        # link files with relative paths
+        foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
+            $module = ${file_module{$relative_file{$file}}};
+            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+        # link files of this module
+        foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
+            # skip over files not in this module
+            if ( $file_module{$file} ne $module_name ) {
+                next;
+            }
+            $file =~ s/^.*\///;
+            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+        # prepare to parse the var doc buffer
         @lines = split(/\n/, $fd);
         %tags = ();
         undef %buffer;
@@ -379,6 +519,11 @@ $(document).ready(function() \{
             if ( /-\*- coding/ ) {
                 next;
             }
+
+            # do * and _
+            s/\*([^ *]+)\*/<b>$1<\/b>/g;
+            s/_([^ _]+)_/<u>$1<\/u>/g;
+
 
             # register the tag and skip
             if ( /@([^ ]+) +(.*)/ ) {
@@ -471,8 +616,210 @@ $(document).ready(function() \{
             if ( $tpldebug ) {
                 print "\nClosing: $to_close\n";
             }
-        }        $OUT .= "<a href=\"#$func\" name=\"$func\"></a>";
-        $OUT .= "<h3>$func()</h3>\n";
+        }
+        $OUT .= "<h3><a href=\"#$var\" name=\"$var\">\$$var</a></h3>\n";
+        $OUT .= $doc;
+
+        foreach $tag (keys %tags) {
+            $OUT .= "<h4>" . ucfirst($tag). "</h4><ul>";
+            foreach $reason ( @{$tags{$tag}} ) {
+                $OUT .= "<li>" . ucfirst($reason) . "</li>";
+            }
+            $OUT .= "</ul>";
+        }
+    }
+}
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+{
+    foreach $func (sort keys %func_modules) {
+        if ( $func_modules{$func} ne $module_name ) {
+            next;
+        }
+
+        $OUT .= '<tr>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "<a href=\"#$func\" title=\"Documentation of $func\">$func</a>";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= "<a href=\"#$file_relative{$func_files{$func}}\" title=\"Documentation of $file_relative{$func_files{$func}}\">$file_relative{$func_files{$func}}</a>";
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '<td>';
+        $OUT .= $func_lines{$func};
+        $OUT .= '</td>';
+        $OUT .= "\n";
+        $OUT .= '</tr>';
+        $OUT .= "\n";
+    }
+}
+    </tbody>
+</table>
+
+{
+    foreach $func (sort keys %func_modules) {
+        # skip functions from other modules
+        if ( $func_modules{$func} ne $module_name ) {
+            next;
+        }
+        
+        $fd = $func_doc{$func};
+        
+        # do basic replacements
+        foreach $func (sort { length($func_link{$a}) cmp length($func_link{$b}) } keys %func_link) {
+            $fd =~ s/([^_\$])($func)(\([^)]*\))/$1.'<a href="'.$func_link{$2}.'">'.$2.$3.'<\/a>'/e;
+            $fd =~ s/([^_\$])(yourmodule_)($func)(\([^)]*\))/$1.'<a href="'.$func_link{$3}.'">'.$2.$3.$4.'<\/a>'/e;
+            #$fd =~ s/($func)/$func_link{$1}/eg;
+        }
+        # link variables
+        foreach $var (sort { length($var_link{$a}) cmp length($var_link{$b}) } keys %var_link) {
+            $fd =~ s/\$([a-zA-Z0-9_-]+)/'<a href="'.$var_link{$1}.'">$'.$1.'<\/a>'/eg;
+        }
+
+        # link files with relative paths
+        foreach $file (sort { length($relative_file{$a}) cmp length($relative_file{$b}) } keys %relative_file) {
+            $module = ${file_module{$relative_file{$file}}};
+            $fd =~ s/($file)/'<a href="'.$module.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+        # link files of this module
+        foreach $file (sort { length($file_relative{$a}) cmp length($file_relative{$b}) } keys %file_relative) {
+            # skip over files not in this module
+            if ( $file_module{$file} ne $module_name ) {
+                next;
+            }
+            $file =~ s/^.*\///;
+            $fd =~ s/ ($file)/' <a href="'.$module_name.'.html#'.$1.'">'.$1.'<\/a>'/e;
+        }
+        # prepare to parse the func doc buffer
+        @lines = split(/\n/, $fd);
+        %tags = ();
+        undef %buffer;
+        %buffer = {};
+        $to_open="";
+        $to_close="";
+        $doc = "";
+
+        # loop over lines in the file doc buffer
+        foreach (@lines) {
+
+            # remove the first dash
+            s/^#//;
+
+            # skip editor tags
+            if ( /-\*- coding/ ) {
+                next;
+            }
+
+            # do * and _
+            s/\*([^ *]+)\*/<b>$1<\/b>/g;
+            s/_([^ _]+)_/<u>$1<\/u>/g;
+
+
+            # register the tag and skip
+            if ( /@([^ ]+) +(.*)/ ) {
+                push @{$tags{$1}}, $2;
+                next;
+            }
+
+            # aliment %buffer{pre}
+            # set $to_open = pre
+            elsif ( /^#(.*)$/ ) {
+                push @{$buffer{"pre"}}, $1;
+                $to_open="pre";
+            }
+
+            # aliment %buffer{ul}
+            # set $to_open = ul
+            elsif ( /^ - (.*)$/ || /^   (.*)$/) {
+                if ( /^   (.*)$/ ) {
+                    my $append = $1;
+                    $_ = pop @{$buffer{"ul"}};
+                    s/^<li>(.*)<\/li>$/$1/;
+                    push @{$buffer{"ul"}}, "<li>$_ $append</li>";
+                } else {
+                    push @{$buffer{"ul"}}, "<li>$1</li>";
+                }
+                $to_open="ul";
+            }
+
+            # aliment %buffer{p} by default
+            # set $to_open = p
+            else {
+                push @{$buffer{"p"}}, $_;
+                $to_open="p";
+            }
+
+            # if $to_open is not $to_close
+            if ( $to_open !~ /^($to_close)$/ && $to_close ne "") {
+                # do the current tag
+                if ( $tpldebug ) {
+                    print "$to_open should be openned, doing $to_close with \n";
+                }
+                
+                $doc .= "<$to_close>";
+                
+                while(@{$buffer{$to_close}}) {
+                    $_ = shift @{$buffer{$to_close}};
+                    $doc .= $_;
+
+                    if ($tpldebug) {
+                        print "$_";
+                    }
+                }
+                
+                $doc .= "</$to_close>";
+
+                if ( $tpldebug ) {
+                    print "\nClosing: $to_close\n";
+                }
+            }
+
+            # set $to_close to $to_open
+            $to_close = $to_open;
+        }
+
+
+        # do the current tag if it was not done
+        if (@{$buffer{$to_close}}) {
+            if ($tpldebug) {
+                print "$to_close was left to do\n";
+            }
+
+            # do the current tag
+            if ( $tpldebug ) {
+                print "$to_open should be openned, doing $to_close with \n";
+            }
+            
+            $doc .= "<$to_close>";
+            
+            while(@{$buffer{$to_close}}) {
+                $_ = shift @{$buffer{$to_close}};
+                $doc .= $_;
+
+                if ($tpldebug) {
+                    print "$_";
+                }
+            }
+            
+            $doc .= "</$to_close>";
+
+            if ( $tpldebug ) {
+                print "\nClosing: $to_close\n";
+            }
+        }
+        $OUT .= "<h3><a href=\"#$func\" name=\"$func\">$func()</a></h3>\n";
         $OUT .= $doc;
 
         foreach $tag (keys %tags) {

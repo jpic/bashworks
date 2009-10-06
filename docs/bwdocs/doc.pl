@@ -20,11 +20,19 @@ my %module_paths = ();
 my %file_module = ();
 my %file_doc = ();
 my %file_relative = ();
+my %relative_file = ();
 my %func_lines = ();
 my %func_files = ();
 my %func_modules = ();
 my %func_doc = ();
 my %func_link = ();
+my %var_lines = ();
+my %var_files = ();
+my %var_modules = ();
+my %var_doc = ();
+my %var_link = ();
+my %var_type = ();
+my %var_default = ();
 
 foreach $argnum (0 .. $#ARGV) {
     # find modules and submodules
@@ -76,8 +84,8 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
         $_ = $absolute;
         s/^.*($module_rel)/$module_rel/;
         $file_relative{$absolute} = $_;
+        $relative_file{$_} = $absolute;
 
-    
         if ( $debug ) {
             print "  absolute path: $absolute\n  relative path: $_\n";
         }
@@ -118,6 +126,44 @@ foreach $script (keys %file_module) {
             $func_files{$current_func} = $script;
             $func_modules{$current_func} = $module;
             $func_link{$current_func} = $module . ".html#" .$current_func;
+        } elsif (/^declare -([a-zA-Z]) ([a-zA-Z0-9_-]+)=(.*)/) {
+            $current_var=$2;
+            $var_lines{$current_var} = $line;
+            $var_files{$current_var} = $script;
+            $var_modules{$current_var} = $module;
+            $var_link{$current_var} = $module . ".html#" .$current_var;
+            $var_default{$current_var} = $3;
+            $var_doc{$current_var} = $current_doc;
+            $_ = $1;
+            if (/A/) {
+                $var_type{$current_var} = "Associative array";
+            } elsif (/a/) {
+                $var_type{$current_var} = "Array";
+            } elsif (/i/) {
+                $var_type{$current_var} = "Integer";
+            } else {
+                $var_type{$current_var} = "?";
+            }
+            $current_doc = "";
+        } elsif (/^(declare )?([a-zA-Z0-9_-]+)=(.*)/) {
+            $current_var=$2;
+            $var_lines{$current_var} = $line;
+            $var_files{$current_var} = $script;
+            $var_modules{$current_var} = $module;
+            $var_link{$current_var} = $module . ".html#" .$current_var;
+            $var_default{$current_var} = $3;
+            $var_doc{$current_var} = $current_doc;
+            $_ = $3;
+            if (/[0-9]+/) {
+                $var_type{$current_var} = "Integer";
+            } elsif (/^\(/) {
+                $var_type{$current_var} = "Array (Associative?)";
+            } elsif (/^"/) {
+                $var_type{$current_var} = "String";
+            } else {
+                $var_type{$current_var} = "?";
+            }
+            $current_doc = "";
         } elsif (/mlog ([^ ]+) ['"]([^'"]+)['"]/) {
             $current_doc .= "# \@log $1 $2\n"
         } elsif (/^}/) {
@@ -159,11 +205,19 @@ for $module ( keys %module_paths ) {
         "file_module" => \%file_module,
         "file_doc" => \%file_doc,
         "file_relative" => \%file_relative,
+        "relative_file" => \%relative_file,
         "func_lines" => \%func_lines,
         "func_link" => \%func_link,
         "func_files" => \%func_files,
         "func_modules" => \%func_modules,
         "func_doc" => \%func_doc,
+        "var_lines" => \%var_lines,
+        "var_link" => \%var_link,
+        "var_files" => \%var_files,
+        "var_modules" => \%var_modules,
+        "var_doc" => \%var_doc,
+        "var_type" => \%var_type,
+        "var_default" => \%var_default,
     });
 
     open MODULE_TEMPLATE, "> $out_dir/$module.html" or print "Could not open $out_dir/$module.html";

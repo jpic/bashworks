@@ -32,7 +32,7 @@ li.selected {
     padding: 0; margin: 15px 0 5px;
 }   
 #sidenav ul {
-    margin: 0; padding: 0 20px 30px 20px;
+    margin: 0; padding: 0 20px 0px 20px;
     list-style: none;
     background: url(sidenav_hr.gif) no-repeat right bottom;
 }
@@ -51,18 +51,39 @@ li.selected {
     color: #999;
 }
 
-
+h1 a, h2 a, h3 a, h4 a {
+    text-decoration: none;
+    color: #333;
+}
 
 #content {
     float: right;
     width: 640px;
     padding: 0 20px 20px;
 }
-#content h2 {
+h2 a {
+    color: #7f0708; }
+h2 { 
     color: #7f0708;
-    margin: 10px 0;  padding: 10px 0;
     font-size: 2em;
+}
+#content h2 {
+    margin: 6px 0;  padding: 6px 0;
     font-weight: normal;
+}
+h3 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+#content h3 {
+    margin: 6px 0;  padding: 6px 0;
+}
+h4 {
+    font-size: 1em;
+    font-weight: bold;
+}
+#content h4 {
+    margin: 6px 0;  padding: 6px 0;
 }
 #content p {
     line-height: 1.8em;
@@ -106,30 +127,118 @@ $(document).ready(function() {
 <body>
 
 <div class="container">
+
+
     <div id="sidenav">
-        <h2>example functions</h2>
+        <h2><a href="#files">Files</a></h2>
+        <ul>
+<li><a href="#example/other_source.sh" title="Documentation of example/other_source.sh">example/other_source.sh</a></li><li><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></li>
+        </ul>
+
+        <h2><a href="#func_overview">Functions</a></h2>
         <ul>
 <li><a href="#foofunc" title="Documentation of foofunc">foofunc</a></li><li><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></li>
         </ul>
 
+        <h2><a href="#var_overview">Variables</a></h2>
+        <ul>
+<li><a href="#bar" title="Documentation of bar">bar</a></li><li><a href="#foo" title="Documentation of foo">foo</a></li><li><a href="#foobar" title="Documentation of foobar">foobar</a></li><li><a href="#typedbar" title="Documentation of typedbar">typedbar</a></li>
+        </ul>
+
         <h2>Other modules</h2>
         <ul>
-<li class="selected"><a href="example.html" title="Documentation of example">example</a></li>
+<li class="selected"><a href="example.html" title="Documentation of example">example</a></li><li class=""><a href="foomodule.html" title="Documentation of foomodule">foomodule</a></li>
         </ul>
     </div>
 
     <div id="content">
         <h1>example documentation</h1>
 
-        <h2>Files</h2>
+        <h2><a name="files">Files</a></h2>
 
 <a href="#example/other_source.sh" name="example/other_source.sh"></a><h3>example/other_source.sh</h3>
-<p> This file only exists for testing.</p><ul><li>This is a multilign item.</li><li>This is another multilign item.</li></ul><a href="#example/source.sh" name="example/source.sh"></a><h3>example/source.sh</h3>
+<p> This file only exists for testing.</p><a href="#example/source.sh" name="example/source.sh"></a><h3>example/source.sh</h3>
 <p> This is a paragraph with code after it:</p><pre># this is a code comment
 this is code
-</pre><p> To use 80 char wide terminals multi lign paragraphs are supported. Look at this list:</p><ul><li>this is a list item</li><li>this is a list item with a function link <a href="example.html#foofunc">foofunc()</a></li></ul><p> This is a multi phrase paragraph. A list of the possible work decorations will be presented right now:</p><ul><li>an <b>emphatized</b> word,</li><li>an <u>underlined</u> word,</li></ul>
+</pre><p> To use 80 char wide terminals multi lign paragraphs are supported. Look at this list:</p><ul><li>this is a list item</li><li>this is a list item with a function link <a href="example.html#foofunc">foofunc()</a></li></ul><p> References to functions like foofunc() require at least the ( suffix. This is a multi phrase paragraph. A list of the possible work decorations will be presented right now:</p><ul><li>an <b>emphatized</b> word,</li><li>an <u>underlined</u> word,</li><li>This is a multilign item.</li><li>This is another multilign item.</li></ul><p> Link to another another file like example.sh or from another module like <a href="foomodule.html#foomodule/source.sh">foomodule/source.sh</a> or <a href="example.html#other_source.sh">other_source.sh</a> Reference to the <a href="example.html#foo"><a href="example.html#foo"><a href="example.html#foo"><a href="example.html#foo">$foo</a></a></a></a>, <a href="example.html#foobar"><a href="example.html#foobar"><a href="example.html#foobar"><a href="example.html#foobar">$foobar</a></a></a></a> and <a href="example.html#bar"><a href="example.html#bar"><a href="example.html#bar"><a href="example.html#bar">$bar</a></a></a></a> variables need the dollar prefix.</p><h4>Author</h4><ul><li>Some custom author</li></ul><h4>License</h4><ul><li>Some custom license</li></ul><h4>Something</h4><ul><li>Whatever</li></ul>
 
 
+
+<h2><a name="var_overview">Variables overview</a></h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>File</th>
+            <th>Line</th>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#bar" title="Documentation of bar">bar</a></td>
+<td>String</td>
+<td>"foo"</td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>34</td>
+</tr>
+<tr>
+<td><a href="#foo" title="Documentation of foo">foo</a></td>
+<td>Array</td>
+<td>("bar")</td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>28</td>
+</tr>
+<tr>
+<td><a href="#foobar" title="Documentation of foobar">foobar</a></td>
+<td>String</td>
+<td>"test"</td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>31</td>
+</tr>
+<tr>
+<td><a href="#typedbar" title="Documentation of typedbar">typedbar</a></td>
+<td>?</td>
+<td>$(echo foo)</td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>38</td>
+</tr>
+
+    </tbody>
+</table>
+<h2><a name="func_overview">Functions overview</a></h2>
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#foofunc" title="Documentation of foofunc">foofunc</a></td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>44</td>
+</tr>
+<tr>
+<td><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></td>
+<td><a href="#example/other_source.sh" title="Documentation of example/other_source.sh">example/other_source.sh</a></td>
+<td>6</td>
+</tr>
+
+    </tbody>
+</table>
+
+<h2>Variables</h2>
+
+<h3><a href="#bar" name="bar">$bar</a></h3>
+<p> bar variable block</p><h3><a href="#foo" name="foo">$foo</a></h3>
+<p> This is a typed variable comment block</p><h3><a href="#foobar" name="foobar">$foobar</a></h3>
+<p> Other example, foobar</p><h3><a href="#typedbar" name="typedbar">$typedbar</a></h3>
+<p> bar variable block</p><h4>Type</h4><ul><li>String</li></ul>
 
 <h2>Functions</h2>
 
@@ -144,20 +253,20 @@ this is code
     <tbody>
 <tr>
 <td><a href="#foofunc" title="Documentation of foofunc">foofunc</a></td>
-<td>example/source.sh</td>
-<td>16</td>
+<td><a href="#example/source.sh" title="Documentation of example/source.sh">example/source.sh</a></td>
+<td>44</td>
 </tr>
 <tr>
 <td><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></td>
-<td>example/other_source.sh</td>
-<td>11</td>
+<td><a href="#example/other_source.sh" title="Documentation of example/other_source.sh">example/other_source.sh</a></td>
+<td>6</td>
 </tr>
 
     </tbody>
 </table>
 
-<a href="#foofunc" name="foofunc"></a><h3>foofunc()</h3>
-<p> this is a function level comment block</p><a href="#foofunc2" name="foofunc2"></a><h3>foofunc2()</h3>
+<h3><a href="#foofunc" name="foofunc">foofunc()</a></h3>
+<p> this is a function level comment block</p><h4>Custom</h4><ul><li>A custom tag</li></ul><h4>Log</h4><ul><li>Something may be logged</li><li>Info This string should be used for the automagic @log tag</li></ul><h4>See</h4><ul><li>See how an @log tag reversed the call to mlog()?</li></ul><h3><a href="#foofunc2" name="foofunc2">foofunc2()</a></h3>
 <p> this is a function level comment block for <a href="example.html#foofunc2">foofunc2()</a></p>
     </div>
 </div>
