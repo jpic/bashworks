@@ -94,7 +94,7 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
         $relative = $_;
         $file_relative{$absolute} = $relative;
         $relative_file{$relative} = $absolute;
-        s/\//_/;
+        s/\//_/g;
         $file_anchor{$absolute} = $_;
         $file_link{$absolute} = $module . ".html#" . $file_anchor{$absolute};
         $module_file{$module} = $absolute;

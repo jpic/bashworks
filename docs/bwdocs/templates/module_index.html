@@ -11,6 +11,7 @@ body \{
     font: normal 10px Verdana, Arial, Helvetica, sans-serif;
     color: #444;
 \}
+#module_index \{ display:none; \}
 .container \{width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;\}
 #sidenav \{
     width: 300px;
@@ -117,6 +118,8 @@ $(document).ready(function() \{
         staticNav();
     \});
 
+    $("#module_index_toggler").click(function() \{ $("#module_index").toggle(); \});
+
 \});
 </script>
 
@@ -176,8 +179,9 @@ $(document).ready(function() \{
     }
 }
 
-        <h2>Other modules</h2>
-        <ul>
+        <h2>Module index</h2>
+        <a id="module_index_toggler">Show/Hide</a>
+        <ul id="module_index">
 {
     foreach $module (sort keys %module_paths) {
         $class = "";

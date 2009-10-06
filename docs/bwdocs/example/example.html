@@ -11,6 +11,7 @@ body {
     font: normal 10px Verdana, Arial, Helvetica, sans-serif;
     color: #444;
 }
+#module_index { display:none; }
 .container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
 #sidenav {
     width: 300px;
@@ -117,6 +118,8 @@ $(document).ready(function() {
         staticNav();
     });
 
+    $("#module_index_toggler").click(function() { $("#module_index").toggle(); });
+
 });
 </script>
 
@@ -135,8 +138,9 @@ $(document).ready(function() {
 
 <h2><a href="#func_overview">Functions</a></h2><ul><li><a href="#foofunc" title="Documentation of foofunc">foofunc</a></li><li><a href="#foofunc2" title="Documentation of foofunc2">foofunc2</a></li></ul><h2><a href=\"#var_overview\">Variables</a></h2><ul><li><a href="#bar" title="Documentation of bar">bar</a></li><li><a href="#foo" title="Documentation of foo">foo</a></li><li><a href="#foobar" title="Documentation of foobar">foobar</a></li><li><a href="#typedbar" title="Documentation of typedbar">typedbar</a></li></ul>
 
-        <h2>Other modules</h2>
-        <ul>
+        <h2>Module index</h2>
+        <a id="module_index_toggler">Show/Hide</a>
+        <ul id="module_index">
 <li class="selected"><a href="example.html" title="Documentation of example">example</a></li><li class=""><a href="foomodule.html" title="Documentation of foomodule">foomodule</a></li>
         </ul>
     </div>
