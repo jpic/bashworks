@@ -30,5 +30,5 @@ function mlog() {
     local level="$1"
     local message="$2"
 
-    __msg $level $message
+    __msg "$level" "$message"
 }
