@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>wepcrack functions</h2>
+        <ul>
+<li><a href="#wepcrack_aircheck" title="Documentation of wepcrack_aircheck">wepcrack_aircheck</a></li><li><a href="#wepcrack_airstart" title="Documentation of wepcrack_airstart">wepcrack_airstart</a></li><li><a href="#wepcrack_airstop" title="Documentation of wepcrack_airstop">wepcrack_airstop</a></li><li><a href="#wepcrack_alphacrack" title="Documentation of wepcrack_alphacrack">wepcrack_alphacrack</a></li><li><a href="#wepcrack_autochopchop" title="Documentation of wepcrack_autochopchop">wepcrack_autochopchop</a></li><li><a href="#wepcrack_autofrag" title="Documentation of wepcrack_autofrag">wepcrack_autofrag</a></li><li><a href="#wepcrack_autoinject" title="Documentation of wepcrack_autoinject">wepcrack_autoinject</a></li><li><a href="#wepcrack_capture" title="Documentation of wepcrack_capture">wepcrack_capture</a></li><li><a href="#wepcrack_channellock" title="Documentation of wepcrack_channellock">wepcrack_channellock</a></li><li><a href="#wepcrack_chopchop" title="Documentation of wepcrack_chopchop">wepcrack_chopchop</a></li><li><a href="#wepcrack_connect" title="Documentation of wepcrack_connect">wepcrack_connect</a></li><li><a href="#wepcrack_crack" title="Documentation of wepcrack_crack">wepcrack_crack</a></li><li><a href="#wepcrack_deauth" title="Documentation of wepcrack_deauth">wepcrack_deauth</a></li><li><a href="#wepcrack_exportcrack" title="Documentation of wepcrack_exportcrack">wepcrack_exportcrack</a></li><li><a href="#wepcrack_fakeauth" title="Documentation of wepcrack_fakeauth">wepcrack_fakeauth</a></li><li><a href="#wepcrack_fakeauthpicky" title="Documentation of wepcrack_fakeauthpicky">wepcrack_fakeauthpicky</a></li><li><a href="#wepcrack_forge" title="Documentation of wepcrack_forge">wepcrack_forge</a></li><li><a href="#wepcrack_frag" title="Documentation of wepcrack_frag">wepcrack_frag</a></li><li><a href="#wepcrack_helpconnect" title="Documentation of wepcrack_helpconnect">wepcrack_helpconnect</a></li><li><a href="#wepcrack_helphacking" title="Documentation of wepcrack_helphacking">wepcrack_helphacking</a></li><li><a href="#wepcrack_helpintro" title="Documentation of wepcrack_helpintro">wepcrack_helpintro</a></li><li><a href="#wepcrack_inject" title="Documentation of wepcrack_inject">wepcrack_inject</a></li><li><a href="#wepcrack_killdisturbing" title="Documentation of wepcrack_killdisturbing">wepcrack_killdisturbing</a></li><li><a href="#wepcrack_load" title="Documentation of wepcrack_load">wepcrack_load</a></li><li><a href="#wepcrack_newmac" title="Documentation of wepcrack_newmac">wepcrack_newmac</a></li><li><a href="#wepcrack_pre_source" title="Documentation of wepcrack_pre_source">wepcrack_pre_source</a></li><li><a href="#wepcrack_rechopchop" title="Documentation of wepcrack_rechopchop">wepcrack_rechopchop</a></li><li><a href="#wepcrack_refrag" title="Documentation of wepcrack_refrag">wepcrack_refrag</a></li><li><a href="#wepcrack_reload" title="Documentation of wepcrack_reload">wepcrack_reload</a></li><li><a href="#wepcrack_save" title="Documentation of wepcrack_save">wepcrack_save</a></li><li><a href="#wepcrack_starthacking" title="Documentation of wepcrack_starthacking">wepcrack_starthacking</a></li><li><a href="#wepcrack_viewaps" title="Documentation of wepcrack_viewaps">wepcrack_viewaps</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class="selected"><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>wepcrack documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#wepcrack/functions.sh" name="wepcrack/functions.sh"></a><h3>wepcrack/functions.sh</h3>
+<p> }}}</p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#wepcrack_aircheck" title="Documentation of wepcrack_aircheck">wepcrack_aircheck</a></td>
+<td>wepcrack/functions.sh</td>
+<td>28</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_airstart" title="Documentation of wepcrack_airstart">wepcrack_airstart</a></td>
+<td>wepcrack/functions.sh</td>
+<td>33</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_airstop" title="Documentation of wepcrack_airstop">wepcrack_airstop</a></td>
+<td>wepcrack/functions.sh</td>
+<td>38</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_alphacrack" title="Documentation of wepcrack_alphacrack">wepcrack_alphacrack</a></td>
+<td>wepcrack/functions.sh</td>
+<td>317</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_autochopchop" title="Documentation of wepcrack_autochopchop">wepcrack_autochopchop</a></td>
+<td>wepcrack/functions.sh</td>
+<td>230</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_autofrag" title="Documentation of wepcrack_autofrag">wepcrack_autofrag</a></td>
+<td>wepcrack/functions.sh</td>
+<td>191</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_autoinject" title="Documentation of wepcrack_autoinject">wepcrack_autoinject</a></td>
+<td>wepcrack/functions.sh</td>
+<td>304</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_capture" title="Documentation of wepcrack_capture">wepcrack_capture</a></td>
+<td>wepcrack/functions.sh</td>
+<td>254</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_channellock" title="Documentation of wepcrack_channellock">wepcrack_channellock</a></td>
+<td>wepcrack/functions.sh</td>
+<td>150</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_chopchop" title="Documentation of wepcrack_chopchop">wepcrack_chopchop</a></td>
+<td>wepcrack/functions.sh</td>
+<td>217</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_connect" title="Documentation of wepcrack_connect">wepcrack_connect</a></td>
+<td>wepcrack/functions.sh</td>
+<td>410</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_crack" title="Documentation of wepcrack_crack">wepcrack_crack</a></td>
+<td>wepcrack/functions.sh</td>
+<td>312</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_deauth" title="Documentation of wepcrack_deauth">wepcrack_deauth</a></td>
+<td>wepcrack/functions.sh</td>
+<td>70</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_exportcrack" title="Documentation of wepcrack_exportcrack">wepcrack_exportcrack</a></td>
+<td>wepcrack/functions.sh</td>
+<td>322</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_fakeauth" title="Documentation of wepcrack_fakeauth">wepcrack_fakeauth</a></td>
+<td>wepcrack/functions.sh</td>
+<td>155</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_fakeauthpicky" title="Documentation of wepcrack_fakeauthpicky">wepcrack_fakeauthpicky</a></td>
+<td>wepcrack/functions.sh</td>
+<td>166</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_forge" title="Documentation of wepcrack_forge">wepcrack_forge</a></td>
+<td>wepcrack/functions.sh</td>
+<td>266</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_frag" title="Documentation of wepcrack_frag">wepcrack_frag</a></td>
+<td>wepcrack/functions.sh</td>
+<td>178</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_helpconnect" title="Documentation of wepcrack_helpconnect">wepcrack_helpconnect</a></td>
+<td>wepcrack/functions.sh</td>
+<td>396</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_helphacking" title="Documentation of wepcrack_helphacking">wepcrack_helphacking</a></td>
+<td>wepcrack/functions.sh</td>
+<td>365</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_helpintro" title="Documentation of wepcrack_helpintro">wepcrack_helpintro</a></td>
+<td>wepcrack/functions.sh</td>
+<td>341</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_inject" title="Documentation of wepcrack_inject">wepcrack_inject</a></td>
+<td>wepcrack/functions.sh</td>
+<td>295</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_killdisturbing" title="Documentation of wepcrack_killdisturbing">wepcrack_killdisturbing</a></td>
+<td>wepcrack/functions.sh</td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_load" title="Documentation of wepcrack_load">wepcrack_load</a></td>
+<td>wepcrack/functions.sh</td>
+<td>141</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_newmac" title="Documentation of wepcrack_newmac">wepcrack_newmac</a></td>
+<td>wepcrack/functions.sh</td>
+<td>47</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_pre_source" title="Documentation of wepcrack_pre_source">wepcrack_pre_source</a></td>
+<td>wepcrack/source.sh</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_rechopchop" title="Documentation of wepcrack_rechopchop">wepcrack_rechopchop</a></td>
+<td>wepcrack/functions.sh</td>
+<td>242</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_refrag" title="Documentation of wepcrack_refrag">wepcrack_refrag</a></td>
+<td>wepcrack/functions.sh</td>
+<td>203</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_reload" title="Documentation of wepcrack_reload">wepcrack_reload</a></td>
+<td>wepcrack/functions.sh</td>
+<td>418</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_save" title="Documentation of wepcrack_save">wepcrack_save</a></td>
+<td>wepcrack/functions.sh</td>
+<td>107</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_starthacking" title="Documentation of wepcrack_starthacking">wepcrack_starthacking</a></td>
+<td>wepcrack/functions.sh</td>
+<td>79</td>
+</tr>
+<tr>
+<td><a href="#wepcrack_viewaps" title="Documentation of wepcrack_viewaps">wepcrack_viewaps</a></td>
+<td>wepcrack/functions.sh</td>
+<td>62</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#wepcrack_aircheck" name="wepcrack_aircheck"></a><h3>wepcrack_aircheck()</h3>
+<p> {{{ airmon-ng $IFACE wrappers: aircheck, airstart, airstop Usage: aircheck Check if $IFACE is ready</p><a href="#wepcrack_airstart" name="wepcrack_airstart"></a><h3>wepcrack_airstart()</h3>
+<p> Starts airmon-ng on $IFACE for any channel</p><a href="#wepcrack_airstop" name="wepcrack_airstop"></a><h3>wepcrack_airstop()</h3>
+<p> Stops airmon-ng on $IFACE</p><a href="#wepcrack_alphacrack" name="wepcrack_alphacrack"></a><h3>wepcrack_alphacrack()</h3>
+<p> Faster than crack() because searchs for alphanumeric only</p><a href="#wepcrack_autochopchop" name="wepcrack_autochopchop"></a><h3>wepcrack_autochopchop()</h3>
+<p> Usage: autochopchop Uses the first vulnerable beacon frame to chopchop the $PGRA file with IFACE The vulnerable beacon frame that was found are written to $CAPSRC</p><a href="#wepcrack_autofrag" name="wepcrack_autofrag"></a><h3>wepcrack_autofrag()</h3>
+<p> Usage: autofrag Uses the first vulnerable beacon frame to frag the $PGRA file with IFACE The vulnerable beacon frame that was found are written to $CAPSRC</p><a href="#wepcrack_autoinject" name="wepcrack_autoinject"></a><h3>wepcrack_autoinject()</h3>
+<p> Usage: autoinject Injects the first packet of $INJECT_PACKETS with $IFACE spoofed as $MYMAC</p><a href="#wepcrack_capture" name="wepcrack_capture"></a><h3>wepcrack_capture()</h3>
+<p> Usage: capture Dumps paquets read from $IFACE matching $CHANNEL and $BSSID to $CAPTURE_PACKETS</p><a href="#wepcrack_channellock" name="wepcrack_channellock"></a><h3>wepcrack_channellock()</h3>
+<p> Sets channel $CHANNEL to interface $IFACE, stops hoping.</p><a href="#wepcrack_chopchop" name="wepcrack_chopchop"></a><h3>wepcrack_chopchop()</h3>
+<p> Usage: chopchop Waits for vulnerable beacon frame for the user to accept chopchoping the $PRGA file The vulnerable beacon frames that were found are written to $CAPSRC</p><a href="#wepcrack_connect" name="wepcrack_connect"></a><h3>wepcrack_connect()</h3>
+<p></p><a href="#wepcrack_crack" name="wepcrack_crack"></a><h3>wepcrack_crack()</h3>
+<p> Cracks $CAPTURE_PACKETS corresponding to $BSSID with aircrack-ng, save the output to $CRACKED</p><a href="#wepcrack_deauth" name="wepcrack_deauth"></a><h3>wepcrack_deauth()</h3>
+<p> Usage: deauth STATION Where STATION is the client mac address to deauth</p><a href="#wepcrack_exportcrack" name="wepcrack_exportcrack"></a><h3>wepcrack_exportcrack()</h3>
+<p> Parses $CRACKED and sets $KEY and $PASSWORD</p><a href="#wepcrack_fakeauth" name="wepcrack_fakeauth"></a><h3>wepcrack_fakeauth()</h3>
+<p> Fake authentication attack, fast version</p><a href="#wepcrack_fakeauthpicky" name="wepcrack_fakeauthpicky"></a><h3>wepcrack_fakeauthpicky()</h3>
+<p> Fake authentication attack, picky-AP version You might need if the fakeauth works but that the AP drops the association for some reason, *after* it worked.</p><a href="#wepcrack_forge" name="wepcrack_forge"></a><h3>wepcrack_forge()</h3>
+<p> Usage: forge Forges IVS generation paquets with $BSSID, $MYMAC, $PRGA and writes them to $INJECT_PACKETS</p><a href="#wepcrack_frag" name="wepcrack_frag"></a><h3>wepcrack_frag()</h3>
+<p> Usage: frag Waits for vulnerable beacon frame for the user to accept fraging the $PRGA file The vulnerable beacon frames that were found are written to $CAPSRC</p><a href="#wepcrack_helpconnect" name="wepcrack_helpconnect"></a><h3>wepcrack_helpconnect()</h3>
+<p></p><a href="#wepcrack_helphacking" name="wepcrack_helphacking"></a><h3>wepcrack_helphacking()</h3>
+<p> Usage: helphacking [<show navigation=true>] Prints possible steps to crack a WEP key and other help commands</p><a href="#wepcrack_helpintro" name="wepcrack_helpintro"></a><h3>wepcrack_helpintro()</h3>
+<p> User help ... Usage: helpintro [<show navigation=true] Prints possible steps to setup the hacking and other help commands</p><a href="#wepcrack_inject" name="wepcrack_inject"></a><h3>wepcrack_inject()</h3>
+<p> Usage: inject User selects the paquet from file $INJECT_PACKETS to replay with $IFACE spoofed as $MYMAC</p><a href="#wepcrack_killdisturbing" name="wepcrack_killdisturbing"></a><h3>wepcrack_killdisturbing()</h3>
+<p> Kills possible disturbing applications</p><a href="#wepcrack_load" name="wepcrack_load"></a><h3>wepcrack_load()</h3>
+<p> Usage: load [<config file=config.sh>] Can overwrite $CONFIG Loads environment variables from $CONFIG file. Check it out: cat $CONFIG</p><a href="#wepcrack_newmac" name="wepcrack_newmac"></a><h3>wepcrack_newmac()</h3>
+<p> Usage: newmac <mac address> Sets <mac address> to $IFACE. If <mac address> is empty, then generate a random one.</p><a href="#wepcrack_pre_source" name="wepcrack_pre_source"></a><h3>wepcrack_pre_source()</h3>
+<p></p><h4>Log</h4><ul><li>Warn wepcrack module not ported to module.sh yet, still using 0alpha0 template ... err ...</li></ul><a href="#wepcrack_rechopchop" name="wepcrack_rechopchop"></a><h3>wepcrack_rechopchop()</h3>
+<p> Usage: rechopchop Restart chopchop'ing the $PGRA file from $CAPSRC with $IFACE</p><a href="#wepcrack_refrag" name="wepcrack_refrag"></a><h3>wepcrack_refrag()</h3>
+<p> Usage: refrag Restart frag'ing the $PGRA file from $CAPSRC with $IFACE</p><a href="#wepcrack_reload" name="wepcrack_reload"></a><h3>wepcrack_reload()</h3>
+<p></p><a href="#wepcrack_save" name="wepcrack_save"></a><h3>wepcrack_save()</h3>
+<p> Usage: save [<config file=config.sh>] Can overwrite $CONFIG. Saves all *our* environment variables to $CONFIG file.</p><a href="#wepcrack_starthacking" name="wepcrack_starthacking"></a><h3>wepcrack_starthacking()</h3>
+<p> Usage: starthacking <essid> <bssid> <channel>        starthacking <essid> Either from $ESSID/config.sh, either from arguments (which are then saved). Folder $ESSID will also be useful to stock access point specific files.</p><a href="#wepcrack_viewaps" name="wepcrack_viewaps"></a><h3>wepcrack_viewaps()</h3>
+<p> Scan air, dump results, when user has what is needed for starthacking: display hacking help message</p>
+    </div>
+</div>
+
+</body>
+</html>

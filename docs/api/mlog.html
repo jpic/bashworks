@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>mlog functions</h2>
+        <ul>
+<li><a href="#__addPrefix" title="Documentation of __addPrefix">__addPrefix</a></li><li><a href="#__boot" title="Documentation of __boot">__boot</a></li><li><a href="#__cleanup" title="Documentation of __cleanup">__cleanup</a></li><li><a href="#__die" title="Documentation of __die">__die</a></li><li><a href="#__dispatch" title="Documentation of __dispatch">__dispatch</a></li><li><a href="#__includeSource" title="Documentation of __includeSource">__includeSource</a></li><li><a href="#__log" title="Documentation of __log">__log</a></li><li><a href="#__mail" title="Documentation of __mail">__mail</a></li><li><a href="#__msg" title="Documentation of __msg">__msg</a></li><li><a href="#__msgLog" title="Documentation of __msgLog">__msgLog</a></li><li><a href="#__msgMail" title="Documentation of __msgMail">__msgMail</a></li><li><a href="#__msgPrint" title="Documentation of __msgPrint">__msgPrint</a></li><li><a href="#__prepare" title="Documentation of __prepare">__prepare</a></li><li><a href="#__print" title="Documentation of __print">__print</a></li><li><a href="#__requireSource" title="Documentation of __requireSource">__requireSource</a></li><li><a href="#__trapExit" title="Documentation of __trapExit">__trapExit</a></li><li><a href="#__trapSignals" title="Documentation of __trapSignals">__trapSignals</a></li><li><a href="#mlog" title="Documentation of mlog">mlog</a></li><li><a href="#mlog_post_source" title="Documentation of mlog_post_source">mlog_post_source</a></li><li><a href="#mlog_source" title="Documentation of mlog_source">mlog_source</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class="selected"><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>mlog documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#mlog/bashinator-0.3.sh" name="mlog/bashinator-0.3.sh"></a><h3>mlog/bashinator-0.3.sh</h3>
+<p> $Id: bashinator.lib.0.sh,v 1.5 2009/05/27 07:50:56 wschlich Exp wschlich $ vim:ts=4:sw=4:tw=200:nu:ai:nowrap: bashinator shell script framework library Created by Wolfram Schlich <wschlich@gentoo.org> Licensed under the GNU GPLv3</p><a href="#mlog/source.sh" name="mlog/source.sh"></a><h3>mlog/source.sh</h3>
+<p> cannot declare a global associative array in a function</p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#__addPrefix" title="Documentation of __addPrefix">__addPrefix</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>1172</td>
+</tr>
+<tr>
+<td><a href="#__boot" title="Documentation of __boot">__boot</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>30</td>
+</tr>
+<tr>
+<td><a href="#__cleanup" title="Documentation of __cleanup">__cleanup</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>180</td>
+</tr>
+<tr>
+<td><a href="#__die" title="Documentation of __die">__die</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>225</td>
+</tr>
+<tr>
+<td><a href="#__dispatch" title="Documentation of __dispatch">__dispatch</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>79</td>
+</tr>
+<tr>
+<td><a href="#__includeSource" title="Documentation of __includeSource">__includeSource</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>1119</td>
+</tr>
+<tr>
+<td><a href="#__log" title="Documentation of __log">__log</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>609</td>
+</tr>
+<tr>
+<td><a href="#__mail" title="Documentation of __mail">__mail</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>761</td>
+</tr>
+<tr>
+<td><a href="#__msg" title="Documentation of __msg">__msg</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>639</td>
+</tr>
+<tr>
+<td><a href="#__msgLog" title="Documentation of __msgLog">__msgLog</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>471</td>
+</tr>
+<tr>
+<td><a href="#__msgMail" title="Documentation of __msgMail">__msgMail</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>852</td>
+</tr>
+<tr>
+<td><a href="#__msgPrint" title="Documentation of __msgPrint">__msgPrint</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>333</td>
+</tr>
+<tr>
+<td><a href="#__prepare" title="Documentation of __prepare">__prepare</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>124</td>
+</tr>
+<tr>
+<td><a href="#__print" title="Documentation of __print">__print</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>441</td>
+</tr>
+<tr>
+<td><a href="#__requireSource" title="Documentation of __requireSource">__requireSource</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>1146</td>
+</tr>
+<tr>
+<td><a href="#__trapExit" title="Documentation of __trapExit">__trapExit</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>991</td>
+</tr>
+<tr>
+<td><a href="#__trapSignals" title="Documentation of __trapSignals">__trapSignals</a></td>
+<td>mlog/bashinator-0.3.sh</td>
+<td>1031</td>
+</tr>
+<tr>
+<td><a href="#mlog" title="Documentation of mlog">mlog</a></td>
+<td>mlog/source.sh</td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#mlog_post_source" title="Documentation of mlog_post_source">mlog_post_source</a></td>
+<td>mlog/source.sh</td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#mlog_source" title="Documentation of mlog_source">mlog_source</a></td>
+<td>mlog/source.sh</td>
+<td>4</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#__addPrefix" name="__addPrefix"></a><h3>__addPrefix()</h3>
+<p></p><a href="#__boot" name="__boot"></a><h3>__boot()</h3>
+<p> REQUIRED PROGRAMS ================= - rm - touch - mktemp - cat - logger - sed - date - sendmail (default /usr/sbin/sendmail, can be overridden with __SendmailBin) define the required minimum bash version for this bashinator release to function properly bashinator control functions</p><a href="#__cleanup" name="__cleanup"></a><h3>__cleanup()</h3>
+<p></p><a href="#__die" name="__die"></a><h3>__die()</h3>
+<p></p><a href="#__dispatch" name="__dispatch"></a><h3>__dispatch()</h3>
+<p></p><a href="#__includeSource" name="__includeSource"></a><h3>__includeSource()</h3>
+<p> enable the __trapSignals function for certain signals: misc helper functions</p><a href="#__log" name="__log"></a><h3>__log()</h3>
+<p></p><a href="#__mail" name="__mail"></a><h3>__mail()</h3>
+<p></p><a href="#__msg" name="__msg"></a><h3>__msg()</h3>
+<p></p><a href="#__msgLog" name="__msgLog"></a><h3>__msgLog()</h3>
+<p></p><a href="#__msgMail" name="__msgMail"></a><h3>__msgMail()</h3>
+<p></p><a href="#__msgPrint" name="__msgPrint"></a><h3>__msgPrint()</h3>
+<p> bashinator message functions</p><a href="#__prepare" name="__prepare"></a><h3>__prepare()</h3>
+<p></p><a href="#__print" name="__print"></a><h3>__print()</h3>
+<p></p><a href="#__requireSource" name="__requireSource"></a><h3>__requireSource()</h3>
+<p></p><a href="#__trapExit" name="__trapExit"></a><h3>__trapExit()</h3>
+<p> trap functions</p><a href="#__trapSignals" name="__trapSignals"></a><h3>__trapSignals()</h3>
+<p> enable the __trapExit function for script exits</p><a href="#mlog" name="mlog"></a><h3>mlog()</h3>
+<p></p><a href="#mlog_post_source" name="mlog_post_source"></a><h3>mlog_post_source()</h3>
+<p></p><a href="#mlog_source" name="mlog_source"></a><h3>mlog_source()</h3>
+<p></p>
+    </div>
+</div>
+
+</body>
+</html>

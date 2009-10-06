@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>conf functions</h2>
+        <ul>
+<li><a href="#conf" title="Documentation of conf">conf</a></li><li><a href="#conf_get_path" title="Documentation of conf_get_path">conf_get_path</a></li><li><a href="#conf_get_variables" title="Documentation of conf_get_variables">conf_get_variables</a></li><li><a href="#conf_interactive" title="Documentation of conf_interactive">conf_interactive</a></li><li><a href="#conf_interactive_variables" title="Documentation of conf_interactive_variables">conf_interactive_variables</a></li><li><a href="#conf_load" title="Documentation of conf_load">conf_load</a></li><li><a href="#conf_load_from_path" title="Documentation of conf_load_from_path">conf_load_from_path</a></li><li><a href="#conf_save" title="Documentation of conf_save">conf_save</a></li><li><a href="#conf_save_to_path" title="Documentation of conf_save_to_path">conf_save_to_path</a></li><li><a href="#conf_source" title="Documentation of conf_source">conf_source</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class="selected"><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>conf documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#conf/functions.sh" name="conf/functions.sh"></a><h3>conf/functions.sh</h3>
+<p> This file declares low level functions, which do not expect anything that concerns modules. For functions which expects modules see the script conf/module.sh. This script basically declares CRUD functions for given configuration file path and given set of configuration variables. Functions declared in this file are likely to change in future major versions because the features that could be added are: - array support in configurations, - better (hidden) password prompt support, - the user interface could use multiple frontends. Note that <a href="http://code.google.com/p/shesfw/">shesfw</a> is open source and has an (unfinished) user interface API with several backends which could be useable for example with new generation browsers like <a href="http://uzbl.org">uzbl</a>, <a href="http://vimpression.org">vimpression</a>, <a href="http://surf.suckless.org">surf</a></p><a href="#conf/module.sh" name="conf/module.sh"></a><h3>conf/module.sh</h3>
+<p> All functions defined in this file take a module name as parameter, and are polite. Refer to the polite standard chapter in the documentation to figure how to overload the behaviour of any of these functions. The highest level function is conf which runs all functions declared in this file at some point. It makes configuring a module easy for the user, who has to type in bash: # conf yourmodule Medium level functions are conf_save, conf_load and conf_interactive which only encapsulate the actual conf functions which are declared in functions.sh. Lowest level functions are conf_get_variables and  conf_get_path. The first outputs the name of the variables of the module for use in conf_save and conf_interactive, and the latter outputs the path to the module configuration file which is used by conf_save and conf_load.</p><h4>Polite</h4><ul><li>All functions of this script are polite.</li></ul><a href="#conf/source.sh" name="conf/source.sh"></a><h3>conf/source.sh</h3>
+<p> This module declares functions to interface with configuration variables and files in functions.sh, and functions that take a module as argument in module.sh.  See conf/functions.sh for more details on avalaible functions. See conf/module.sh for details concerning functions that work with modules.</p>
+
+<h2 name="submodules">Submodules</h2>
+<ul>
+<li>conf_auto</li>
+</ul>
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#conf" title="Documentation of conf">conf</a></td>
+<td>conf/module.sh</td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#conf_get_path" title="Documentation of conf_get_path">conf_get_path</a></td>
+<td>conf/module.sh</td>
+<td>166</td>
+</tr>
+<tr>
+<td><a href="#conf_get_variables" title="Documentation of conf_get_variables">conf_get_variables</a></td>
+<td>conf/module.sh</td>
+<td>131</td>
+</tr>
+<tr>
+<td><a href="#conf_interactive" title="Documentation of conf_interactive">conf_interactive</a></td>
+<td>conf/module.sh</td>
+<td>105</td>
+</tr>
+<tr>
+<td><a href="#conf_interactive_variables" title="Documentation of conf_interactive_variables">conf_interactive_variables</a></td>
+<td>conf/functions.sh</td>
+<td>92</td>
+</tr>
+<tr>
+<td><a href="#conf_load" title="Documentation of conf_load">conf_load</a></td>
+<td>conf/module.sh</td>
+<td>78</td>
+</tr>
+<tr>
+<td><a href="#conf_load_from_path" title="Documentation of conf_load_from_path">conf_load_from_path</a></td>
+<td>conf/functions.sh</td>
+<td>74</td>
+</tr>
+<tr>
+<td><a href="#conf_save" title="Documentation of conf_save">conf_save</a></td>
+<td>conf/module.sh</td>
+<td>54</td>
+</tr>
+<tr>
+<td><a href="#conf_save_to_path" title="Documentation of conf_save_to_path">conf_save_to_path</a></td>
+<td>conf/functions.sh</td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#conf_source" title="Documentation of conf_source">conf_source</a></td>
+<td>conf/source.sh</td>
+<td>12</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#conf" name="conf"></a><h3>conf()</h3>
+<p> Configure a module. Given a module name, it will load its configuration, prompt the user for changes and finnally save the changes.</p><h4>Calls</h4><ul><li>Conf_load, conf_interactive and conf_save</li></ul><h4>Log</h4><ul><li>Debug level, when done</li><li>Debug Done configuring $module_name</li></ul><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf">yourmodule_conf()</a>.</li></ul><h4>Param</h4><ul><li>Module name</li></ul><a href="#conf_get_path" name="conf_get_path"></a><h3>conf_get_path()</h3>
+<p> This function outputs the path to a module configuration file. By default, it will use the value in yourmodule_conf_path.</p><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf_get_path">yourmodule_conf_get_path()</a>.</li></ul><h4>Stdout</h4><ul><li>Path to the module configuration file.</li></ul><h4>Param</h4><ul><li>Module name</li></ul><a href="#conf_get_variables" name="conf_get_variables"></a><h3>conf_get_variables()</h3>
+<p> This function outputs all variable names which are prefixed by the given  module name. WARNING: if the first element is a module name then eval will be used. If the eval string doesn't pass a regexp security test then 1 will be returned.</p><h4>Log</h4><ul><li>Alert, if the eval line is unsecure.</li><li>Alert Eval line may be unsecure, abording: $get_conf_variables</li></ul><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf_get_variables">yourmodule_conf_get_variables()</a>.</li></ul><h4>Stdout</h4><ul><li>List of configuration variables of the module.</li></ul><h4>Param</h4><ul><li>Module name</li></ul><h4>Return</h4><ul><li>1 Eval string did not pass the security check.</li></ul><a href="#conf_interactive" name="conf_interactive"></a><h3>conf_interactive()</h3>
+<p> This function interactively prompts the user to change the values of all variables of a module. For example, calling `conf_interactive yourmodule` will prompt the user to change values of all variables prefixed with yourmodule (ie. $yourmodule_conf_path, $yourmodule_preference ...) Note that this method does not save the new values. </p><h4>Calls</h4><ul><li>Conf_get_variables, conf_interactive_variables</li></ul><h4>Log</h4><ul><li>Debug level, once done.</li><li>Debug Done interactive configuration for $module_name</li></ul><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf_interactive">yourmodule_conf_interactive()</a>.</li></ul><h4>Param</h4><ul><li>List of variable names</li></ul><a href="#conf_interactive_variables" name="conf_interactive_variables"></a><h3>conf_interactive_variables()</h3>
+<p> Prompt the user for variable value update, given a variable name list. Note that this method does not save the new values.</p><h4>Log</h4><ul><li>Info, when a variable was changed by the user.</li><li>Debug, when done, with arguments.</li><li>Info Changed $variable to $input</li><li>Debug Configured ${conf_variables[@]}</li></ul><h4>Param</h4><ul><li>List of variable names, separated by space</li></ul><a href="#conf_load" name="conf_load"></a><h3>conf_load()</h3>
+<p> Loads variables of a module from a file defined by the module. </p><h4>Calls</h4><ul><li>Conf_get_path, conf_load_from_path</li></ul><h4>Log</h4><ul><li>Debug level, when done</li><li>Debug Loaded configuration for $module_name (${!conf_path})</li></ul><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf_load">yourmodule_conf_load()</a>.</li></ul><h4>Param</h4><ul><li>Module namme</li></ul><a href="#conf_load_from_path" name="conf_load_from_path"></a><h3>conf_load_from_path()</h3>
+<p> Loads a saved configuration file from a given configuration path.</p><h4>Log</h4><ul><li>Notice, if the path does not exists.</li><li>Debug, when done, with arguments.</li><li>Notice $conf_path does not exist, not loaded</li><li>Debug Loaded $conf_path</li></ul><h4>Param</h4><ul><li>Configuration file path</li></ul><h4>Return</h4><ul><li>2 If the configuration file path does not exist or is not readable</li></ul><a href="#conf_save" name="conf_save"></a><h3>conf_save()</h3>
+<p> Saves variables of a module in a file defined by the module.</p><h4>Calls</h4><ul><li>Conf_get_variables, conf_get_path, conf_save_to_path</li></ul><h4>Log</h4><ul><li>Debug level, when done</li><li>Debug Saved configuration for $module_name</li></ul><h4>Polite</h4><ul><li>Will try <a href="conf.html#conf_save">yourmodule_conf_save()</a>.</li></ul><h4>Param</h4><ul><li>Module name</li></ul><a href="#conf_save_to_path" name="conf_save_to_path"></a><h3>conf_save_to_path()</h3>
+<p> Saves given variables in the given configuration file. This function uses sed to update variables in the configuration file if the file contains a declaration of this variable. This is likely to be dropped in the future. Missing directories will be created if necessary.</p><h4>Log</h4><ul><li>Debug, when done, with arguments.</li><li>Error, if the path is not absolute</li><li>Error Not saving to </li><li>Debug Saved to $conf_path: ${conf_variables[@]}</li></ul><h4>Param</h4><ul><li>Path to configuration file</li><li>List of variable names</li></ul><a href="#conf_source" name="conf_source"></a><h3>conf_source()</h3>
+<p> This function should be called when the module is loaded. It will load functions it depends on.</p>
+    </div>
+</div>
+
+</body>
+</html>

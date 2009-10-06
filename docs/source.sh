@@ -46,5 +46,5 @@ function docs_test() {
     export docs_template_path
     export docs_template_debug
     export docs_debug
-    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/bwdocs
+    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/bwdocs/example
 }

@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>docs_bashdoc functions</h2>
+        <ul>
+<li><a href="#Args" title="Documentation of Args">Args</a></li><li><a href="#MakeSedExpression" title="Documentation of MakeSedExpression">MakeSedExpression</a></li><li><a href="#ParseFunction" title="Documentation of ParseFunction">ParseFunction</a></li><li><a href="#SedWords" title="Documentation of SedWords">SedWords</a></li><li><a href="#TranslateSource" title="Documentation of TranslateSource">TranslateSource</a></li><li><a href="#Usage" title="Documentation of Usage">Usage</a></li><li><a href="#args" title="Documentation of args">args</a></li><li><a href="#create_sed" title="Documentation of create_sed">create_sed</a></li><li><a href="#docs_bashdoc_for_module" title="Documentation of docs_bashdoc_for_module">docs_bashdoc_for_module</a></li><li><a href="#get_comment_block" title="Documentation of get_comment_block">get_comment_block</a></li><li><a href="#output_parsed_block" title="Documentation of output_parsed_block">output_parsed_block</a></li><li><a href="#output_parsed_tags" title="Documentation of output_parsed_tags">output_parsed_tags</a></li><li><a href="#parse_block" title="Documentation of parse_block">parse_block</a></li><li><a href="#parse_comments" title="Documentation of parse_comments">parse_comments</a></li><li><a href="#script_header" title="Documentation of script_header">script_header</a></li><li><a href="#split_tag" title="Documentation of split_tag">split_tag</a></li><li><a href="#usage" title="Documentation of usage">usage</a></li><li><a href="#version" title="Documentation of version">version</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class="selected"><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>docs_bashdoc documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#docs/bashdoc/bashdoc-0.2/bashdoc.sh" name="docs/bashdoc/bashdoc-0.2/bashdoc.sh"></a><h3>docs/bashdoc/bashdoc-0.2/bashdoc.sh</h3>
+<p></p><a href="#docs/bashdoc/bashdoc-0.2/generate-smgl-docs.sh" name="docs/bashdoc/bashdoc-0.2/generate-smgl-docs.sh"></a><h3>docs/bashdoc/bashdoc-0.2/generate-smgl-docs.sh</h3>
+<p> This script will generate bash documentation (for as far as it has been made available in the code) from all Source Mage libs and commands.</p><a href="#docs/bashdoc/bashdoc-0.2/src2html.sh" name="docs/bashdoc/bashdoc-0.2/src2html.sh"></a><h3>docs/bashdoc/bashdoc-0.2/src2html.sh</h3>
+<p> Do the rewriting of html characters and put the result in the func dir</p><a href="#docs/bashdoc/source.sh" name="docs/bashdoc/source.sh"></a><h3>docs/bashdoc/source.sh</h3>
+<p> Bashdoc tiein for the docs module.</p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#Args" title="Documentation of Args">Args</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#MakeSedExpression" title="Documentation of MakeSedExpression">MakeSedExpression</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>91</td>
+</tr>
+<tr>
+<td><a href="#ParseFunction" title="Documentation of ParseFunction">ParseFunction</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>75</td>
+</tr>
+<tr>
+<td><a href="#SedWords" title="Documentation of SedWords">SedWords</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>103</td>
+</tr>
+<tr>
+<td><a href="#TranslateSource" title="Documentation of TranslateSource">TranslateSource</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>41</td>
+</tr>
+<tr>
+<td><a href="#Usage" title="Documentation of Usage">Usage</a></td>
+<td>docs/bashdoc/bashdoc-0.2/flow.sh</td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#args" title="Documentation of args">args</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>93</td>
+</tr>
+<tr>
+<td><a href="#create_sed" title="Documentation of create_sed">create_sed</a></td>
+<td>docs/bashdoc/bashdoc-0.2/src2html.sh</td>
+<td>41</td>
+</tr>
+<tr>
+<td><a href="#docs_bashdoc_for_module" title="Documentation of docs_bashdoc_for_module">docs_bashdoc_for_module</a></td>
+<td>docs/bashdoc/source.sh</td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#get_comment_block" title="Documentation of get_comment_block">get_comment_block</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>205</td>
+</tr>
+<tr>
+<td><a href="#output_parsed_block" title="Documentation of output_parsed_block">output_parsed_block</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>360</td>
+</tr>
+<tr>
+<td><a href="#output_parsed_tags" title="Documentation of output_parsed_tags">output_parsed_tags</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>342</td>
+</tr>
+<tr>
+<td><a href="#parse_block" title="Documentation of parse_block">parse_block</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>411</td>
+</tr>
+<tr>
+<td><a href="#parse_comments" title="Documentation of parse_comments">parse_comments</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>243</td>
+</tr>
+<tr>
+<td><a href="#script_header" title="Documentation of script_header">script_header</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>467</td>
+</tr>
+<tr>
+<td><a href="#split_tag" title="Documentation of split_tag">split_tag</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>455</td>
+</tr>
+<tr>
+<td><a href="#usage" title="Documentation of usage">usage</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>167</td>
+</tr>
+<tr>
+<td><a href="#version" title="Documentation of version">version</a></td>
+<td>docs/bashdoc/bashdoc-0.2/bashdoc.sh</td>
+<td>153</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#Args" name="Args"></a><h3>Args()</h3>
+<p></p><h4>Gloabals</h4><ul><li>FUNC_DIR, SCRIPTS</li></ul><a href="#MakeSedExpression" name="MakeSedExpression"></a><h3>MakeSedExpression()</h3>
+<p></p><a href="#ParseFunction" name="ParseFunction"></a><h3>ParseFunction()</h3>
+<p></p><a href="#SedWords" name="SedWords"></a><h3>SedWords()</h3>
+<p></p><a href="#TranslateSource" name="TranslateSource"></a><h3>TranslateSource()</h3>
+<p></p><a href="#Usage" name="Usage"></a><h3>Usage()</h3>
+<p></p><a href="#args" name="args"></a><h3>args()</h3>
+<p></p><a href="#create_sed" name="create_sed"></a><h3>create_sed()</h3>
+<p></p><a href="#docs_bashdoc_for_module" name="docs_bashdoc_for_module"></a><h3>docs_bashdoc_for_module()</h3>
+<p> Outputs the documentation for a given module to  $docs_path/modules/$module_name.</p><h4>Param</h4><ul><li>Module name</li></ul><a href="#get_comment_block" name="get_comment_block"></a><h3>get_comment_block()</h3>
+<p></p><a href="#output_parsed_block" name="output_parsed_block"></a><h3>output_parsed_block()</h3>
+<p></p><a href="#output_parsed_tags" name="output_parsed_tags"></a><h3>output_parsed_tags()</h3>
+<p></p><a href="#parse_block" name="parse_block"></a><h3>parse_block()</h3>
+<p></p><a href="#parse_comments" name="parse_comments"></a><h3>parse_comments()</h3>
+<p></p><a href="#script_header" name="script_header"></a><h3>script_header()</h3>
+<p></p><a href="#split_tag" name="split_tag"></a><h3>split_tag()</h3>
+<p></p><a href="#usage" name="usage"></a><h3>usage()</h3>
+<p></p><a href="#version" name="version"></a><h3>version()</h3>
+<p></p>
+    </div>
+</div>
+
+</body>
+</html>

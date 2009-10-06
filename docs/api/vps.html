@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>vps functions</h2>
+        <ul>
+<li><a href="#vps" title="Documentation of vps">vps</a></li><li><a href="#vps_build" title="Documentation of vps_build">vps_build</a></li><li><a href="#vps_conf_interactive" title="Documentation of vps_conf_interactive">vps_conf_interactive</a></li><li><a href="#vps_conf_interactive_network" title="Documentation of vps_conf_interactive_network">vps_conf_interactive_network</a></li><li><a href="#vps_configure_fstab" title="Documentation of vps_configure_fstab">vps_configure_fstab</a></li><li><a href="#vps_configure_hosts" title="Documentation of vps_configure_hosts">vps_configure_hosts</a></li><li><a href="#vps_configure_net" title="Documentation of vps_configure_net">vps_configure_net</a></li><li><a href="#vps_configure_portage" title="Documentation of vps_configure_portage">vps_configure_portage</a></li><li><a href="#vps_configure_root" title="Documentation of vps_configure_root">vps_configure_root</a></li><li><a href="#vps_configure_runlevels" title="Documentation of vps_configure_runlevels">vps_configure_runlevels</a></li><li><a href="#vps_delete" title="Documentation of vps_delete">vps_delete</a></li><li><a href="#vps_delete_test_vps" title="Documentation of vps_delete_test_vps">vps_delete_test_vps</a></li><li><a href="#vps_ebackport" title="Documentation of vps_ebackport">vps_ebackport</a></li><li><a href="#vps_emerge" title="Documentation of vps_emerge">vps_emerge</a></li><li><a href="#vps_enter" title="Documentation of vps_enter">vps_enter</a></li><li><a href="#vps_euse" title="Documentation of vps_euse">vps_euse</a></li><li><a href="#vps_exec" title="Documentation of vps_exec">vps_exec</a></li><li><a href="#vps_generate" title="Documentation of vps_generate">vps_generate</a></li><li><a href="#vps_get_conf_path" title="Documentation of vps_get_conf_path">vps_get_conf_path</a></li><li><a href="#vps_get_free_id" title="Documentation of vps_get_free_id">vps_get_free_id</a></li><li><a href="#vps_get_property" title="Documentation of vps_get_property">vps_get_property</a></li><li><a href="#vps_getstage" title="Documentation of vps_getstage">vps_getstage</a></li><li><a href="#vps_post_source" title="Documentation of vps_post_source">vps_post_source</a></li><li><a href="#vps_pre_source" title="Documentation of vps_pre_source">vps_pre_source</a></li><li><a href="#vps_restart" title="Documentation of vps_restart">vps_restart</a></li><li><a href="#vps_source" title="Documentation of vps_source">vps_source</a></li><li><a href="#vps_start" title="Documentation of vps_start">vps_start</a></li><li><a href="#vps_stop" title="Documentation of vps_stop">vps_stop</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class="selected"><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>vps documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#vps/conf.sh" name="vps/conf.sh"></a><h3>vps/conf.sh</h3>
+<p> Prompts the admin for the host ip to use</p><h4>Log</h4><ul><li>Warning ROUTER_INTERNET_MAP and ROUTER_INTRANET_MAP are not set, cannot configure network</li></ul><a href="#vps/functions.sh" name="vps/functions.sh"></a><h3>vps/functions.sh</h3>
+<p></p><a href="#vps/source.sh" name="vps/source.sh"></a><h3>vps/source.sh</h3>
+<p></p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#vps" title="Documentation of vps">vps</a></td>
+<td>vps/source.sh</td>
+<td>46</td>
+</tr>
+<tr>
+<td><a href="#vps_build" title="Documentation of vps_build">vps_build</a></td>
+<td>vps/functions.sh</td>
+<td>108</td>
+</tr>
+<tr>
+<td><a href="#vps_conf_interactive" title="Documentation of vps_conf_interactive">vps_conf_interactive</a></td>
+<td>vps/conf.sh</td>
+<td>32</td>
+</tr>
+<tr>
+<td><a href="#vps_conf_interactive_network" title="Documentation of vps_conf_interactive_network">vps_conf_interactive_network</a></td>
+<td>vps/conf.sh</td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_fstab" title="Documentation of vps_configure_fstab">vps_configure_fstab</a></td>
+<td>vps/functions.sh</td>
+<td>47</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_hosts" title="Documentation of vps_configure_hosts">vps_configure_hosts</a></td>
+<td>vps/functions.sh</td>
+<td>51</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_net" title="Documentation of vps_configure_net">vps_configure_net</a></td>
+<td>vps/functions.sh</td>
+<td>61</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_portage" title="Documentation of vps_configure_portage">vps_configure_portage</a></td>
+<td>vps/functions.sh</td>
+<td>56</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_root" title="Documentation of vps_configure_root">vps_configure_root</a></td>
+<td>vps/functions.sh</td>
+<td>87</td>
+</tr>
+<tr>
+<td><a href="#vps_configure_runlevels" title="Documentation of vps_configure_runlevels">vps_configure_runlevels</a></td>
+<td>vps/functions.sh</td>
+<td>96</td>
+</tr>
+<tr>
+<td><a href="#vps_delete" title="Documentation of vps_delete">vps_delete</a></td>
+<td>vps/functions.sh</td>
+<td>122</td>
+</tr>
+<tr>
+<td><a href="#vps_delete_test_vps" title="Documentation of vps_delete_test_vps">vps_delete_test_vps</a></td>
+<td>vps/functions.sh</td>
+<td>138</td>
+</tr>
+<tr>
+<td><a href="#vps_ebackport" title="Documentation of vps_ebackport">vps_ebackport</a></td>
+<td>vps/functions.sh</td>
+<td>185</td>
+</tr>
+<tr>
+<td><a href="#vps_emerge" title="Documentation of vps_emerge">vps_emerge</a></td>
+<td>vps/functions.sh</td>
+<td>155</td>
+</tr>
+<tr>
+<td><a href="#vps_enter" title="Documentation of vps_enter">vps_enter</a></td>
+<td>vps/functions.sh</td>
+<td>119</td>
+</tr>
+<tr>
+<td><a href="#vps_euse" title="Documentation of vps_euse">vps_euse</a></td>
+<td>vps/functions.sh</td>
+<td>172</td>
+</tr>
+<tr>
+<td><a href="#vps_exec" title="Documentation of vps_exec">vps_exec</a></td>
+<td>vps/functions.sh</td>
+<td>135</td>
+</tr>
+<tr>
+<td><a href="#vps_generate" title="Documentation of vps_generate">vps_generate</a></td>
+<td>vps/functions.sh</td>
+<td>34</td>
+</tr>
+<tr>
+<td><a href="#vps_get_conf_path" title="Documentation of vps_get_conf_path">vps_get_conf_path</a></td>
+<td>vps/source.sh</td>
+<td>39</td>
+</tr>
+<tr>
+<td><a href="#vps_get_free_id" title="Documentation of vps_get_free_id">vps_get_free_id</a></td>
+<td>vps/functions.sh</td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#vps_get_property" title="Documentation of vps_get_property">vps_get_property</a></td>
+<td>vps/functions.sh</td>
+<td>19</td>
+</tr>
+<tr>
+<td><a href="#vps_getstage" title="Documentation of vps_getstage">vps_getstage</a></td>
+<td>vps/functions.sh</td>
+<td>101</td>
+</tr>
+<tr>
+<td><a href="#vps_post_source" title="Documentation of vps_post_source">vps_post_source</a></td>
+<td>vps/source.sh</td>
+<td>23</td>
+</tr>
+<tr>
+<td><a href="#vps_pre_source" title="Documentation of vps_pre_source">vps_pre_source</a></td>
+<td>vps/source.sh</td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="#vps_restart" title="Documentation of vps_restart">vps_restart</a></td>
+<td>vps/functions.sh</td>
+<td>132</td>
+</tr>
+<tr>
+<td><a href="#vps_source" title="Documentation of vps_source">vps_source</a></td>
+<td>vps/source.sh</td>
+<td>18</td>
+</tr>
+<tr>
+<td><a href="#vps_start" title="Documentation of vps_start">vps_start</a></td>
+<td>vps/functions.sh</td>
+<td>126</td>
+</tr>
+<tr>
+<td><a href="#vps_stop" title="Documentation of vps_stop">vps_stop</a></td>
+<td>vps/functions.sh</td>
+<td>129</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#vps" name="vps"></a><h3>vps()</h3>
+<p> Initialises a vps configuration with a given name</p><h4>Log</h4><ul><li>Error Usage: $usage</li></ul><h4>Param</h4><ul><li>VPS name</li><li>Silent (optionnal)</li></ul><a href="#vps_build" name="vps_build"></a><h3>vps_build()</h3>
+<p></p><a href="#vps_conf_interactive" name="vps_conf_interactive"></a><h3>vps_conf_interactive()</h3>
+<p></p><a href="#vps_conf_interactive_network" name="vps_conf_interactive_network"></a><h3>vps_conf_interactive_network()</h3>
+<p></p><h4>Log</h4><ul><li>Info Please select the network for this ROUTER</li></ul><a href="#vps_configure_fstab" name="vps_configure_fstab"></a><h3>vps_configure_fstab()</h3>
+<p></p><a href="#vps_configure_hosts" name="vps_configure_hosts"></a><h3>vps_configure_hosts()</h3>
+<p></p><a href="#vps_configure_net" name="vps_configure_net"></a><h3>vps_configure_net()</h3>
+<p></p><a href="#vps_configure_portage" name="vps_configure_portage"></a><h3>vps_configure_portage()</h3>
+<p></p><a href="#vps_configure_root" name="vps_configure_root"></a><h3>vps_configure_root()</h3>
+<p></p><a href="#vps_configure_runlevels" name="vps_configure_runlevels"></a><h3>vps_configure_runlevels()</h3>
+<p></p><a href="#vps_delete" name="vps_delete"></a><h3>vps_delete()</h3>
+<p></p><a href="#vps_delete_test_vps" name="vps_delete_test_vps"></a><h3>vps_delete_test_vps()</h3>
+<p></p><a href="#vps_ebackport" name="vps_ebackport"></a><h3>vps_ebackport()</h3>
+<p> vps_backport <package atom></p><a href="#vps_emerge" name="vps_emerge"></a><h3>vps_emerge()</h3>
+<p> vps_emerge <emerge options> Emerges in $vps_master then from the binpkg to $vps_name</p><a href="#vps_enter" name="vps_enter"></a><h3>vps_enter()</h3>
+<p></p><a href="#vps_euse" name="vps_euse"></a><h3>vps_euse()</h3>
+<p> vps_use <package atom> <flags></p><a href="#vps_exec" name="vps_exec"></a><h3>vps_exec()</h3>
+<p></p><a href="#vps_generate" name="vps_generate"></a><h3>vps_generate()</h3>
+<p> Generates a VPS</p><a href="#vps_get_conf_path" name="vps_get_conf_path"></a><h3>vps_get_conf_path()</h3>
+<p></p><a href="#vps_get_free_id" name="vps_get_free_id"></a><h3>vps_get_free_id()</h3>
+<p> Outputs a free id between 100 and 240</p><a href="#vps_get_property" name="vps_get_property"></a><h3>vps_get_property()</h3>
+<p></p><a href="#vps_getstage" name="vps_getstage"></a><h3>vps_getstage()</h3>
+<p></p><a href="#vps_post_source" name="vps_post_source"></a><h3>vps_post_source()</h3>
+<p></p><a href="#vps_pre_source" name="vps_pre_source"></a><h3>vps_pre_source()</h3>
+<p></p><a href="#vps_restart" name="vps_restart"></a><h3>vps_restart()</h3>
+<p></p><a href="#vps_source" name="vps_source"></a><h3>vps_source()</h3>
+<p> Declares module configuration variable names.</p><a href="#vps_start" name="vps_start"></a><h3>vps_start()</h3>
+<p></p><a href="#vps_stop" name="vps_stop"></a><h3>vps_stop()</h3>
+<p></p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>mtests_bashunit functions</h2>
+        <ul>
+<li><a href="#mtests_bashunit" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li><a href="#mtests_bashunit_assert_math" title="Documentation of mtests_bashunit_assert_math">mtests_bashunit_assert_math</a></li><li><a href="#mtests_bashunit_assert_true" title="Documentation of mtests_bashunit_assert_true">mtests_bashunit_assert_true</a></li><li><a href="#mtests_bashunit_assert_zero" title="Documentation of mtests_bashunit_assert_zero">mtests_bashunit_assert_zero</a></li><li><a href="#mtests_bashunit_post_source" title="Documentation of mtests_bashunit_post_source">mtests_bashunit_post_source</a></li><li><a href="#mtests_bashunit_source" title="Documentation of mtests_bashunit_source">mtests_bashunit_source</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class=""><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class="selected"><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>mtests_bashunit documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#mtests/bashunit/1.0/BashunitAssertions.sh" name="mtests/bashunit/1.0/BashunitAssertions.sh"></a><h3>mtests/bashunit/1.0/BashunitAssertions.sh</h3>
+<p> /***************************************************************************  *                                                                         *  *   This program is free software; you can redistribute it and/or modify  *  *   it under the terms of the GNU Lesser General Public License as        *  *   published by  the Free Software Foundation; either version 2 of the   *  *   License, or (at your option) any later version.                       *  *                                                                         *  ***************************************************************************/</p><h4>Subexgroup.com)</h4><ul><li>*</li></ul><a href="#mtests/bashunit/1.0/BashunitTest1.sh" name="mtests/bashunit/1.0/BashunitTest1.sh"></a><h3>mtests/bashunit/1.0/BashunitTest1.sh</h3>
+<p> /***************************************************************************  *                                                                         *  *   This program is free software; you can redistribute it and/or modify  *  *   it under the terms of the GNU Lesser General Public License as        *  *   published by  the Free Software Foundation; either version 2 of the   *  *   License, or (at your option) any later version.                       *  *                                                                         *  ***************************************************************************/</p><h4>Subexgroup.com)</h4><ul><li>*</li></ul><a href="#mtests/bashunit/1.0/BashunitTest2.sh" name="mtests/bashunit/1.0/BashunitTest2.sh"></a><h3>mtests/bashunit/1.0/BashunitTest2.sh</h3>
+<p> /***************************************************************************  *                                                                         *  *   This program is free software; you can redistribute it and/or modify  *  *   it under the terms of the GNU Lesser General Public License as        *  *   published by  the Free Software Foundation; either version 2 of the   *  *   License, or (at your option) any later version.                       *  *                                                                         *  ***************************************************************************/</p><h4>Subexgroup.com)</h4><ul><li>*</li></ul><a href="#mtests/bashunit/1.0/BashunitTest3.sh" name="mtests/bashunit/1.0/BashunitTest3.sh"></a><h3>mtests/bashunit/1.0/BashunitTest3.sh</h3>
+<p> /***************************************************************************  *                                                                         *  *   This program is free software; you can redistribute it and/or modify  *  *   it under the terms of the GNU Lesser General Public License as        *  *   published by  the Free Software Foundation; either version 2 of the   *  *   License, or (at your option) any later version.                       *  *                                                                         *  ***************************************************************************/</p><h4>Subexgroup.com)</h4><ul><li>*</li></ul><a href="#mtests/bashunit/1.0/Bashunit_Test4.sh" name="mtests/bashunit/1.0/Bashunit_Test4.sh"></a><h3>mtests/bashunit/1.0/Bashunit_Test4.sh</h3>
+<p> /***************************************************************************  *                                                                         *  *   This program is free software; you can redistribute it and/or modify  *  *   it under the terms of the GNU Lesser General Public License as        *  *   published by  the Free Software Foundation; either version 2 of the   *  *   License, or (at your option) any later version.                       *  *                                                                         *  ***************************************************************************/</p><h4>Subexgroup.com)</h4><ul><li>*</li></ul><a href="#mtests/bashunit/assertions.sh" name="mtests/bashunit/assertions.sh"></a><h3>mtests/bashunit/assertions.sh</h3>
+<p> Bashunit is a good script, but the assertion functions are very hard to use because they are not documented, and examples are like "assert true" <p> This script provides functions for bashunit which are easier to use not only because they are documented, but also because working and challenging examples are provided.</p><a href="#mtests/bashunit/runner.sh" name="mtests/bashunit/runner.sh"></a><h3>mtests/bashunit/runner.sh</h3>
+<p> This script contains bashunit outputter and listener functions. Bashunit uses listener functions which names are present in the BASHUNIT_TESTLISTENERS environment variable, separated by spaces. Listener functions are run when tests are executed.  Bashunit uses outputter functions which names are present in the BASHUNIT_OUTPUTTER environment variable, separated by spaces. Outputter funcitons are run when all tests are done executing.</p><a href="#mtests/bashunit/source.sh" name="mtests/bashunit/source.sh"></a><h3>mtests/bashunit/source.sh</h3>
+<p> Wraps around bashunit bash testing framework. Read bashunit/current/README for information about working with bashunit. <p> Module tests which use bashunit should be in a subdirectory of the module named "bashunit".</p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#mtests_bashunit" title="Documentation of mtests_bashunit">mtests_bashunit</a></td>
+<td>mtests/bashunit/source.sh</td>
+<td>33</td>
+</tr>
+<tr>
+<td><a href="#mtests_bashunit_assert_math" title="Documentation of mtests_bashunit_assert_math">mtests_bashunit_assert_math</a></td>
+<td>mtests/bashunit/assertions.sh</td>
+<td>37</td>
+</tr>
+<tr>
+<td><a href="#mtests_bashunit_assert_true" title="Documentation of mtests_bashunit_assert_true">mtests_bashunit_assert_true</a></td>
+<td>mtests/bashunit/assertions.sh</td>
+<td>55</td>
+</tr>
+<tr>
+<td><a href="#mtests_bashunit_assert_zero" title="Documentation of mtests_bashunit_assert_zero">mtests_bashunit_assert_zero</a></td>
+<td>mtests/bashunit/assertions.sh</td>
+<td>18</td>
+</tr>
+<tr>
+<td><a href="#mtests_bashunit_post_source" title="Documentation of mtests_bashunit_post_source">mtests_bashunit_post_source</a></td>
+<td>mtests/bashunit/source.sh</td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#mtests_bashunit_source" title="Documentation of mtests_bashunit_source">mtests_bashunit_source</a></td>
+<td>mtests/bashunit/source.sh</td>
+<td>10</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#mtests_bashunit" name="mtests_bashunit"></a><h3>mtests_bashunit()</h3>
+<p> Runs bashunit tests of a module.</p><h4>Calls</h4><ul><li>ResultColletor, RunAll, Run, $BASHUNIT_OUTPUTTER</li></ul><h4>Polite</h4><ul><li>Will try yourmodule_mtests_basshunit()</li></ul><a href="#mtests_bashunit_assert_math" name="mtests_bashunit_assert_math"></a><h3>mtests_bashunit_assert_math()</h3>
+<p> Asserts that a mathematical expression is true. <p> For example: <pre> assert_math "1 > 2" # fails assert_math "1 == 1" # passes </pre> Refer to Bash manual section "ARITHMETIC EVALUATION" for more information.</p><h4>Param</h4><ul><li>Arithmetic expression to evaluate.</li></ul><a href="#mtests_bashunit_assert_true" name="mtests_bashunit_assert_true"></a><h3>mtests_bashunit_assert_true()</h3>
+<p> Asserts that an expression returns 0. <p> For example: <pre> assert_true "foobar =~ oob" # pass, "oob" is in "foobar" assert_true "foo == bar" # fails, "foo" is different from "bar". </pre> Refer to Bash manual section "SHELL GRAMMAR" subsection "Compound Commands".</p><h4>Param</h4><ul><li>Expression to evaluate.</li></ul><a href="#mtests_bashunit_assert_zero" name="mtests_bashunit_assert_zero"></a><h3>mtests_bashunit_assert_zero()</h3>
+<p> Asserts that a command returns a zero status. <p> For example: <pre> assert_zero "ls foobar" # fails if foobar does not exist assert_zero ls # passes if the working directory exists </pre></p><h4>Param</h4><ul><li>Command and arguments to test</li></ul><a href="#mtests_bashunit_post_source" name="mtests_bashunit_post_source"></a><h3>mtests_bashunit_post_source()</h3>
+<p> Sets up environment variables required by bashunit: - outputters, - listeners Read bashunit/runner.sh for more information.</p><a href="#mtests_bashunit_source" name="mtests_bashunit_source"></a><h3>mtests_bashunit_source()</h3>
+<p> Sources mtest addons for bashunit.</p>
+    </div>
+</div>
+
+</body>
+</html>

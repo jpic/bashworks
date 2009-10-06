@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+body {
+    border-top: 10px solid #7f0708;
+    margin: 0; padding: 0;
+    background: #f0f0f0 url(body_bg.jpg);
+    font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+    color: #444;
+}
+.container {width: 980px; margin: 0 auto; overflow: hidden; background: url(container_stretch.gif); font-size: 1.2em; position: relative;}
+#sidenav {
+    width: 300px;
+    position: fixed;
+    float: left;
+}
+a.selected {
+    color: #7f0708;
+}
+li.selected {
+    padding-left: 10px;
+}
+*html #sidenav {
+    position: absolute; 
+    left: expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    top: expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+#sidenav h2 {
+    padding: 0; margin: 15px 0 5px;
+}   
+#sidenav ul {
+    margin: 0; padding: 0 20px 30px 20px;
+    list-style: none;
+    background: url(sidenav_hr.gif) no-repeat right bottom;
+}
+#sidenav ul li{
+    margin: 0; padding:  0;
+    display: inline;
+}
+#sidenav ul li a{
+    display: block;
+    margin: 0; padding:  5px 0 5px 15px;
+    background: url(sidenav_arrow.gif) no-repeat left center;
+    text-decoration: none;
+    color: #333;
+}
+#sidenav ul li a:hover {
+    color: #999;
+}
+
+
+
+#content {
+    float: right;
+    width: 640px;
+    padding: 0 20px 20px;
+}
+#content h2 {
+    color: #7f0708;
+    margin: 10px 0;  padding: 10px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+#content p {
+    line-height: 1.8em;
+    padding: 7px 0;
+    margin: 7px 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function staticNav() { 
+        var sidenavHeight = $("#sidenav").height();
+        var winHeight = $(window).height();
+        var browserIE6 = (navigator.userAgent.indexOf("MSIE 6")>=0) ? true : false;
+
+        if (browserIE6) {
+            $("#sidenav").css({'position' : 'absolute'});
+        } else {
+            $("#sidenav").css({'position' : 'fixed'});
+        }
+    
+        if (sidenavHeight > winHeight) {
+            $("#sidenav").css({'position' : 'static'});
+        }
+    }
+    
+    staticNav();
+    
+    $(window).resize(function () { //Each time the viewport is adjusted/resized, execute the function
+        staticNav();
+    });
+
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div id="sidenav">
+        <h2>conf_auto functions</h2>
+        <ul>
+<li><a href="#conf_auto_conf_interactive" title="Documentation of conf_auto_conf_interactive">conf_auto_conf_interactive</a></li><li><a href="#conf_auto_get_modules" title="Documentation of conf_auto_get_modules">conf_auto_get_modules</a></li><li><a href="#conf_auto_get_variables" title="Documentation of conf_auto_get_variables">conf_auto_get_variables</a></li><li><a href="#conf_auto_load_all" title="Documentation of conf_auto_load_all">conf_auto_load_all</a></li><li><a href="#conf_auto_load_decorator" title="Documentation of conf_auto_load_decorator">conf_auto_load_decorator</a></li><li><a href="#conf_auto_post_source" title="Documentation of conf_auto_post_source">conf_auto_post_source</a></li><li><a href="#conf_auto_save_all" title="Documentation of conf_auto_save_all">conf_auto_save_all</a></li><li><a href="#conf_auto_save_decorator" title="Documentation of conf_auto_save_decorator">conf_auto_save_decorator</a></li><li><a href="#conf_auto_source" title="Documentation of conf_auto_source">conf_auto_source</a></li>
+        </ul>
+
+        <h2>Other modules</h2>
+        <ul>
+<li class=""><a href="break.html" title="Documentation of break">break</a></li><li class=""><a href="conf.html" title="Documentation of conf">conf</a></li><li class="selected"><a href="conf_auto.html" title="Documentation of conf_auto">conf_auto</a></li><li class=""><a href="docs.html" title="Documentation of docs">docs</a></li><li class=""><a href="docs_bashdoc.html" title="Documentation of docs_bashdoc">docs_bashdoc</a></li><li class=""><a href="hack.html" title="Documentation of hack">hack</a></li><li class=""><a href="mlog.html" title="Documentation of mlog">mlog</a></li><li class=""><a href="mpd.html" title="Documentation of mpd">mpd</a></li><li class=""><a href="mtests.html" title="Documentation of mtests">mtests</a></li><li class=""><a href="mtests_bashunit.html" title="Documentation of mtests_bashunit">mtests_bashunit</a></li><li class=""><a href="mtests_shunit.html" title="Documentation of mtests_shunit">mtests_shunit</a></li><li class=""><a href="mtests_shunit2.html" title="Documentation of mtests_shunit2">mtests_shunit2</a></li><li class=""><a href="os.html" title="Documentation of os">os</a></li><li class=""><a href="todo.html" title="Documentation of todo">todo</a></li><li class=""><a href="tpl.html" title="Documentation of tpl">tpl</a></li><li class=""><a href="vcs.html" title="Documentation of vcs">vcs</a></li><li class=""><a href="volume.html" title="Documentation of volume">volume</a></li><li class=""><a href="vps.html" title="Documentation of vps">vps</a></li><li class=""><a href="wepcrack.html" title="Documentation of wepcrack">wepcrack</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>conf_auto documentation</h1>
+
+        <h2>Files</h2>
+
+<a href="#conf/auto/conf.sh" name="conf/auto/conf.sh"></a><h3>conf/auto/conf.sh</h3>
+<p> Functions which overload default behavior of conf module functions are declared here. conf_auto_get_variables creates or uses variables which are named like conf_auto_yourmodule. These variables are subject to change when the conf_module supports array. conf_auto_conf_interactive overloads conf_interactive for the conf_auto module and also helps the user to set up his bash environment.</p><a href="#conf/auto/functions.sh" name="conf/auto/functions.sh"></a><h3>conf/auto/functions.sh</h3>
+<p> Function conf_auto_get_modules outputs the list of module which the user choosed to auto save and load. Its interface is not subject to changes although it currently contains a hack to workaround conf module not supporting arrays. Function conf_auto_load_decorator decorates <a href="conf.html#conf_load">conf_load()</a> and so takes a module name as argument. This function can be called in your module _post_source() function. Function conf_auto_save_all calls <a href="conf.html#conf_save">conf_save()</a> for all modules which the user choosed to auto save and load.</p><a href="#conf/auto/source.sh" name="conf/auto/source.sh"></a><h3>conf/auto/source.sh</h3>
+<p> This submodule of conf allows the user to define the modules which config should be auto saved and auto loaded. <p> It is the only module which _post_source() function should call <a href="conf.html#conf_load">conf_load()</a> because other module should call <a href="conf_auto.html#conf_auto_load_decorator">conf_auto_load_decorator()</a> to load a module configuration <b>if</b> the user wants it autoloaded. <p> See conf_auto/functions.sh for information about the additionnal API for conf. <p> See conf_auto/conf.sh for information about the conf overloads for this module.</p>
+
+
+
+<h2>Functions</h2>
+
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>File</td>
+            <td>Line</td>
+        </tr>
+    </thead>
+    <tbody>
+<tr>
+<td><a href="#conf_auto_conf_interactive" title="Documentation of conf_auto_conf_interactive">conf_auto_conf_interactive</a></td>
+<td>conf/auto/conf.sh</td>
+<td>34</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_get_modules" title="Documentation of conf_auto_get_modules">conf_auto_get_modules</a></td>
+<td>conf/auto/functions.sh</td>
+<td>21</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_get_variables" title="Documentation of conf_auto_get_variables">conf_auto_get_variables</a></td>
+<td>conf/auto/conf.sh</td>
+<td>15</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_load_all" title="Documentation of conf_auto_load_all">conf_auto_load_all</a></td>
+<td>conf/auto/functions.sh</td>
+<td>48</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_load_decorator" title="Documentation of conf_auto_load_decorator">conf_auto_load_decorator</a></td>
+<td>conf/auto/functions.sh</td>
+<td>68</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_post_source" title="Documentation of conf_auto_post_source">conf_auto_post_source</a></td>
+<td>conf/auto/source.sh</td>
+<td>28</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_save_all" title="Documentation of conf_auto_save_all">conf_auto_save_all</a></td>
+<td>conf/auto/functions.sh</td>
+<td>39</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_save_decorator" title="Documentation of conf_auto_save_decorator">conf_auto_save_decorator</a></td>
+<td>conf/auto/functions.sh</td>
+<td>57</td>
+</tr>
+<tr>
+<td><a href="#conf_auto_source" title="Documentation of conf_auto_source">conf_auto_source</a></td>
+<td>conf/auto/source.sh</td>
+<td>17</td>
+</tr>
+
+    </tbody>
+</table>
+
+<a href="#conf_auto_conf_interactive" name="conf_auto_conf_interactive"></a><h3>conf_auto_conf_interactive()</h3>
+<p> Informs the user of acceptable variable values, proposes to save all current configuration and and helps him setting up the bashrc and  bash_logout files if necessary.</p><h4>Calls</h4><ul><li>Conf_interactive</li></ul><h4>Log</h4><ul><li>Info, if bashrc or bash_logout was modified.</li><li>Info Appended conf_auto_load_all to $HOME/.bashrc</li><li>Info Appended conf_auto_save_all to $HOME/.bash_logout</li></ul><h4>Stdout</h4><ul><li>Informations and prompts.</li></ul><a href="#conf_auto_get_modules" name="conf_auto_get_modules"></a><h3>conf_auto_get_modules()</h3>
+<p> Output a list of module names which the user choosed to use with this module.  <p> Its interface is not subject to changes although it currently contains a hack to workaround conf module not supporting arrays. <p> The so-called hack is that it uses variables like conf_auto_yourmodule instead of an array of module names.</p><a href="#conf_auto_get_variables" name="conf_auto_get_variables"></a><h3>conf_auto_get_variables()</h3>
+<p> Create missing variables like conf_auto_yourmodule for each module with default value "n", and then output the list of variables of conf_auto.</p><h4>Calls</h4><ul><li>Conf_get_variables</li></ul><h4>Stdout</h4><ul><li>List of module variables.</li></ul><a href="#conf_auto_load_all" name="conf_auto_load_all"></a><h3>conf_auto_load_all()</h3>
+<p> Load configuration of each module which the users choosed to use with conf_auto.</p><h4>Calls</h4><ul><li>Conf_auto_get_modules, <a href="conf.html#conf_load">conf_load()</a></li></ul><a href="#conf_auto_load_decorator" name="conf_auto_load_decorator"></a><h3>conf_auto_load_decorator()</h3>
+<p> Loads the configuration of a given module only if the user choosed to use it with conf_auto.</p><h4>Calls</h4><ul><li>Conf_auto_get_modules, <a href="conf.html#conf_load">conf_load()</a></li></ul><a href="#conf_auto_post_source" name="conf_auto_post_source"></a><h3>conf_auto_post_source()</h3>
+<p> Sets conf_auto_conf_path and loads the module configuration. <p> Note: your modules should not call conf_load in their _post_source() func, it should call <a href="conf_auto.html#conf_auto_load_decorator">conf_auto_load_decorator()</a> instead, see functions.sh for more details.</p><h4>Calls</h4><ul><li>Conf_load</li></ul><a href="#conf_auto_save_all" name="conf_auto_save_all"></a><h3>conf_auto_save_all()</h3>
+<p> Save configuration of each module which the users choosed to use with conf_auto.</p><h4>Calls</h4><ul><li>Conf_auto_get_modules, <a href="conf.html#conf_save">conf_save()</a></li></ul><a href="#conf_auto_save_decorator" name="conf_auto_save_decorator"></a><h3>conf_auto_save_decorator()</h3>
+<p> Save the configuration of a given module only if the user choosed to use it with conf_auto.</p><h4>Calls</h4><ul><li>Conf_auto_get_modules, <a href="conf.html#conf_save">conf_save()</a></li></ul><a href="#conf_auto_source" name="conf_auto_source"></a><h3>conf_auto_source()</h3>
+<p> Loads the functions that extend the conf API and the conf overloads.</p>
+    </div>
+</div>
+
+</body>
+</html>
