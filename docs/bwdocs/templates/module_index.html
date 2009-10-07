@@ -251,6 +251,12 @@ $(document).ready(function() \{
 
             # remove the first dash
             s/^#//;
+
+            # ignore empty lines
+            if (/^[ ]*$/) {
+                next;
+            }
+
             if ( $tpldebug ) {
                 print "\nRaw line: ", $_, "\n";
             }
@@ -557,6 +563,11 @@ $(document).ready(function() \{
             # remove the first dash
             s/^#//;
 
+            # ignore empty lines
+            if (/^[ ]*$/) {
+                next;
+            }
+
             # skip editor tags
             if ( /-\*- coding/ ) {
                 next;
@@ -780,6 +791,11 @@ $(document).ready(function() \{
 
             # remove the first dash
             s/^#//;
+
+            # ignore empty lines
+            if (/^[ ]*$/) {
+                next;
+            }
 
             # skip editor tags
             if ( /-\*- coding/ ) {
