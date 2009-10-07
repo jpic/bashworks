@@ -3,6 +3,6 @@
 # The wepcrack module wraps around aircrack-ng.
 
 # Blacklists the wepcrack module which has not been fully ported yet
-function wepcrack_pre_source() {
+function wepcrack_pre_load() {
     module_blacklist_add wepcrack
 }

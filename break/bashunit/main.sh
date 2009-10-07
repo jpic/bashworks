@@ -4,9 +4,9 @@
 # the mtests_bashunit submodule.
 
 # Sets up an arbitary conf path and break interval for testing.
-# @calls   break_post_source()
+# @calls   break_post_load()
 function Setup() {
-    break_post_source
+    break_post_load
     
     break_conf_path=/tmp/break.test
     break_interval=3

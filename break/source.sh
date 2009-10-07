@@ -21,13 +21,13 @@
 ## break_previous="1254303082"
 
 # Loads functions
-function break_source() {
+function break_load() {
     source $(module_get_path break)/functions.sh
 }
 
 # This function is responsible for putting the module in a useable state by
 # setting some defaults.
-function break_post_source() {
+function break_post_load() {
     break_interval=7200
     break_conf_path=${HOME}/.break
 }

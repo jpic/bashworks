@@ -6,12 +6,12 @@
 # named "shunit".
 
 # Sets $SHUNIT_HOME environment variable required by shunit.
-function mtests_shunit_pre_source() {
+function mtests_shunit_pre_load() {
     export SHUNIT_HOME="$(module_get_path mtests_shunit)/current"
 }
 
 # Loads shUnitPlus.
-function mtests_shunit_source() {
+function mtests_shunit_load() {
     source $(module_get_path mtests_shunit)/current/shUnitPlus >/dev/null 2>&1
 }
 

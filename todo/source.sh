@@ -3,6 +3,6 @@
 # A simple module to manage a todo list.
 
 # Sources required functions.
-function todo_source() {
+function todo_load() {
     source $(module_get_path todo)/functions.sh
 }

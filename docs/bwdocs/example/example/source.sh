@@ -3,6 +3,7 @@
 # @license some custom license
 # @author some custom author
 # @something whatever
+# Line ending with a dot is a single paragraph.
 # This is a paragraph with code after it:
 ##  # this is a code comment
 ##  this is code
@@ -20,7 +21,7 @@
 #   another multilign
 #   item.
 # Link to another another file like example.sh or from another module like
-# foomodule/source.sh or other_source.sh
+# foomodule/source.sh or other_load.sh
 # Reference to the $foo, $foobar and $bar variables need the dollar prefix.
 
 # This is a typed variable comment block

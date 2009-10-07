@@ -4,7 +4,7 @@
 
 # Blacklists the module.
 # @calls module_blacklist_add()
-function docs_bashdoc_post_source() {
+function docs_bashdoc_post_load() {
     module_blacklist_add docs_bashdoc
 }
 

@@ -6,7 +6,7 @@
 # named "bashunit".
 
 # Sources mtest addons for bashunit.
-function mtests_bashunit_source() {
+function mtests_bashunit_load() {
     source $(module_get_path mtests_bashunit)/runner.sh
     source $(module_get_path mtests_bashunit)/assertions.sh
 }
@@ -16,7 +16,7 @@ function mtests_bashunit_source() {
 # - listeners
 #
 # Read bashunit/runner.sh for more information.
-function mtests_bashunit_post_source() {
+function mtests_bashunit_post_load() {
     if test -z "$BASHUNIT_OUTPUTTER"; then
 	    BASHUNIT_OUTPUTTER="TextOutputter"
     fi
