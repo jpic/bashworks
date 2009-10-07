@@ -6,7 +6,7 @@
 # supporting arrays.
 # Function conf_auto_load_decorator() decorates conf_load() and so takes a
 # module name as argument. This function can be called in your module
-# _post_source() function.
+# _post_load() function.
 # Function conf_auto_save_all calls() conf_save() for all modules which the
 # user choosed to auto save and load.
 

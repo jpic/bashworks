@@ -20,7 +20,7 @@
 #   another multilign
 #   item.
 # Link to another another file like example.sh or from another module like
-# foomodule/source.sh or other_source.sh
+# foomodule/source.sh or other_load.sh
 # Reference to the $foo, $foobar and $bar variables need the dollar prefix.
 
 # This is a typed variable comment block

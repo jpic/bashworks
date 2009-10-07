@@ -7,12 +7,12 @@
 # ncmpc and screen then maybe this module will be useful to you.
 
 # Declares module configuration variable names.
-function mpd_source() {
+function mpd_load() {
     source $(module_get_path mpd)/functions.sh
 }
 
 # It sets some defaults and load the user configuration data.
-function mpd_post_source() {
+function mpd_post_load() {
     mpd_host=""
     mpd_port=""
     mpd_password=""

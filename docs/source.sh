@@ -6,7 +6,7 @@
 ##  docs # run the generator
 
 # Sets up the default path.
-function docs_post_source() {
+function docs_post_load() {
     docs_path="/tmp/docs"
     docs_template_path="$(module_get_path docs)/bwdocs/templates"
     docs_template_debug=0

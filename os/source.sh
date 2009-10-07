@@ -4,7 +4,7 @@
 # The plan: port multi-os compiles and bin/ symlinks from my .bashrc
 
 # Sets $os_type to bsd or linux.
-function os_source() {
+function os_load() {
     uname -a | grep -q -i bsd
     if [[ $? -eq 0 ]]; then
         os_type=bsd

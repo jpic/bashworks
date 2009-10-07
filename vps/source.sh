@@ -11,7 +11,7 @@
 # Sets the default globals if required.
 # @variable $VPS_DIR
 # @variable $VPS_ETC_DIR
-function vps_pre_source() {
+function vps_pre_load() {
     if [[ -z $VPS_DIR ]]; then
         VPS_DIR="/vservers"
     fi
@@ -22,13 +22,13 @@ function vps_pre_source() {
 }
 
 # Declares module configuration variable names.
-function vps_source() {
+function vps_load() {
     source $(module_get_path vps)/functions.sh
     source $(module_get_path vps)/conf.sh
 }
 
 # Unsets all vps variables.
-function vps_post_source() {
+function vps_post_load() {
     vps_name=""
     vps_root=""
     vps_id=""

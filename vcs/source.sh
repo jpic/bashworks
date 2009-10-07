@@ -3,12 +3,12 @@
 # VCS wrapper, for git only right now.
 
 # Sources functions and aliases.
-function vcs_source() {
+function vcs_load() {
     source $(module_get_path vcs)/aliases.sh
 }
 
 # Sets variable defaultts.
-function vcs_post_source() {
+function vcs_post_load() {
     vcs_src_path=""
     vcs_type=""
     vps_conf_path=$(vcs_get_conf_path)
