@@ -8,54 +8,35 @@
 # Its purpose is to setup your $HOME directory depending on the current OS.
 #
 # Files which should be useable with any OS like Perl, Python scripts can live
-# in the $home_prefix/bin folder.
+# in the $os_home_prefix/bin folder.
 #
-# $home_prefix defaults to $HOME.
+# $os_home_prefix defaults to $HOME.
 #
-# Any file from a subdirectory of $home_specifics_preix that matches $OSTYPE
-# will be symlinked to the appropriate directory of $home_prefix.
+# Any file from a subdirectory of $os_home_specifics_preix that matches $OSTYPE
+# will be symlinked to the appropriate directory of $os_home_prefix.
 
 # It will contain directories like bin/, lib/, share/ etc ...
 # It is good to use for the --prefix argument of many setup utilities.
-export home_prefix="$HOME"
+export os_home_real_prefix="$HOME"
 
-# Should have subdirectories $home_prefix, but should only contain things that
+# Should have subdirectories $os_home_prefix, but should only contain things that
 # depend on a particular OS for example things that where built for bsd or
-# lunix.
-export home_virtual_prefix="$HOME/homes"
+# lunix. It could contain directories like bsd, freebsd8, linux ...
+export os_home_repo="$HOME/homes"
 
-# Symlinks any file from a subdirectory of $home_specifics_preix that matches
-# $OSTYPE will be symlinked to the appropriate directory of $home_prefix.
-function os_home_symlink() {
-    local relative_target=""
-    local target_file=""
-    local target_dir=""
+# The current home to use. This is different from $os_home_real_prefix because
+# this should be the path of one of the os-specific subdirectories of
+# $os_home_repo.
+export os_home_current_prefix=""
 
-    for home in $(os_home_get_virtual); do
-        
-        # prepare directories
-        for dir in $(find $home -type d); do
-            # from /home/jpic/homes/bsd/bin/foo to bin
-            relative_target="${dir#$home/}"
-            
-            # from bin to /home/jpic/bin
-            target_dir="$home_prefix/$relative_target"
-            
-            echo mkdir -p "$target_dir"
-        done
-    done
+# Loads functions and conf overloads.
+function os_home_load() {
+    source $(module_get_path os_home)/functions.sh
+    source $(module_get_path os_home)/conf.sh
 }
 
-# Outputs a list of virtual home directories which names match $OSTYPE.
-# @stdout   List of directories separated by spaces.
-function os_home_get_virtual() {
-    local output=""
-
-    for dir in "$home_virtual_prefix"/*; do
-        if [[ $OSTYPE =~ "${dir##*/}" ]]; then
-            output+="$(hack_realpath $dir) "
-        fi
-    done
-
-    echo $output
+# Sets $os_home_current_prefix to the first subdirectory of $os_home_repo that
+# matches $OSTYPE.
+function os_home_post_load() {
+    os_home_current_prefix="$(os_home_get_homedir)"
 }
