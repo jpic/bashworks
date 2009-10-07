@@ -294,6 +294,27 @@ $(document).ready(function() \{
             # set $to_open = p
             else {
                 push @{$buffer{"p"}}, $_;
+
+                if (/\.$/) { # ends paragraph
+                    $doc .= "<p>";
+                     if ( $tpldebug ) {
+                        print "New paragraph should be openned, doing $to_close with \n";
+                    }                   
+                    while(@{$buffer{p}}) {
+                        $_ = shift @{$buffer{p}};
+                        $doc .= $_;
+    
+                        if ($tpldebug) {
+                            print "$_";
+                        }
+                    }
+                    
+                    $doc .= "</p>";
+                    if ( $tpldebug ) {
+                        print "\nClosing new paragraph: $to_close\n";
+                    }
+                }
+
                 $to_open="p";
             }
 
@@ -321,7 +342,7 @@ $(document).ready(function() \{
                     print "\nClosing: $to_close\n";
                 }
             }
-
+            
             # set $to_close to $to_open
             $to_close = $to_open;
         }
@@ -576,6 +597,27 @@ $(document).ready(function() \{
             # set $to_open = p
             else {
                 push @{$buffer{"p"}}, $_;
+
+                if (/\.$/) { # ends paragraph
+                    $doc .= "<p>";
+                     if ( $tpldebug ) {
+                        print "New paragraph should be openned, doing $to_close with \n";
+                    }                   
+                    while(@{$buffer{p}}) {
+                        $_ = shift @{$buffer{p}};
+                        $doc .= $_;
+    
+                        if ($tpldebug) {
+                            print "$_";
+                        }
+                    }
+                    
+                    $doc .= "</p>";
+                    if ( $tpldebug ) {
+                        print "\nClosing new paragraph: $to_close\n";
+                    }
+                }
+
                 $to_open="p";
             }
 
@@ -779,7 +821,29 @@ $(document).ready(function() \{
             # set $to_open = p
             else {
                 push @{$buffer{"p"}}, $_;
+
+                if (/\.$/) { # ends paragraph
+                    $doc .= "<p>";
+                     if ( $tpldebug ) {
+                        print "New paragraph should be openned, doing $to_close with \n";
+                    }                   
+                    while(@{$buffer{p}}) {
+                        $_ = shift @{$buffer{p}};
+                        $doc .= $_;
+    
+                        if ($tpldebug) {
+                            print "$_";
+                        }
+                    }
+                    
+                    $doc .= "</p>";
+                    if ( $tpldebug ) {
+                        print "\nClosing new paragraph: $to_close\n";
+                    }
+                }
+
                 $to_open="p";
+
             }
 
             # if $to_open is not $to_close

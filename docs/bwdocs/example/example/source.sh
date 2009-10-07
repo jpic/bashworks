@@ -3,6 +3,7 @@
 # @license some custom license
 # @author some custom author
 # @something whatever
+# Line ending with a dot is a single paragraph.
 # This is a paragraph with code after it:
 ##  # this is a code comment
 ##  this is code
