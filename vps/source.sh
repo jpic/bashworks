@@ -52,13 +52,7 @@ function vps_conf_get_path() {
 # @param VPS name
 function vps() {
     local usage="vps \$vps_name"
-    vps_name="$1"
-
-    if [[ -z $vps_name ]]; then
-        mlog error "Usage: $usage"
-    fi
-
-    vps_conf_path=$(vps_conf_get_path)
+    conf_set vps_name "$1"
 
     if [[ ! -f $vps_conf_path ]]; then
         mlog info $vps_conf_path not found, configuring new vps
@@ -68,7 +62,7 @@ function vps() {
         vps_admin=$USER
         vps_master="master"
         vps_mailer="mail"
-        vps_packages_dir="${VPS_DIR}/${vps_master}/usr/portage/packages"
+        vps_packages_dir="${VPS_DIR}/${vps_master}/pkgdir"
         vps_stage_name="gentoo-vserver-i686-20090611.tar.bz2"
         vps_stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${vps_stage_name}";
         vps_stage_path="/tmp/${vps_stage_name}"

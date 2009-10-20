@@ -171,3 +171,23 @@ function conf_get_path() {
 
     echo ${!conf_path}
 }
+
+# Sets a given variable to a given value politely.
+# Example:
+##  conf_set foo bar
+##  # if foo_set() is declared then foo_set("bar") is called
+##  # else $foo will be set to $bar
+# @param    Variable name
+# @param    Value
+# @polite   Tries to call yourvariable_set()
+function conf_set() {
+    local module_overload="${1}_set"
+    if [[ $(declare -f $module_overload) ]]; then
+        if [[ ! ${FUNCNAME[*]} =~ $module_overload ]]; then
+            $module_overload "$2"
+            return $?
+        fi
+    fi
+
+    printf -v "$1" "$2"
+}

@@ -82,7 +82,7 @@ function conf_load_from_path() {
 
 # Prompt the user for variable value update, given a variable name list.
 # Note that this method does not save the new values.
-# @param   List of variable names, separated by space
+# @param    List of variable names, separated by space
 function conf_interactive_variables() {
     local conf_variables="$*"
     local conf_value=""
@@ -93,10 +93,10 @@ function conf_interactive_variables() {
         read -p "\$$variable [$conf_value]: " input
 
         if [[ -n $input ]]; then
-            printf -v $variable $input
-            mlog info "Changed $variable to $input"
+            conf_set "$variable" "$input"
         fi
     done
 
     mlog debug "Configured ${conf_variables[@]}"
 }
+

@@ -68,3 +68,20 @@ function vps_conf_interactive() {
         vps_conf_interactive_network
     fi
 }
+
+function vps_master_set() {
+    vps_master="$1"
+    vps_packages_dir="$VPS_DIR/$vps_master/pkgdir"
+}
+
+function vps_name_set() {
+    vps_name="$1"
+    vps_root=${VPS_DIR}/${vps_name}
+    vps_conf_path=$(vps_conf_get_path)
+}
+
+function vps_stage_name_set() {
+    vps_stage_name="$1"
+    vps_stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${vps_stage_name}";
+    vps_stage_path="/tmp/${vps_stage_name}"
+}
