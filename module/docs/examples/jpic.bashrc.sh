@@ -1,10 +1,10 @@
 # i source this from .bashrc
 
 # load the framework
-source $HOME/src/bashworks/module/source.sh
+source $1/module/source.sh
 
 # find modules in my repo
-module_repo $HOME/src/bashworks
+module_repo $1
 
 # load core modules
 module conf mlog hack
