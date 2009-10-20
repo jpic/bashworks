@@ -23,6 +23,4 @@ function conf_auto_load() {
 # @calls conf_load()
 function conf_auto_post_load() {
     conf_auto_conf_path="$HOME/.conf_auto"
-
-    conf_load conf_auto
 }

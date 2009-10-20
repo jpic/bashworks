@@ -62,12 +62,13 @@ function conf_auto_conf_interactive() {
         echo "all modules you choosed"
     
         # propose to add it
-        read -n 1 -p "Append conf_auto_load_all in $HOME/.bashrc ? [y/n]" \
+        echo "Append 'module conf_auto && conf_load conf_auto && conf_auto_load_all'"
+        read -n 1 -p "in $HOME/.bashrc ? [y/n]" \
             choice
     
         # add it
         if [[ "$choice" == "y" ]]; then
-            echo conf_auto_load_all >> $HOME/.bashrc
+            echo 'module conf_load && conf_load conf_auto && conf_auto_load_all' >> $HOME/.bashrc
             mlog info "Appended conf_auto_load_all to $HOME/.bashrc"
         else
             # hack against read -n 1
