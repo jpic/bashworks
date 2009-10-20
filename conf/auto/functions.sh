@@ -39,11 +39,12 @@ function conf_auto_save_all() {
     done
 }
 
-# Load configuration of each module which the users choosed to use with
+# Load module and configuration of modules which the users choosed to use with
 # conf_auto().
 # @calls   conf_auto_get_modules(), conf_load()
 function conf_auto_load_all() {
     for module_name in $(conf_auto_get_modules); do
+        module $module_name
         conf_load $module_name
     done
 }
