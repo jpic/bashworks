@@ -99,18 +99,27 @@ function vps_stage_name_set() {
 
 # Logs configuration inconsistencies.
 function vps_conf_forensic() {
-    source $vps_root/etc/make.globals
-    source $vps_root/etc/make.conf
+    if [[ ! -d $vps_root ]]; then
+        mlog alert "root of vps ($vps_name) is not a directory: $vps_root"
+    fi
+
+    if ! echo "$vps_packages_dir" | grep -q "$(vps_get_property $vps_master root)"; then
+        mlog alert "master root ($(vps_get_property $vps_master root)) not in $vps_packages_dir"
+    fi
+
+    source "$vps_root/etc/make.globals"
+    source "$vps_root/etc/make.conf"
     local guest_pkgdir="${PKGDIR}"
 
-    source $(vps_get_property $vps_master root)/etc/make.globals
-    source $(vps_get_property $vps_master root)/etc/make.conf
+    source "$(vps_get_property $vps_master root)/etc/make.globals"
+    source "$(vps_get_property $vps_master root)/etc/make.conf"
     local master_pkgdir="$(vps_get_property $vps_master root)${PKGDIR}"
 
     # test guest fstab pkgdir
     local expected="$master_pkgdir $guest_pkgdir"
-    if ! grep -q "$expected" $VPS_ETC_DIR/$vps_name/fstab; then
-        mlog alert "fstab does not mount master pkgdir ($master_pkgdir) on guest pkgdir ($guest_pkgdir)"
+    local fstab="$VPS_ETC_DIR/$vps_name/fstab"
+    if ! grep -q "$expected" $fstab; then
+        mlog alert "fstab ($fstab) does not mount master pkgdir ($master_pkgdir) on guest pkgdir ($guest_pkgdir)"
     fi
 
     source $(vps_get_property $vps_master root)/etc/make.globals
