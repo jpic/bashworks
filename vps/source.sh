@@ -73,6 +73,6 @@ function vps() {
     else
         conf_load vps
     fi
-    
-    cd $vps_src_path
+
+    vps_conf_forensic
 }

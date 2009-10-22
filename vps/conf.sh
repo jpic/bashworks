@@ -97,11 +97,38 @@ function vps_stage_name_set() {
     vps_stage_path="/tmp/${vps_stage_name}"
 }
 
-# Informs the user of configuration inconsistencies.
-function vps_conf_repair() {
-    
+# Logs configuration inconsistencies.
+function vps_conf_forensic() {
+    source $vps_root/etc/make.globals
+    source $vps_root/etc/make.conf
+    local guest_pkgdir="${PKGDIR}"
+
+    source $(vps_get_property $vps_master root)/etc/make.globals
+    source $(vps_get_property $vps_master root)/etc/make.conf
+    local master_pkgdir="$(vps_get_property $vps_master root)${PKGDIR}"
+
+    # test guest fstab pkgdir
+    local expected="$master_pkgdir $guest_pkgdir"
+    if ! grep -q "$expected" $VPS_ETC_DIR/$vps_name/fstab; then
+        mlog alert "fstab does not mount master pkgdir ($master_pkgdir) on guest pkgdir ($guest_pkgdir)"
+    fi
+
+    source $(vps_get_property $vps_master root)/etc/make.globals
+    source $(vps_get_property $vps_master root)/etc/make.conf
+
+    # test master buildpkg feature
+    if ! echo $FEATURES | grep -q buildpkg; then
+        mlog alert "'buildpkg' not in master portage FEATURES"
+    fi
 }
 
 # Outputs a list of conf names useable with the vps() conf loading function.
 function vps_conf_all() {
+    local name
+
+    for name in $VPS_ETC_DIR/*.config; do
+        name="${name/$VPS_ETC_DIR\//}"
+        name="${name/.config/}"
+        echo $name
+    done
 }
