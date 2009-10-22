@@ -55,6 +55,8 @@ function vps_conf_interactive_network() {
     vps_host_ip=${ROUTER_INTERNET_MAP[$choice]}
 }
 
+# If $ROUTER_INTERNET_MAP and friends are set then use the sofisticated
+# multi-interface network routing configurator. Runs normally otherwise.
 function vps_conf_interactive() {
     if [[ -z $ROUTER_INTERNET_MAP ]] || [[ -z $ROUTER_INTRANET_MAP ]]; then
         unset vps_ip
@@ -69,19 +71,37 @@ function vps_conf_interactive() {
     fi
 }
 
+# Setter for the "master" variable.
+# Polite caller:
+## conf_set master somevalue
 function vps_master_set() {
     vps_master="$1"
     vps_packages_dir="$VPS_DIR/$vps_master/pkgdir"
 }
 
+# Setter for the "name" variable.
+# Polite caller:
+## conf_set name somevalue
 function vps_name_set() {
     vps_name="$1"
     vps_root=${VPS_DIR}/${vps_name}
     vps_conf_path=$(vps_conf_get_path)
 }
 
+# Setter for the "stage_name" variable.
+# Polite caller:
+## conf_set stage_name somevalue
 function vps_stage_name_set() {
     vps_stage_name="$1"
     vps_stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${vps_stage_name}";
     vps_stage_path="/tmp/${vps_stage_name}"
+}
+
+# Informs the user of configuration inconsistencies.
+function vps_conf_repair() {
+    
+}
+
+# Outputs a list of conf names useable with the vps() conf loading function.
+function vps_conf_all() {
 }
