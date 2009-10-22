@@ -25,10 +25,14 @@ function vps_get_property() {
     conf_save vps
     local current_vps_name=$vps_name
 
-    vps $name 1
+    conf_set vps_name $name
+    conf_load vps
     echo ${!property_name}
 
-    vps $vps_name 1
+    if [[ -n $current_vps_name ]]; then
+        conf_set vps_master $current_vps_name
+        conf_load vps
+    fi
     return 0
 }
 
