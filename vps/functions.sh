@@ -52,7 +52,7 @@ function vps_generate() {
 
 # Make the vps mount $vps_packages_dir.
 function vps_configure_fstab() {
-    echo ${vps_packages_dir} /usr/portage/packages none bind,ro 0 0 >> ${vps_root}/etc/fstab
+    echo ${vps_packages_dir} /usr/portage/packages none bind,ro 0 0 >> $VPS_ETC_DIR/$vps_name/fstab
 }
 
 # Gets the ip of the $vps_mailer vps and uses it to set the vps "mail" host ip
