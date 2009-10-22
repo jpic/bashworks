@@ -59,15 +59,12 @@ function vps() {
     if [[ ! -f $vps_conf_path ]]; then
         mlog info $vps_conf_path not found, configuring new vps
 
-        vps_root=${VPS_DIR}/${vps_name}
+        conf_set vps_master master
+        conf_set vps_mailer mail
+        conf_set vps_stage_name gentoo-vserver-i686-20090611.tar.bz2
         vps_id=$(vps_get_free_id)
         vps_admin=$USER
-        vps_master="master"
-        vps_mailer="mail"
-        vps_packages_dir="${VPS_DIR}/${vps_master}/pkgdir"
-        vps_stage_name="gentoo-vserver-i686-20090611.tar.bz2"
         vps_stage_url="http://bb.xnull.de/projects/gentoo/stages/i686/gentoo-i686-20090611/vserver/${vps_stage_name}";
-        vps_stage_path="/tmp/${vps_stage_name}"
 
         conf vps
     else
