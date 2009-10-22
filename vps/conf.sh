@@ -84,8 +84,8 @@ function vps_master_set() {
 ## conf_set name somevalue
 function vps_name_set() {
     vps_name="$1"
-    vps_root=${VPS_DIR}/${vps_name}
-    vps_conf_path=$(vps_conf_get_path)
+    vps_root="${VPS_DIR}/${vps_name}"
+    vps_conf_path="$(vps_conf_get_path)"
 }
 
 # Setter for the "stage_name" variable.
