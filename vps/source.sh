@@ -44,6 +44,8 @@ function vps_post_load() {
     vps_conf_path=$(vps_conf_get_path)
 }
 
+# Outputs the path of the current configuration, reversed from $VPS_ETC_DIR and
+# $vps_name.
 function vps_conf_get_path() {
     echo $VPS_ETC_DIR/${vps_name}.config
 }
