@@ -255,3 +255,10 @@ function vps_ebackport() {
     
     vps_updateportage
 }
+
+# Patch baselayout.
+# Baselayout 2 totally fails when used in a vserver guest. This applies the
+# require patch for successfull Gentoo vserver guest boot.
+function vps_configure_baselayout() {
+    /usr/lib/util-vserver/distributions/gentoo/initpost $VPS_ETC_DIR/$vps_name /usr/lib/util-vserver/util-vserver-vars
+}
