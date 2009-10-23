@@ -26,7 +26,7 @@ function docs() {
 
     export docs_path
     export docs_template_path
-    $(module_get_path docs)/bwdocs/doc.pl $(module_get_repo_paths)
+    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/..
 
     rst2html "$(module_get_path module)/docs/guide.rst" > "$docs_path/bashworks_guide.html"
 }
