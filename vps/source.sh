@@ -21,10 +21,18 @@ function vps_pre_load() {
     fi
 }
 
-# Declares module configuration variable names.
+# Source module functions and util-vserver functions
 function vps_load() {
     source $(module_get_path vps)/functions.sh
     source $(module_get_path vps)/conf.sh
+
+    : ${UTIL_VSERVER_VARS:=/usr/lib/util-vserver/util-vserver-vars}
+    test -e "$UTIL_VSERVER_VARS" || {
+        echo $"Can not find util-vserver installation (the file '$UTIL_VSERVER_VARS' would be expected); aborting..." >&2 
+        exit 1
+    }
+    . "$UTIL_VSERVER_VARS"
+    . "$_LIB_FUNCTIONS"
 }
 
 # Unsets all vps variables.
