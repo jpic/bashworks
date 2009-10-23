@@ -98,6 +98,7 @@ function vps_stage_name_set() {
 }
 
 # Logs configuration inconsistencies.
+# @credit MetaPhaze
 function vps_conf_forensic() {
     if [[ ! -d $vps_root ]]; then
         mlog alert "root of vps ($vps_name) is not a directory: $vps_root"
@@ -128,6 +129,13 @@ function vps_conf_forensic() {
     # test master buildpkg feature
     if ! echo $FEATURES | grep -q buildpkg; then
         mlog alert "'buildpkg' not in master portage FEATURES"
+    fi
+
+    local baselayout=$(find $vps_root/var/db/pkg/sys-apps/ -name "baselayout-*" -type d)
+    baselayout=${baselayout##*/}
+    baselayout=${baselayout/baselayout-/}
+    if [[ ! $baselayout =~ ^2\. ]]; then
+        mlog alert "Installed baselayout version should be 2.x, current: $baselayout and don't forget to patch it with vps_configure_baselayout()"
     fi
 }
 
