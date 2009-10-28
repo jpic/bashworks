@@ -224,7 +224,7 @@ function vps_emerge() {
 # Example usage:
 ## # Add sqlite use flag to php
 ## # vps_euse dev-lang/php sqlite
-# @calls vps_updateportage 
+# @calls vps_configure_portage 
 # @param package atom
 # @param use flags
 function vps_euse() {
@@ -234,7 +234,7 @@ function vps_euse() {
 
     echo $atom >> $(vps_get_property $vps_master root)/etc/portage/package.keywords
 
-    vps_updateportage
+    vps_configure_portage
 }
 
 # Adds the given package atom to the master vps package.keywords and then
@@ -243,11 +243,11 @@ function vps_euse() {
 ## # You're looking for troubble, and want unstable mysql
 ## vps_ebackport dev-db/mysql
 # @param package atom to add to package.keywords
-# @call vps_updateportage
+# @call vps_configure_portage
 function vps_ebackport() {
     local atom=$1
 
     echo $atom >> $(vps_get_property $vps_master root)/etc/portage/package.keywords
     
-    vps_updateportage
+    vps_configure_portage
 }
