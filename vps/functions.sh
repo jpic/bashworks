@@ -25,10 +25,14 @@ function vps_get_property() {
     conf_save vps
     local current_vps_name=$vps_name
 
-    vps $name 1
+    conf_set vps_name $name
+    conf_load vps
     echo ${!property_name}
 
-    vps $vps_name 1
+    if [[ -n $current_vps_name ]]; then
+        conf_set vps_master $current_vps_name
+        conf_load vps
+    fi
     return 0
 }
 
@@ -48,7 +52,7 @@ function vps_generate() {
 
 # Make the vps mount $vps_packages_dir.
 function vps_configure_fstab() {
-    echo ${vps_packages_dir} /usr/portage/packages none bind,ro 0 0 >> ${vps_root}/etc/fstab
+    echo ${vps_packages_dir} /usr/portage/packages none bind,ro 0 0 >> $VPS_ETC_DIR/$vps_name/fstab
 }
 
 # Gets the ip of the $vps_mailer vps and uses it to set the vps "mail" host ip
@@ -250,4 +254,11 @@ function vps_ebackport() {
     echo $atom >> $(vps_get_property $vps_master root)/etc/portage/package.keywords
     
     vps_configure_portage
+}
+
+# Patch baselayout.
+# Baselayout 2 totally fails when used in a vserver guest. This applies the
+# require patch for successfull Gentoo vserver guest boot.
+function vps_configure_baselayout() {
+    /usr/lib/util-vserver/distributions/gentoo/initpost $VPS_ETC_DIR/$vps_name /usr/lib/util-vserver/util-vserver-vars
 }
