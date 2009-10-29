@@ -31,10 +31,14 @@
 ##  hg push
 ##  remote your_deploy $deploy_to
 
-# Runs a local function on one or several servers through ssh in given paths.
+# Runs a local function or remote command on one or several servers through ssh
+# in given paths.
 # For example, source this module and try:
+##  # with a local function
 ##  function hello() { echo "Hello from `pwd`"; }
 ##  remote hello somehost: otherhost:/path/to/test
+##  # with a remote command
+##  remote "git pull origin master" somehost:/path
 function remote() {
     local do="$1"
     shift
@@ -47,8 +51,13 @@ function remote() {
     for target in $targets; do
         target_host="${target%%:*}"
         target_path="${target/$target_host:/}"
-        
-        mlog notice "Running $do() on $target_host in $target_path"
-        ssh $target_host "cd $target_path && $(declare -f $do) && $do"
+
+        if [[ -n "$(declare -f $do)" ]]; then
+            mlog notice "Running $do() on $target_host in $target_path"
+            ssh $target_host "cd $target_path && $(declare -f $do) && $do"
+        else
+            mlog notice "Running $do on $target_host in $target_path"
+            ssh $target_host "cd $target_path && $do"
+        fi
     done
 }
