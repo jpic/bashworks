@@ -35,12 +35,29 @@ function hack_cdpath() {
 # @param    Path to make real
 # @stdout   Absolute path
 function hack_realpath() {
-    if which -s realpath; then
+    if hack_which realpath; then
         realpath "$1"
-    elif which -s readlink; then
+    elif hack_which readlink; then
         readlink -f "$1"
     else
         mlog error "Need either realpath or readlink command"
         return 1
+    fi
+}
+
+# Cross OS `which` command implementation.
+# @param    Command name
+function hack_which() {
+    local linux=""
+
+    if [[ $OSTYPE =~ bsd ]]; then
+        return which -s "$1"
+    else
+        linux="$(which $1 2>&1)"
+        if [[ $linux =~ "no $1" ]]; then
+            return 1
+        else
+            return 0
+        fi
     fi
 }
