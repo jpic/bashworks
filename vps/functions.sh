@@ -48,6 +48,21 @@ function vps_generate() {
     vps_configure_runlevels
     conf_save vps
     vps_start
+    vps_exec emerge -aveK world
+}
+
+# For postfixadmin with postgresql ...
+# This is the less sucking solution to NOT install smtpd on all vhosts
+# @quick-hack this function will probably change a lot
+function vps_configure_mail() {
+    if [[ -z $VPS_POSTMASTER_PASSWORD ]] || [[ -z $VPS_DOMAIN ]] || [[ -z $VPS_POSTMASTER_THRUSTED ]]; then
+        mlog error "Not doing anything unless postfixadmin is used with postgresql in $vps_mailer and you know what you are doing"
+        return 2
+    fi
+
+    for thrusted in $VPS_POSTMASTER_THRUSTED; do
+        vserver $vps_mailer suexec postgres psql -d postfix -c "insert into mailbox (username, password, name, maildir, active, domain, local_part) values ( '${thrusted}@${vps_name}.$VPS_DOMAIN' , '$VPS_POSTMASTER_PASSWORD', 'Postmasters', 'postmaster/', '1', '${vps_name}.$VPS_DOMAIN', 'postmaster' );"
+    done
 }
 
 # Make the vps mount $vps_packages_dir.
