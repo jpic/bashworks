@@ -78,10 +78,14 @@ function vps_configure_hosts() {
 }
 
 # Copies /etc/portage from the $vps_master vps to the current vps. This is
-# useful if all packages and tests should not be done on the host server. 
+# useful if all packages and tests should not be done on the host server.
+# It also selects the same profile as the master.
 function vps_configure_portage() {
     local master_root=$(vps_get_property $vps_master root)
     cp -r ${master_root}/etc/portage/* ${vps_root}/etc/portage
+
+    local master_profile=$(ls -l /vservers/master/etc/make.profile | sed -e "s/.*-> //")
+    ln -sfn $master_profile $vps_root/etc/make.profile
 }
 
 # Set up the VPS interface to use host dummy0, $vps_ip, $vps_id as name and 24
