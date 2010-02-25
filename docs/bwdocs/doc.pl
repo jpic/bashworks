@@ -1,23 +1,23 @@
 #!/usr/bin/perl
 
-# do NOT uncomment THAT
-#use strict;
-#use warnings;
+use strict;
+use warnings;
 
 use Text::Template;
 use Cwd 'realpath';
 use Text::Template 'fill_in_file';
 
-my $template_dir = $ENV{"docs_template_path"};
+
+my ($template_dir               , $out_dir          , $debug                  , $tpldebug                        ) =
+   ( $ENV{"docs_template_path"} , $ENV{"docs_path"} , $ENV{"docs_debug"} || 0 , $ENV{"docs_template_debug"} || 0 );
+
+
 print "Templates dir (env \$docs_template_path): $template_dir\n";
 
-my $out_dir = $ENV{"docs_path"};
 print "Documentation output (env \$docs_path): $out_dir\n";
 
-my $debug = $ENV{"docs_debug"} || 0;
 print "Debug (env \$docs_debug): $debug\n";
 
-my $tpldebug = $ENV{"docs_template_debug"} || 0;
 print "Template debug (env \$docs_template_debug): $tpldebug\n";
 
 my %module_paths = ();
@@ -28,6 +28,7 @@ my %file_module = ();
 my %file_doc = ();
 my %file_relative = ();
 my %file_link = ();
+my %file_anchor = ();
 my %relative_file = ();
 my %func_lines = ();
 my %func_files = ();
@@ -42,17 +43,17 @@ my %var_link = ();
 my %var_type = ();
 my %var_default = ();
 
-foreach $argnum (0 .. $#ARGV) {
+foreach my $argnum (0 .. $#ARGV) {
     $_ = $ARGV[$argnum];
     if (/\/$/) {
         print "ERROR: paths to module repositories should not have trailing slashes!\n";
         die;
     }
     # find modules and submodules
-    @sources = split(/\n/, `find $ARGV[$argnum] -name source.sh`);
+    my @sources = split(/\n/, `find $ARGV[$argnum] -name source.sh`);
     foreach(@sources) {
         s/\/source\.sh//;
-        $path = realpath($_);
+        my $path = realpath($_);
         s/($ARGV[$argnum])\///;
         s/\//_/;
         $module_paths{$_} = $path;
@@ -65,18 +66,18 @@ if ( $debug ) {
 
 # find scripts and their belonging module
 # longest module name first
-foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_paths{$b}) } keys %module_paths) {
+foreach my $module (reverse sort { length($module_paths{$a}) cmp length($module_paths{$b}) } keys %module_paths) {
 
-    $path = $module_paths{$module};
+    my $path = $module_paths{$module};
     
     if ( $debug ) {
         print "- $module from $path:\n";
     }
 
-    @scripts = split(/\n/, `find "$path" -name "*.sh"`);
+    my @scripts = split(/\n/, `find "$path" -name "*.sh"`);
 
     foreach(@scripts) {
-        $script = $_;
+        my $script = $_;
         if(grep($_ eq $script, keys %file_module)) {
             next;
         }
@@ -88,15 +89,15 @@ foreach $module (reverse sort { length($module_paths{$a}) cmp length($module_pat
         }
 
         $file_module{$_} = $module;
-        $absolute = $_;
+        my $absolute = $_;
 
         $_ = $module;
         s/_/\//g;
-        $module_rel = $_;
+        my $module_rel = $_;
 
         $_ = $absolute;
         s/^.*($module_rel)/$module_rel/;
-        $relative = $_;
+        my $relative = $_;
         $file_relative{$absolute} = $relative;
         $relative_file{$relative} = $absolute;
         s/\//_/g;
@@ -115,8 +116,8 @@ if ( $debug ) {
 }
 
 # find docblocks and their belonging functions
-foreach $script (keys %file_module) {
-    $module = $file_module{$script};
+foreach my $script (keys %file_module) {
+    my $module = $file_module{$script};
 
     if ( $debug ) {
         print "- $module";
@@ -124,10 +125,10 @@ foreach $script (keys %file_module) {
 
     open SCRIPT, "< $script";
 
-    $line= 1;
-    $current_doc = "";
-    $current_func = "";
-    $script_doc = "";
+    my $line= 1;
+    my $current_doc = "";
+    my $current_func = "";
+    my $script_doc = "";
     while(<SCRIPT>) {
         if (/^# / || /^##/) {
             # function current_docblock
@@ -146,7 +147,7 @@ foreach $script (keys %file_module) {
             $func_link{$current_func} = $module . ".html#" .$current_func;
             $module_func{$module} = 1;
         } elsif (/^declare -([a-zA-Z]) ([a-zA-Z0-9_-]+)(=(.*))?/) {
-            $current_var=$2;
+            my $current_var=$2;
             $var_lines{$current_var} = $line;
             $var_files{$current_var} = $script;
             $var_modules{$current_var} = $module;
@@ -166,7 +167,7 @@ foreach $script (keys %file_module) {
             }
             $current_doc = "";
         } elsif (/^(declare )?([a-zA-Z0-9_-]+)=(.*)/) {
-            $current_var=$2;
+            my $current_var=$2;
             $var_lines{$current_var} = $line;
             $var_files{$current_var} = $script;
             $var_modules{$current_var} = $module;
@@ -208,15 +209,15 @@ if ( $debug ) {
     print "Phase 3: rendering\n";
 }
 
-for $module ( keys %module_paths ) {
+for my $module ( keys %module_paths ) {
     if ( $debug ) {
         print "- $module:\n";
     }
 
-    $template = Text::Template->new(TYPE => 'FILE',  SOURCE => $template_dir . '/module_index.html')
+    my $template = Text::Template->new(TYPE => 'FILE',  SOURCE => $template_dir . '/module_index.html')
       or die "Couldn't construct template: $Text::Template::ERROR";
 
-    $text = $template->fill_in( HASH => {
+    my $text = $template->fill_in( HASH => {
         "module_name" => \$module,
         "template_dir" => \$template_dir,
         "out_dir" => \$out_dir,
