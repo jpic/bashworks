@@ -44,18 +44,18 @@ my (
     %var_default
 );
 
-foreach my $argnum (0 .. $#ARGV) {
-    $_ = $ARGV[$argnum];
+foreach my $arg (@ARGV) {
+    $_ = $arg;
     if (/\/$/) {
         print "ERROR: paths to module repositories should not have trailing slashes!\n";
         die;
     }
     # find modules and submodules
-    my @sources = split(/\n/, `find $ARGV[$argnum] -name source.sh`);
+    my @sources = split(/\n/, `find $arg -name source.sh`);
     foreach(@sources) {
         s/\/source\.sh//;
         my $path = realpath($_);
-        s/($ARGV[$argnum])\///;
+        s/($arg)\///;
         s/\//_/;
         $module_paths{$_} = $path;
     }
