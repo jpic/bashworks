@@ -1,0 +1,2 @@
+to see if there are any problems, run:
+perl -Ilib t/basic.t
