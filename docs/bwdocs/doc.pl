@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+# for examples look here:
+# http://pub.ocpsys.com/bashworks/break.html
+
+
 use strict;
 use warnings;
 
