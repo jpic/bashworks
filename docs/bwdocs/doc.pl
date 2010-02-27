@@ -215,11 +215,12 @@ for my $module ( keys %module_paths ) {
 
     print "- $module:\n" if $debug;
 
-    my $template = Text::Template->new(
-                                            TYPE => 'FILE',
-                                            SOURCE => $template_dir . '/module_index.html'
-                                      )
-                   or die "Couldn't construct template: $Text::Template::ERROR";
+    my $template = 
+    Text::Template->new(
+ 			    TYPE => 'FILE',
+ 			    SOURCE => $template_dir . '/module_index.html'
+		       )
+    or die "Couldn't construct template: $Text::Template::ERROR";
 
     my $text = $template->fill_in( HASH => {
         "module_name"   => \$module,

@@ -5,16 +5,8 @@ use Capture::Tiny qw/capture/;
 
 
 my ($stdout,$stderr) = capture {
-
-
 	#need to run these first:
-	#
-	#source $HOME/src/bashworks-readonly/module/docs/examples/jpic.bashrc.sh $HOME/src/bashworks-readonly
-	#module docs
-	#export docs_path=/home/perso/pub/bashworks
-	#docs
-
-	system("perl doc.pl example");
+	system("./t/test.sh");
 };
 
 ok($stderr eq ''                    , "stderr is not empty");
