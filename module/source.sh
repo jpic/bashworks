@@ -109,14 +109,14 @@
 # Check bash version. We need at least 4.0.x
 # Lets not use anything like =~ here because
 # that may not work on old bash versions.
-if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
-	echo "Sorry your bash version is too old!"
-	echo "You need at least version 3.2 of bash"
-	echo "Please install a newer version:"
-	echo " * Either use your distro's packages"
-	echo " * Or see http://www.gnu.org/software/bash/"
-	return 2
-fi
+#if [[ "$(awk -F. '{print $1 $2}' <<< $BASH_VERSION)" -lt 40 ]]; then
+	#echo "Sorry your bash version is too old!"
+	#echo "You need at least version 3.2 of bash"
+	#echo "Please install a newer version:"
+	#echo " * Either use your distro's packages"
+	#echo " * Or see http://www.gnu.org/software/bash/"
+	#return 2
+#fi
 
 # string repo name => string repo absolute path
 declare -A module_repo_paths
