@@ -136,17 +136,17 @@ function module_load_core_modules() {
 # documentation.
 # @param repository names separated by spaces
 function module_repo() {
-    module_repo_add $*
-    module_repo_find ${!module_repo_paths[@]}
+    module_repo_add "$@"
+    module_repo_find "${!module_repo_paths[@]}"
 }
 
 # (Re)-loads one or several modules. See module/source.sh file documentation.
 # @param module names separated by spaces
 function module() {
-    module_source $*
-    module_pre_load $*
-    module_load $*
-    module_post_load $*
+    module_source "$@"
+    module_pre_load "$@"
+    module_load "$@"
+    module_post_load "$@"
 }
 
 # Adds one or several repo path after removing the trailing slash.
@@ -165,9 +165,9 @@ function module_repo_add() {
         # in case hack module is not loaded yet, then hack_realpath should
         # not be depended on.
         if [[ $OSTYPE =~ bsd ]]; then
-            abs_path="$(realpath $1)"
+            abs_path="$(realpath "$1")"
         else
-            abs_path="$(readlink -f $1)"
+            abs_path="$(readlink -f "$1")"
         fi
 
         if [[ ${abs_path:(-1)} == "/" ]]; then
@@ -208,18 +208,19 @@ function module_repo_find() {
 
     while [[ -n "$1" ]]; do
         
-        path=${module_repo_paths[$1]}
+        path="${module_repo_paths[$1]}"
 
-        for module_path in `find $path -name source.sh -exec dirname {} \;`; do
+        while read -r source_path; do
 
-            rel_path="${module_path#*$path/}"
+            module_path="$(dirname "$source_path")"
+
+            rel_path="${module_path#*"$path"/}"
             module_name="${rel_path//\//_}"
             
             module_paths[$module_name]="$module_path"
             module_status[$module_name]="find"
         
-        done
-        
+        done < <(find "$path" -name source.sh -print0 | xargs -0n 1)
         shift
     done
 }
@@ -236,7 +237,12 @@ function module_source() {
         if [[ -n "$(declare -f $module_source)" ]]; then
             $module_source
         else
-            source ${module_paths[$1]}/source.sh
+            local modsrc="${module_paths[$1]}"/source.sh
+            if [[ -r $modsrc ]]; then
+                source "$modsrc"
+            else
+                echo "Module '$1' source not found at $modsrc" >&2
+            fi
         fi  
 
         module_status[$1]="source"
@@ -347,15 +353,23 @@ function module_get_path() {
 
 # This function dumps all module variables.
 function module_debug() {
-    echo "List of repo names and paths":
+    if [[ 0 -lt ${#module_repo_paths[@]} ]]; then
+        echo "List of repo names and paths":
 
-    for repo_name in ${!module_repo_paths[@]}; do
-        echo " - ${repo_name} from ${module_repo_paths[$repo_name]}"
-    done
+        for repo_name in ${!module_repo_paths[@]}; do
+            echo " - ${repo_name} from '${module_repo_paths[$repo_name]}'"
+        done
+    else
+        echo "No repositories: use 'module_repo <path>' to add."
+    fi
 
-    echo "List of loaded modules, statuses and paths:"
+    if [[ 0 -lt ${#module_paths[@]} ]]; then
+        echo "List of loaded modules, statuses and paths:"
 
-    for module_name in ${!module_paths[@]}; do
-        echo " - ${module_name}, ${module_status[$module_name]} from ${module_paths[$module_name]}"
-    done
+        for module_name in ${!module_paths[@]}; do
+            echo " - ${module_name}, ${module_status[$module_name]} from '${module_paths[$module_name]}'"
+        done
+    else
+        echo "No loaded modules: use 'module <name>' to load."
+    fi
 }
