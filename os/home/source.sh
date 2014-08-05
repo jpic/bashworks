@@ -31,8 +31,8 @@ export os_home_current_prefix=""
 
 # Loads functions and conf overloads.
 function os_home_load() {
-    source $(module_get_path os_home)/functions.sh
-    source $(module_get_path os_home)/conf.sh
+    source "$(module_get_path os_home)"/functions.sh
+    source "$(module_get_path os_home)"/conf.sh
 }
 
 # Sets $os_home_current_prefix to the first subdirectory of $os_home_repo that

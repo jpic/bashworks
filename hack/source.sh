@@ -5,7 +5,7 @@
 #	@License	Apache
 
 function hack_load() {
-    source $(module_get_path hack)/functions.sh
+    source "$(module_get_path hack)"/functions.sh
 }
 
 function hack_post_load() {

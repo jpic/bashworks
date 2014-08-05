@@ -12,7 +12,7 @@ function mtests_shunit_pre_load() {
 
 # Loads shUnitPlus.
 function mtests_shunit_load() {
-    source $(module_get_path mtests_shunit)/current/shUnitPlus >/dev/null 2>&1
+    source "$(module_get_path mtests_shunit)"/current/shUnitPlus >/dev/null 2>&1
 }
 
 # Runs the test suites of a module.
@@ -30,7 +30,7 @@ function mtests_shunit() {
         fi
     fi
 
-    local module_path=$(module_get_path $module_name)
+    local module_path="$(module_get_path $module_name)"
 
     if [[ ! -d $module_path/shunit ]]; then
         return 1

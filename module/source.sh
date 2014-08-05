@@ -343,9 +343,9 @@ function module_unset() {
 # location on the file system.
 # This function is used by any module _load() function.
 # Example usage:
-#   source $(module_get_path yourmodule)/functions.sh
+#   source "$(module_get_path yourmodule)"/functions.sh
 # Example submodule usage:
-#   source $(module_get_path yourmodule_submodule)/functions.sh
+#   source "$(module_get_path yourmodule_submodule)"/functions.sh
 # @param   Module name
 function module_get_path() {
     echo ${module_paths[$1]}

@@ -8,7 +8,7 @@
 
 # Declares module configuration variable names.
 function mpd_load() {
-    source $(module_get_path mpd)/functions.sh
+    source "$(module_get_path mpd)"/functions.sh
 }
 
 # It sets some defaults and load the user configuration data.

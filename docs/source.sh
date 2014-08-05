@@ -26,7 +26,7 @@ function docs() {
 
     export docs_path
     export docs_template_path
-    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/..
+    "$(module_get_path docs)"/bwdocs/doc.pl "$(module_get_path docs)"/..
 
     rst2html "$(module_get_path module)/docs/guide.rst" > "$docs_path/bashworks_guide.html"
 }
@@ -46,5 +46,5 @@ function docs_test() {
     export docs_template_path
     export docs_template_debug
     export docs_debug
-    $(module_get_path docs)/bwdocs/doc.pl $(module_get_path docs)/bwdocs/example
+    "$(module_get_path docs)"/bwdocs/doc.pl "$(module_get_path docs)"/bwdocs/example
 }

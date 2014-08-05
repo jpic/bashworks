@@ -4,7 +4,7 @@
 
 # Sources functions and aliases.
 function vcs_load() {
-    source $(module_get_path vcs)/aliases.sh
+    source "$(module_get_path vcs)"/aliases.sh
 }
 
 # Sets variable defaultts.
@@ -43,7 +43,7 @@ function vcs() {
             mlog debug "Checking for $vcs_type in $vcs_src_path"
             if [[ -d ".$vcs_type" ]]; then
                 mlog debug "Found $vcs_type in $vcs_src_path"
-                source $(module_get_path vcs)/${vcs_type}.sh
+                source "$(module_get_path vcs)"/${vcs_type}.sh
             fi
         done
     fi

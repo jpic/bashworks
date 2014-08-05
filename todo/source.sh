@@ -4,5 +4,5 @@
 
 # Sources required functions.
 function todo_load() {
-    source $(module_get_path todo)/functions.sh
+    source "$(module_get_path todo)"/functions.sh
 }

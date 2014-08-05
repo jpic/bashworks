@@ -7,8 +7,8 @@
 
 # Sources mtest addons for bashunit.
 function mtests_bashunit_load() {
-    source $(module_get_path mtests_bashunit)/runner.sh
-    source $(module_get_path mtests_bashunit)/assertions.sh
+    source "$(module_get_path mtests_bashunit)"/runner.sh
+    source "$(module_get_path mtests_bashunit)"/assertions.sh
 }
 
 # Sets up environment variables required by bashunit:
@@ -30,7 +30,7 @@ function mtests_bashunit_post_load() {
 # @polite  Will try yourmodule_mtests_basshunit()
 # @calls   ResultColletor(), RunAll(), Run(), $BASHUNIT_OUTPUTTER
 function mtests_bashunit() {
-    local bashunit_dir=$(module_get_path mtests)/bashunit/current
+    local bashunit_dir="$(module_get_path mtests)"/bashunit/current
     local module_name=$1
 
     local module_overload="${module_name}_mtests_bashunit"
@@ -42,7 +42,7 @@ function mtests_bashunit() {
         fi
     fi
 
-    local module_path=$(module_get_path $module_name)
+    local module_path="$(module_get_path $module_name)"
 
     if [[ ! -d $module_path/bashunit ]]; then
         return 1
