@@ -10,6 +10,6 @@
 # This function should be called when the module is loaded. It will load
 # functions it depends on.
 function conf_load() {
-    source $(module_get_path conf)/functions.sh
-    source $(module_get_path conf)/module.sh
+    source "$(module_get_path conf)"/functions.sh
+    source "$(module_get_path conf)"/module.sh
 }

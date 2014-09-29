@@ -12,8 +12,8 @@
 
 # Loads the functions that extend the conf API and the conf overloads.
 function conf_auto_load() {
-    source $(module_get_path conf_auto)/functions.sh
-    source $(module_get_path conf_auto)/conf.sh
+    source "$(module_get_path conf_auto)"/functions.sh
+    source "$(module_get_path conf_auto)"/conf.sh
 }
 
 # Sets conf_auto_conf_path and loads the module configuration.
@@ -22,5 +22,5 @@ function conf_auto_load() {
 # details.
 # @calls conf_load()
 function conf_auto_post_load() {
-    conf_auto_conf_path="$HOME/.conf_auto"
+    conf_auto_conf_path="${HOME}"/.conf_auto
 }

@@ -23,8 +23,8 @@ function vps_pre_load() {
 
 # Source module functions and util-vserver functions
 function vps_load() {
-    source $(module_get_path vps)/functions.sh
-    source $(module_get_path vps)/conf.sh
+    source "$(module_get_path vps)"/functions.sh
+    source "$(module_get_path vps)"/conf.sh
 
     : ${UTIL_VSERVER_VARS:=/usr/lib/util-vserver/util-vserver-vars}
     test -e "$UTIL_VSERVER_VARS" || {

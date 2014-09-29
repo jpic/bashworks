@@ -5,8 +5,8 @@
 
 function os_pkg_source() {
     if [[ -n `which emerge` ]]; then
-        source $(module_get_path os_pkg)/gentoo.sh
+        source "$(module_get_path os_pkg)"/gentoo.sh
     elif [[ -d /usr/ports ]]; then
-        source $(module_get_path os_pkg)/bsd.sh
+        source "$(module_get_path os_pkg)"/bsd.sh
     fi
 }

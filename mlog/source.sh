@@ -5,7 +5,7 @@
 
 # Loads Bashinator!
 function mlog_load() {
-    source $(module_get_path mlog)/bashinator-0.3.sh
+    source "$(module_get_path mlog)"/bashinator-0.3.sh
 }
 
 # Log a message with a given security.

@@ -16,7 +16,7 @@ function docs_bashdoc_for_module() {
     local path="$docs_path/modules/$module_name"
     local module_path="$(module_get_path $module_name)"
 
-    $(module_get_path docs_bashdoc)/current/bashdoc.sh \
+    "$(module_get_path docs_bashdoc)"/current/bashdoc.sh \
         -p $module_name \
         -o $path \
         `find "$module_path" \( -name bashunit -prune \) -o \( -type f -name "*.sh" -print \)`

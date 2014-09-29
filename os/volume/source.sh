@@ -10,7 +10,7 @@
 # This function should be called when the module is loaded, it will
 # take care of loading the conf and function submodules.
 function os_volume_load() {
-    source $(module_get_path os_volume)/functions.sh
+    source "$(module_get_path os_volume)"/functions.sh
 }
 
 # This function is responsible of preparing the module in a useable state
